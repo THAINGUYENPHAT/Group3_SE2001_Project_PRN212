@@ -521,3 +521,52 @@ FROM INFORMATION_SCHEMA.TABLES
 WHERE TABLE_TYPE = 'BASE TABLE'
 ORDER BY TABLE_NAME;
 GO
+
+/* 7. Create or update initial Admin account */
+
+IF EXISTS (
+    SELECT 1
+    FROM dbo.Employees
+    WHERE Username = N'admin'
+)
+BEGIN
+    -- Admin da ton tai: cap nhat mat khau
+    UPDATE dbo.Employees
+    SET PasswordHash = N'czGFb/dfzQlaFKD+ypaQig==:7fCzkBXgKXhuj2/94EfITnTpT6ItVUF2MfnVpVpw2o=',
+        IsActive = 1,
+        UpdatedAt = SYSDATETIME()
+    WHERE Username = N'admin';
+END
+ELSE
+BEGIN
+    -- Admin chua ton tai: tao tai khoan moi
+    INSERT INTO dbo.Employees
+    (
+        RoleId,
+        Username,
+        PasswordHash,
+        FullName,
+        IsActive,
+        CreatedAt
+    )
+    SELECT
+        RoleId,
+        N'admin',
+        N'czGFb/dfzQlaFKD+ypaQig==:7fCzkBXgKXhuj2/94EfITnTpT6ItVUF2MfnVpVpw2o=',
+        N'System Administrator',
+        1,
+        SYSDATETIME()
+    FROM dbo.Roles
+    WHERE RoleName = N'Admin';
+END;
+GO
+
+UPDATE dbo.Employees
+SET PasswordHash = N'wl33f8L0tpPQP/C5In8k3g==:Br1TEN/0d4b+urSt+/hQ1MnwoI2bRVBuEc36rIDcRwE=',
+    IsActive = 1,
+    UpdatedAt = SYSDATETIME()
+WHERE Username = N'admin';
+
+SELECT Username, PasswordHash, IsActive
+FROM dbo.Employees
+WHERE Username = N'admin';

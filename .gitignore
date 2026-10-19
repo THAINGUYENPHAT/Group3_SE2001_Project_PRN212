@@ -1,8 +1,29 @@
-/target/
-/build/
-/nbproject/private/
-/nbproject/aether-deploy.xml
-*. class
-*. jar
-*. war
-/OECS/target/
+
+# Build output
+[Bb]in/
+[Oo]bj/
+[Dd]ebug/
+[Rr]elease/
+x64/
+x86/
+
+# Visual Studio
+.vs/
+*.user
+*.suo
+*.cache
+
+# Test results
+[Tt]est[Rr]esult*/
+[Bb]uild[Ll]og.*
+
+# NuGet
+*.nupkg
+.nuget/
+
+# Environment and secrets
+.env
+appsettings.Local.json
+
+# Keep the database script in Git
+# CoffeeRuuDB.sql should NOT be ignored
