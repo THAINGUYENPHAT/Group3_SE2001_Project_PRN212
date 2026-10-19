@@ -25,7 +25,8 @@
 
                 <Button Content="🏠  Trang chủ"
                         Height="42"
-                        Margin="0,0,0,10"/>
+                        Margin="0,0,0,10"
+                        Click="BtnHome_Click"/>
 
                 <Button Content="☕  Sản phẩm"
                         Height="42"
@@ -37,7 +38,8 @@
 
                 <Button Content="📦  Kho hàng"
                         Height="42"
-                        Margin="0,0,0,10"/>
+                        Margin="0,0,0,10"
+                        Click="BtnInventory_Click"/>
 
                 <Button Content="👥  Nhân viên"
                         Height="42"
@@ -50,7 +52,9 @@
         </Border>
 
         <!-- Nội dung trang chủ -->
-        <ScrollViewer Grid.Column="1"
+        <ScrollViewer x:Name="HomeContent"
+                      Grid.Column="1"
+                      Visibility="Visible"
                       VerticalScrollBarVisibility="Auto">
             <StackPanel Margin="30">
                 <TextBlock Text="Tổng quan"
@@ -142,5 +146,9 @@
                 </Border>
             </StackPanel>
         </ScrollViewer>
+        <Frame x:Name="MainContent"
+               Grid.Column="1"
+               NavigationUIVisibility="Hidden"
+               Visibility="Collapsed"/>
     </Grid>
 </Window>
