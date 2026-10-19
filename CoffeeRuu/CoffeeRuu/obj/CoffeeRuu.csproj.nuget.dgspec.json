@@ -1,23 +1,23 @@
 {
   "format": 1,
   "restore": {
-    "D:\\a HK5 FPTU\\PRN212\\Project_PRN\\CoffeeRuu\\CoffeeRuu\\CoffeeRuu.csproj": {}
+    "D:\\PRN212\\Project\\Group3_SE2001_Project_PRN212\\CoffeeRuu\\CoffeeRuu\\CoffeeRuu.csproj": {}
   },
   "projects": {
-    "D:\\a HK5 FPTU\\PRN212\\Project_PRN\\CoffeeRuu\\CoffeeRuu\\CoffeeRuu.csproj": {
+    "D:\\PRN212\\Project\\Group3_SE2001_Project_PRN212\\CoffeeRuu\\CoffeeRuu\\CoffeeRuu.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\a HK5 FPTU\\PRN212\\Project_PRN\\CoffeeRuu\\CoffeeRuu\\CoffeeRuu.csproj",
+        "projectUniqueName": "D:\\PRN212\\Project\\Group3_SE2001_Project_PRN212\\CoffeeRuu\\CoffeeRuu\\CoffeeRuu.csproj",
         "projectName": "CoffeeRuu",
-        "projectPath": "D:\\a HK5 FPTU\\PRN212\\Project_PRN\\CoffeeRuu\\CoffeeRuu\\CoffeeRuu.csproj",
-        "packagesPath": "C:\\Users\\PC\\.nuget\\packages\\",
-        "outputPath": "D:\\a HK5 FPTU\\PRN212\\Project_PRN\\CoffeeRuu\\CoffeeRuu\\obj\\",
+        "projectPath": "D:\\PRN212\\Project\\Group3_SE2001_Project_PRN212\\CoffeeRuu\\CoffeeRuu\\CoffeeRuu.csproj",
+        "packagesPath": "C:\\Users\\nhatq\\.nuget\\packages\\",
+        "outputPath": "D:\\PRN212\\Project\\Group3_SE2001_Project_PRN212\\CoffeeRuu\\CoffeeRuu\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\PC\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\nhatq\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
