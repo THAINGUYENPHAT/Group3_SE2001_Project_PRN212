@@ -1,0 +1,87 @@
+﻿<UserControl x:Class="CoffeeRuu.Views.TableFloorView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:CoffeeRuu.ViewModels"
+             Background="#F5F6FA">
+
+    <!-- Gắn ViewModel vào View -->
+    <UserControl.DataContext>
+        <local:TableManagementViewModel />
+    </UserControl.DataContext>
+
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <TextBlock Text="SƠ ĐỒ BÀN" FontSize="24" FontWeight="Bold" Foreground="#3B2F2F" Margin="0,0,0,20"/>
+
+        <!-- Vùng hiển thị danh sách bàn -->
+        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+            <ItemsControl ItemsSource="{Binding Tables}">
+
+                <!-- Sắp xếp các bàn nằm ngang, tự động rớt dòng (WrapPanel) -->
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <WrapPanel Orientation="Horizontal" HorizontalAlignment="Left"/>
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+
+                <!-- Thiết kế giao diện cho từng bàn -->
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <!-- Dùng Border thay cho Button để bỏ hiệu ứng click, giữ nguyên logic đổi màu -->
+                        <Border Width="140" Height="140" Margin="10" CornerRadius="10">
+                            <Border.Style>
+                                <Style TargetType="Border">
+                                    <Setter Property="Background" Value="#4CAF50"/>
+                                    <!-- Mặc định màu Xanh -->
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding TableStatus}" Value="Occupied">
+                                            <Setter Property="Background" Value="#F44336"/>
+                                            <!-- Đỏ: Đang có khách -->
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding TableStatus}" Value="Reserved">
+                                            <Setter Property="Background" Value="#FF9800"/>
+                                            <!-- Cam: Đã đặt -->
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding TableStatus}" Value="OutOfService">
+                                            <Setter Property="Background" Value="#9E9E9E"/>
+                                            <!-- Xám: Bảo trì -->
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Border.Style>
+
+                            <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+                                <TextBlock Text="{Binding TableName}" FontSize="26" FontWeight="Bold" Foreground="White" HorizontalAlignment="Center"/>
+
+                                <!-- Menu thả xuống để chọn Sức chứa (Capacity) -->
+                                <StackPanel Orientation="Horizontal" Margin="0,8,0,5">
+                                    <TextBlock Text="Chỗ ngồi: " FontSize="13" Foreground="White" VerticalAlignment="Center"/>
+                                    <ComboBox SelectedValue="{Binding Capacity, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                          SelectedValuePath="Content" Width="50" Height="22">
+                                        <ComboBoxItem Content="2"/>
+                                        <ComboBoxItem Content="4"/>
+                                        <ComboBoxItem Content="6"/>
+                                        <ComboBoxItem Content="8"/>
+                                    </ComboBox>
+                                </StackPanel>
+
+                                <!-- Menu thả xuống để chọn Trạng thái (Status) -->
+                                <ComboBox SelectedValue="{Binding TableStatus, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                      SelectedValuePath="Content" Width="110" Height="25">
+                                    <ComboBoxItem Content="Available"/>
+                                    <ComboBoxItem Content="Occupied"/>
+                                    <ComboBoxItem Content="Reserved"/>
+                                    <ComboBoxItem Content="OutOfService"/>
+                                </ComboBox>
+                            </StackPanel>
+                        </Border>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </ScrollViewer>
+    </Grid>
+</UserControl>
