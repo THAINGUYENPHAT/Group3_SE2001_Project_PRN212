@@ -6,52 +6,45 @@
       xmlns:local="clr-namespace:CoffeeRuu.Views"
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800"
-      Title="OrderView">
+      Title="OrderView"
+      Background="#F5F6FA"
+      Loaded="Page_Loaded">
 
     <Page.Resources>
 
-        <!-- Card trắng -->
+        <!-- Khung trắng -->
         <Style x:Key="CardStyle" TargetType="Border">
             <Setter Property="Background" Value="White"/>
             <Setter Property="CornerRadius" Value="10"/>
-            <Setter Property="Padding" Value="16"/>
+            <Setter Property="Padding" Value="15"/>
         </Style>
 
-        <!-- Nhãn -->
-        <Style x:Key="LabelStyle" TargetType="TextBlock">
-            <Setter Property="Foreground" Value="#6B6461"/>
-            <Setter Property="FontSize" Value="12"/>
-            <Setter Property="Margin" Value="0,0,0,5"/>
-        </Style>
-
-        <!-- TextBox -->
+        <!-- Ô nhập -->
         <Style x:Key="InputStyle" TargetType="TextBox">
             <Setter Property="Height" Value="34"/>
             <Setter Property="Padding" Value="8,5"/>
-            <Setter Property="BorderBrush" Value="#DDD9D7"/>
-            <Setter Property="Margin" Value="0,0,0,12"/>
+            <Setter Property="BorderBrush" Value="#DDDDDD"/>
+            <Setter Property="Margin" Value="0,5,0,12"/>
         </Style>
 
         <!-- ComboBox -->
         <Style x:Key="ComboStyle" TargetType="ComboBox">
             <Setter Property="Height" Value="34"/>
-            <Setter Property="Padding" Value="6,4"/>
-            <Setter Property="BorderBrush" Value="#DDD9D7"/>
-            <Setter Property="Margin" Value="0,0,0,12"/>
+            <Setter Property="Margin" Value="0,5,0,12"/>
         </Style>
 
-        <!-- Nút nâu -->
+        <!-- Nút chính -->
         <Style x:Key="PrimaryButton" TargetType="Button">
             <Setter Property="Background" Value="#3B2F2F"/>
             <Setter Property="Foreground" Value="White"/>
             <Setter Property="BorderThickness" Value="0"/>
-            <Setter Property="Padding" Value="14,8"/>
+            <Setter Property="Padding" Value="12,8"/>
             <Setter Property="FontWeight" Value="SemiBold"/>
             <Setter Property="Cursor" Value="Hand"/>
         </Style>
 
         <!-- Nút phụ -->
-        <Style x:Key="SoftButton"
+        <Style x:Key="SecondaryButton"
                TargetType="Button"
                BasedOn="{StaticResource PrimaryButton}">
             <Setter Property="Background" Value="#E9E6E4"/>
@@ -62,17 +55,18 @@
         <Style TargetType="DataGrid">
             <Setter Property="AutoGenerateColumns" Value="False"/>
             <Setter Property="IsReadOnly" Value="True"/>
-            <Setter Property="GridLinesVisibility" Value="Horizontal"/>
-            <Setter Property="HorizontalGridLinesBrush" Value="#EEEEEE"/>
-            <Setter Property="RowHeight" Value="34"/>
-            <Setter Property="ColumnHeaderHeight" Value="34"/>
+            <Setter Property="RowHeight" Value="35"/>
+            <Setter Property="ColumnHeaderHeight" Value="35"/>
+            <Setter Property="GridLinesVisibility"
+                    Value="Horizontal"/>
+            <Setter Property="HorizontalGridLinesBrush"
+                    Value="#EEEEEE"/>
             <Setter Property="BorderThickness" Value="0"/>
-            <Setter Property="Background" Value="White"/>
         </Style>
 
     </Page.Resources>
 
-    <Grid Margin="24,20,24,16">
+    <Grid Margin="20">
 
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -81,22 +75,21 @@
         </Grid.RowDefinitions>
 
         <!-- TIÊU ĐỀ -->
-        <StackPanel Grid.Row="0" Margin="0,0,0,16">
+        <StackPanel Grid.Row="0" Margin="0,0,0,15">
 
-            <TextBlock Text="Quản lý đơn hàng"
+            <TextBlock Text="Order Processing"
                        FontSize="26"
                        FontWeight="Bold"
                        Foreground="#3B2F2F"/>
 
-            <TextBlock
-                Text="Tạo đơn và theo dõi trạng thái pha chế"
-                FontSize="13"
-                Foreground="#777777"
-                Margin="0,5,0,0"/>
+            <TextBlock Text="Quản lý và xử lý đơn hàng CoffeeRuu"
+                       FontSize="13"
+                       Foreground="#777777"
+                       Margin="0,5,0,0"/>
 
         </StackPanel>
 
-        <!-- NỘI DUNG -->
+        <!-- CÁC TAB -->
         <TabControl Grid.Row="1"
                     Background="Transparent"
                     BorderThickness="0">
@@ -105,75 +98,67 @@
             <TabItem Header="  Tạo đơn hàng  ">
 
                 <Grid Margin="0,12,0,0">
+
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="300"/>
+                        <ColumnDefinition Width="245"/>
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
 
-                    <!-- BÊN TRÁI -->
+                    <!-- THÔNG TIN ĐƠN HÀNG -->
                     <ScrollViewer Grid.Column="0"
-                                  VerticalScrollBarVisibility="Auto"
-                                  Margin="0,0,12,0">
+                                  Margin="0,0,12,0"
+                                  VerticalScrollBarVisibility="Auto">
 
                         <Border Style="{StaticResource CardStyle}">
+
                             <StackPanel>
 
                                 <TextBlock Text="Thông tin đơn hàng"
                                            FontSize="17"
                                            FontWeight="SemiBold"
                                            Foreground="#3B2F2F"
-                                           Margin="0,0,0,16"/>
+                                           Margin="0,0,0,15"/>
 
-                                <TextBlock Text="Mã nhân viên (demo)"
-                                           Style="{StaticResource LabelStyle}"/>
+                                <TextBlock Text="Mã nhân viên (demo)"/>
 
                                 <TextBox
                                     Style="{StaticResource InputStyle}"
                                     Text="{Binding EmployeeIdText,
                                     UpdateSourceTrigger=PropertyChanged}"/>
 
-                                <TextBlock Text="Loại đơn"
-                                           Style="{StaticResource LabelStyle}"/>
+                                <TextBlock Text="Loại đơn"/>
 
                                 <ComboBox
                                     Style="{StaticResource ComboStyle}"
-                                    SelectedValuePath="Content"
-                                    SelectedValue="{Binding OrderType, Mode=TwoWay}">
+                                    ItemsSource="{Binding OrderTypes}"
+                                    SelectedItem="{Binding OrderType,
+                                    Mode=TwoWay}"/>
 
-                                    <ComboBoxItem Content="Takeaway"/>
-                                    <ComboBoxItem Content="DineIn"/>
-
-                                </ComboBox>
-
-                                <TextBlock Text="Chọn bàn"
-                                           Style="{StaticResource LabelStyle}"/>
+                                <TextBlock Text="Chọn bàn"/>
 
                                 <ComboBox
                                     Style="{StaticResource ComboStyle}"
                                     ItemsSource="{Binding Tables}"
-                                    SelectedItem="{Binding SelectedTable}"
                                     DisplayMemberPath="TableName"
+                                    SelectedItem="{Binding SelectedTable}"
                                     IsEnabled="{Binding IsDineIn}"/>
 
-                                <TextBlock Text="Sản phẩm / Kích thước"
-                                           Style="{StaticResource LabelStyle}"/>
+                                <TextBlock Text="Sản phẩm / Size"/>
 
                                 <ComboBox
                                     Style="{StaticResource ComboStyle}"
                                     ItemsSource="{Binding Menu}"
-                                    SelectedItem="{Binding SelectedMenu}"
-                                    DisplayMemberPath="Display"/>
+                                    DisplayMemberPath="Display"
+                                    SelectedItem="{Binding SelectedMenu}"/>
 
-                                <TextBlock Text="Số lượng"
-                                           Style="{StaticResource LabelStyle}"/>
+                                <TextBlock Text="Số lượng"/>
 
                                 <TextBox
                                     Style="{StaticResource InputStyle}"
                                     Text="{Binding QuantityText,
                                     UpdateSourceTrigger=PropertyChanged}"/>
 
-                                <TextBlock Text="Ghi chú món"
-                                           Style="{StaticResource LabelStyle}"/>
+                                <TextBlock Text="Ghi chú món"/>
 
                                 <TextBox
                                     Style="{StaticResource InputStyle}"
@@ -181,20 +166,22 @@
                                     Text="{Binding ItemNote,
                                     UpdateSourceTrigger=PropertyChanged}"/>
 
-                                <Button Content="+ Thêm vào đơn"
-                                        Command="{Binding AddCommand}"
-                                        Style="{StaticResource PrimaryButton}"
-                                        Margin="0,2,0,0"/>
+                                <Button
+                                    Content="+ Thêm món"
+                                    Command="{Binding AddCommand}"
+                                    Style="{StaticResource PrimaryButton}"/>
 
                             </StackPanel>
+
                         </Border>
                     </ScrollViewer>
 
-                    <!-- BÊN PHẢI: GIỎ HÀNG -->
+                    <!-- GIỎ HÀNG -->
                     <Border Grid.Column="1"
                             Style="{StaticResource CardStyle}">
 
                         <Grid>
+
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto"/>
                                 <RowDefinition Height="*"/>
@@ -202,12 +189,13 @@
                             </Grid.RowDefinitions>
 
                             <DockPanel Grid.Row="0"
-                                       Margin="0,0,0,12">
+                                       Margin="0,0,0,14">
 
-                                <Button DockPanel.Dock="Right"
-                                        Content="Xóa món"
-                                        Command="{Binding RemoveCommand}"
-                                        Style="{StaticResource SoftButton}"/>
+                                <Button
+                                    DockPanel.Dock="Right"
+                                    Content="Xóa món"
+                                    Command="{Binding RemoveCommand}"
+                                    Style="{StaticResource SecondaryButton}"/>
 
                                 <TextBlock
                                     Text="Chi tiết đơn hàng"
@@ -218,39 +206,46 @@
 
                             </DockPanel>
 
-                            <!-- DANH SÁCH MÓN -->
                             <DataGrid Grid.Row="1"
                                       ItemsSource="{Binding Cart}"
-                                      SelectedItem="{Binding SelectedCart}">
+                                      SelectedItem="{Binding SelectedCart}"
+                                      ScrollViewer.HorizontalScrollBarVisibility="Auto">
 
                                 <DataGrid.Columns>
 
-                                    <DataGridTextColumn Header="Món"
+                                    <DataGridTextColumn
+                                        Header="Tên món"
                                         Binding="{Binding ProductName}"
-                                        Width="*"/>
+                                        Width="*"
+                                        MinWidth="90"/>
 
-                                    <DataGridTextColumn Header="Size"
+                                    <DataGridTextColumn
+                                        Header="Size"
                                         Binding="{Binding SizeName}"
-                                        Width="53"/>
+                                        Width="50"/>
 
-                                    <DataGridTextColumn Header="SL"
+                                    <DataGridTextColumn
+                                        Header="SL"
                                         Binding="{Binding Quantity}"
-                                        Width="36"/>
+                                        Width="40"/>
 
-                                    <DataGridTextColumn Header="Thành tiền"
+                                    <DataGridTextColumn
+                                        Header="Thành tiền"
                                         Binding="{Binding LineTotal,
                                         StringFormat={}{0:N0}}"
-                                        Width="86"/>
+                                        Width="95"/>
 
                                 </DataGrid.Columns>
+
                             </DataGrid>
 
-                            <!-- THANH TOÁN TẠM TÍNH -->
+                            <!-- TỔNG TIỀN -->
                             <StackPanel Grid.Row="2"
-                                        Margin="0,12,0,0">
+                                        Margin="0,15,0,0">
 
-                                <TextBlock Text="Ghi chú đơn"
-                                           Style="{StaticResource LabelStyle}"/>
+                                <TextBlock
+                                    Text="Ghi chú đơn hàng"
+                                    Foreground="#666666"/>
 
                                 <TextBox
                                     Style="{StaticResource InputStyle}"
@@ -258,22 +253,14 @@
                                     Text="{Binding OrderNote,
                                     UpdateSourceTrigger=PropertyChanged}"/>
 
-                                <DockPanel Margin="0,0,0,12">
-
-                                    <TextBlock Text="Tổng cộng"
-                                               Foreground="#666666"
-                                               FontSize="15"/>
-
-                                    <TextBlock
-                                        DockPanel.Dock="Right"
-                                        Text="{Binding CartTotal,
-                                        StringFormat={}{0:N0} đ}"
-                                        FontSize="19"
-                                        FontWeight="Bold"
-                                        Foreground="#3B2F2F"
-                                        HorizontalAlignment="Right"/>
-
-                                </DockPanel>
+                                <TextBlock
+                                    Text="{Binding CartTotal,
+                                    StringFormat='Tổng cộng: {0:N0} đ'}"
+                                    FontSize="19"
+                                    FontWeight="Bold"
+                                    Foreground="#3B2F2F"
+                                    HorizontalAlignment="Right"
+                                    Margin="0,0,0,14"/>
 
                                 <Button
                                     Content="XÁC NHẬN TẠO ĐƠN"
@@ -284,83 +271,94 @@
 
                         </Grid>
                     </Border>
+
                 </Grid>
+
             </TabItem>
 
-            <!-- TAB 2: DANH SÁCH ĐƠN -->
+            <!-- TAB 2: DANH SÁCH ĐƠN HÀNG -->
             <TabItem Header="  Danh sách đơn hàng  ">
 
                 <Border Style="{StaticResource CardStyle}"
                         Margin="0,12,0,0">
 
-                    <Grid>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="*"/>
-                        </Grid.RowDefinitions>
+                    <DockPanel>
 
-                        <DockPanel Grid.Row="0"
-                                   Margin="0,0,0,14">
+                        <StackPanel DockPanel.Dock="Top"
+                                    Margin="0,0,0,12">
 
-                            <StackPanel DockPanel.Dock="Right"
-                                        Orientation="Horizontal">
+                            <TextBlock
+                                Text="Danh sách đơn hàng"
+                                FontSize="17"
+                                FontWeight="SemiBold"
+                                Foreground="#3B2F2F"
+                                Margin="0,0,0,12"/>
 
-                                <Button Content="Làm mới"
-                                        Command="{Binding RefreshCommand}"
-                                        Style="{StaticResource SoftButton}"
-                                        Margin="0,0,8,0"/>
+                            <WrapPanel>
 
-                                <Button Content="Bàn giao"
-                                        Command="{Binding CompleteCommand}"
-                                        Style="{StaticResource PrimaryButton}"
-                                        Margin="0,0,8,0"/>
+                                <Button
+                                    Content="Làm mới"
+                                    Command="{Binding RefreshCommand}"
+                                    Style="{StaticResource SecondaryButton}"
+                                    Margin="0,0,8,8"/>
 
-                                <Button Content="Hủy đơn mới"
-                                        Command="{Binding CancelCommand}"
-                                        Style="{StaticResource SoftButton}"/>
+                                <Button
+                                    Content="Bàn giao"
+                                    Command="{Binding CompleteCommand}"
+                                    Style="{StaticResource PrimaryButton}"
+                                    Margin="0,0,8,8"/>
 
-                            </StackPanel>
+                                <Button
+                                    Content="Hủy đơn mới"
+                                    Command="{Binding CancelCommand}"
+                                    Style="{StaticResource SecondaryButton}"
+                                    Margin="0,0,8,8"/>
 
-                            <TextBlock Text="Các đơn gần đây"
-                                       FontSize="17"
-                                       FontWeight="SemiBold"
-                                       Foreground="#3B2F2F"
-                                       VerticalAlignment="Center"/>
+                            </WrapPanel>
+                        </StackPanel>
 
-                        </DockPanel>
-
-                        <DataGrid Grid.Row="1"
-                                  ItemsSource="{Binding Orders}"
-                                  SelectedItem="{Binding SelectedOrder}">
+                        <!-- BẢNG DANH SÁCH ĐƠN -->
+                        <DataGrid
+                            ItemsSource="{Binding Orders}"
+                            SelectedItem="{Binding SelectedOrder}"
+                            ScrollViewer.HorizontalScrollBarVisibility="Auto">
 
                             <DataGrid.Columns>
 
-                                <DataGridTextColumn Header="Mã đơn"
+                                <DataGridTextColumn
+                                    Header="Mã đơn"
                                     Binding="{Binding OrderCode}"
-                                    Width="*"/>
+                                    Width="*"
+                                    MinWidth="120"/>
 
-                                <DataGridTextColumn Header="Bàn"
+                                <DataGridTextColumn
+                                    Header="Bàn"
                                     Binding="{Binding TableName}"
                                     Width="80"/>
 
-                                <DataGridTextColumn Header="Loại đơn"
+                                <DataGridTextColumn
+                                    Header="Loại đơn"
                                     Binding="{Binding OrderType}"
-                                    Width="80"/>
+                                    Width="85"/>
 
-                                <DataGridTextColumn Header="Trạng thái"
+                                <DataGridTextColumn
+                                    Header="Trạng thái"
                                     Binding="{Binding OrderStatus}"
                                     Width="90"/>
 
-                                <DataGridTextColumn Header="Tổng tiền"
+                                <DataGridTextColumn
+                                    Header="Tổng tiền"
                                     Binding="{Binding TotalAmount,
                                     StringFormat={}{0:N0}}"
-                                    Width="95"/>
+                                    Width="100"/>
 
                             </DataGrid.Columns>
+
                         </DataGrid>
 
-                    </Grid>
+                    </DockPanel>
                 </Border>
+
             </TabItem>
 
         </TabControl>

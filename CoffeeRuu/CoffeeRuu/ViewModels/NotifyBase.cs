@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -24,8 +23,7 @@ namespace CoffeeRuu.ViewModels
             field = value;
 
             PropertyChanged?.Invoke(
-                this,
-                new PropertyChangedEventArgs(name));
+                this, new PropertyChangedEventArgs(name));
 
             return true;
         }
@@ -34,8 +32,7 @@ namespace CoffeeRuu.ViewModels
             [CallerMemberName] string? name = null)
         {
             PropertyChanged?.Invoke(
-                this,
-                new PropertyChangedEventArgs(name));
+                this, new PropertyChangedEventArgs(name));
         }
     }
 }

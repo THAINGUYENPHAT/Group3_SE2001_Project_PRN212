@@ -25,12 +25,14 @@ namespace CoffeeRuu.Views
         {
             InitializeComponent();
         }
-
         private async void Page_Loaded(
-            object sender, RoutedEventArgs e)
+        object sender,
+        RoutedEventArgs e)
         {
             if (DataContext is OrderViewModel vm)
+            {
                 await vm.InitializeAsync();
+            }
         }
     }
 }
