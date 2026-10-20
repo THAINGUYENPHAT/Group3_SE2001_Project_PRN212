@@ -10,7 +10,6 @@ namespace CoffeeRuu
         {
             InitializeComponent();
         }
-<<<<<<< HEAD
         private void BtnLogout_Click(object sender, RoutedEventArgs e)
         {
             MessageBoxResult result = MessageBox.Show(
@@ -34,7 +33,6 @@ namespace CoffeeRuu
                 this.Close();
             }
         }   
-=======
 
         // Chuyển về trang chủ
         private void BtnHome_Click(
@@ -57,6 +55,5 @@ namespace CoffeeRuu
             MainContent.Visibility = Visibility.Visible;
         }
 
->>>>>>> 96817d0965f83a60b1d30b6d543668a509d43ef9
     }
 }
