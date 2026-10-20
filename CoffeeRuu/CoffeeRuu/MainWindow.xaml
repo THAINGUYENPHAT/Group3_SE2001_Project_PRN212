@@ -14,8 +14,7 @@
         </Grid.ColumnDefinitions>
 
         <!-- Thanh menu bên trái -->
-        <Border Grid.Column="0"
-                Background="#3B2F2F">
+        <Border Grid.Column="0" Background="#3B2F2F">
             <Grid Margin="20">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
@@ -34,13 +33,11 @@
 
                 <!-- Danh sách Menu chính -->
                 <StackPanel Grid.Row="1">
-
-                        <Button Content="🏠  Trang chủ"
-                        Height="42"
-                        Margin="0,0,0,10"
-                        Click="BtnHome_Click"/>
-
-                        <Button Content="☕  Sản phẩm"
+                    <Button Content="🏠  Trang chủ"
+                            Height="42"
+                            Margin="0,0,0,10"
+                            Click="BtnHome_Click"/>
+                    <Button Content="☕  Sản phẩm"
                             Height="42"
                             Margin="0,0,0,10"/>
 
@@ -49,11 +46,10 @@
                             Margin="0,0,0,10"/>
 
 
-                <Button Content="📦  Kho hàng"
-                        Height="42"
-                        Margin="0,0,0,10"
-                        Click="BtnInventory_Click"/>
-
+                    <Button Content="📦  Kho hàng"
+                            Height="42"
+                            Margin="0,0,0,10"
+                            Click="BtnInventory_Click"/>
 
                     <Button Content="👥  Nhân viên"
                             Height="42"
@@ -62,6 +58,12 @@
                     <Button Content="📊  Báo cáo"
                             Height="42"
                             Margin="0,0,0,10"/>
+
+                    <!-- Nút quản lý bàn của bạn -->
+                    <Button Content="🪑  Quản lý Bàn"
+                            Height="42"
+                            Margin="0,0,0,10"
+                            Click="BtnTable_Click"/>
                 </StackPanel>
 
                 <!-- Nút Đăng xuất ở dưới cùng -->
@@ -171,7 +173,6 @@
         </ScrollViewer>
         <Frame x:Name="MainContent"
                Grid.Column="1"
-               NavigationUIVisibility="Hidden"
-               Visibility="Collapsed"/>
+               NavigationUIVisibility="Hidden"/>
     </Grid>
 </Window>

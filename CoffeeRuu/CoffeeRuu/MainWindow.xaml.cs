@@ -1,5 +1,4 @@
-﻿
-using System.Windows;
+﻿using System.Windows;
 using CoffeeRuu.Views;
 
 namespace CoffeeRuu
@@ -9,6 +8,10 @@ namespace CoffeeRuu
         public MainWindow()
         {
             InitializeComponent();
+
+            // 1. Tự động load trang chủ ngay khi mở cửa sổ chính
+            MainContent.Navigate(new HomeView());
+            MainContent.Visibility = Visibility.Visible;
         }
 
         private void BtnLogout_Click(object sender, RoutedEventArgs e)
@@ -21,41 +24,40 @@ namespace CoffeeRuu
 
             if (result == MessageBoxResult.Yes)
             {
-                // 1. Khởi tạo cửa sổ Đăng nhập (Thay LoginWindow bằng tên file Cửa sổ Login của bạn)
                 LoginView login = new LoginView();
-
-                // 2. Gán làm cửa sổ chính mới của ứng dụng
                 Application.Current.MainWindow = login;
-
-                // 3. Hiển thị cửa sổ Đăng nhập
                 login.Show();
-
-                // 4. Đóng cửa sổ MainWindow hiện tại
                 this.Close();
             }
         }   
 
 
         // Chuyển về trang chủ
-        private void BtnHome_Click(
-            object sender, RoutedEventArgs e)
+        private void BtnHome_Click(object sender, RoutedEventArgs e)
         {
-            HomeContent.Visibility = Visibility.Visible;
-            MainContent.Visibility = Visibility.Collapsed;
+            if (!(MainContent.Content is HomeView))
+            {
+                MainContent.Navigate(new HomeView());
+            }
         }
 
         // Chuyển sang quản lý kho
-
-        private void BtnInventory_Click(
-          object sender, RoutedEventArgs e)
+        private void BtnInventory_Click(object sender, RoutedEventArgs e)
         {
-            if (MainContent.Content == null)
+            if (!(MainContent.Content is InventoryView))
             {
                 MainContent.Navigate(new InventoryView());
             }
-            HomeContent.Visibility = Visibility.Collapsed;
-            MainContent.Visibility = Visibility.Visible;
         }
 
+
+        // Chuyển sang quản lý Bàn
+        private void BtnTable_Click(object sender, RoutedEventArgs e)
+        {
+            if (!(MainContent.Content is TableView))
+            {
+                MainContent.Navigate(new TableView());
+            }
+        }
     }
 }
