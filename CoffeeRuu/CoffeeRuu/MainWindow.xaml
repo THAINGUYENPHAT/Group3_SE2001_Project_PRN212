@@ -1,4 +1,4 @@
-﻿<Window x:Class="CoffeeRuu.MainWindow"
+<Window x:Class="CoffeeRuu.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="CoffeeRuu - Trang chủ"
@@ -47,7 +47,8 @@
 
                 <Button Content="📊  Báo cáo"
                         Height="42"
-                        Margin="0,0,0,10"/>
+                        Margin="0,0,0,10"
+                        Click="BtnReport_Click"/>
             </StackPanel>
         </Border>
 
