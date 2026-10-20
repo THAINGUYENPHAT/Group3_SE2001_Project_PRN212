@@ -1,5 +1,6 @@
+// Updated by XamlIntelliSenseFileGenerator 10/20/2026 10:26:42 AM
 <<<<<<< HEAD
-﻿#pragma checksum "..\..\..\MainWindow.xaml" "{ff1816ec-aa5e-4d10-87f7-6f4963833460}" "B31EAF50E027775CC8131F0424A4AF2F826B47B3"
+#pragma checksum "..\..\..\MainWindow.xaml" "{ff1816ec-aa5e-4d10-87f7-6f4963833460}" "B31EAF50E027775CC8131F0424A4AF2F826B47B3"
 =======
 ﻿#pragma checksum "..\..\..\MainWindow.xaml" "{ff1816ec-aa5e-4d10-87f7-6f4963833460}" "C5086B2B06F60B0F785B9E7140CE83EFEA049004"
 >>>>>>> 96817d0965f83a60b1d30b6d543668a509d43ef9
@@ -36,17 +37,19 @@ using System.Windows.Shapes;
 using System.Windows.Shell;
 
 
-namespace CoffeeRuu {
-    
-    
+namespace CoffeeRuu
+{
+
+
     /// <summary>
     /// MainWindow
     /// </summary>
-    public partial class MainWindow : System.Windows.Window, System.Windows.Markup.IComponentConnector {
-        
-        
+    public partial class MainWindow : System.Windows.Window, System.Windows.Markup.IComponentConnector
+    {
+
+
 <<<<<<< HEAD
-        #line 63 "..\..\..\MainWindow.xaml"
+#line 63 "..\..\..\MainWindow.xaml"
         [System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1823:AvoidUnusedPrivateFields")]
         internal System.Windows.Controls.Button BtnLogout;
 =======
@@ -54,13 +57,13 @@ namespace CoffeeRuu {
         [System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1823:AvoidUnusedPrivateFields")]
         internal System.Windows.Controls.ScrollViewer HomeContent;
 >>>>>>> 96817d0965f83a60b1d30b6d543668a509d43ef9
-        
-        #line default
-        #line hidden
-        
-        
+
+#line default
+#line hidden
+
+
 <<<<<<< HEAD
-        #line 165 "..\..\..\MainWindow.xaml"
+#line 165 "..\..\..\MainWindow.xaml"
         [System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1823:AvoidUnusedPrivateFields")]
         internal System.Windows.Controls.Frame MainFrame;
 =======
@@ -68,58 +71,61 @@ namespace CoffeeRuu {
         [System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1823:AvoidUnusedPrivateFields")]
         internal System.Windows.Controls.Frame MainContent;
 >>>>>>> 96817d0965f83a60b1d30b6d543668a509d43ef9
-        
-        #line default
-        #line hidden
-        
+
+#line default
+#line hidden
+
         private bool _contentLoaded;
-        
+
         /// <summary>
         /// InitializeComponent
         /// </summary>
         [System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [System.CodeDom.Compiler.GeneratedCodeAttribute("PresentationBuildTasks", "10.0.12.0")]
-        public void InitializeComponent() {
-            if (_contentLoaded) {
+        public void InitializeComponent()
+        {
+            if (_contentLoaded)
+            {
                 return;
             }
             _contentLoaded = true;
             System.Uri resourceLocater = new System.Uri("/CoffeeRuu;component/mainwindow.xaml", System.UriKind.Relative);
-            
-            #line 1 "..\..\..\MainWindow.xaml"
+
+#line 1 "..\..\..\MainWindow.xaml"
             System.Windows.Application.LoadComponent(this, resourceLocater);
-            
-            #line default
-            #line hidden
+
+#line default
+#line hidden
         }
-        
+
         [System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [System.CodeDom.Compiler.GeneratedCodeAttribute("PresentationBuildTasks", "10.0.12.0")]
         [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         [System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Design", "CA1033:InterfaceMethodsShouldBeCallableByChildTypes")]
         [System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Maintainability", "CA1502:AvoidExcessiveComplexity")]
         [System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1800:DoNotCastUnnecessarily")]
-        void System.Windows.Markup.IComponentConnector.Connect(int connectionId, object target) {
+        void System.Windows.Markup.IComponentConnector.Connect(int connectionId, object target)
+        {
             switch (connectionId)
             {
-            case 1:
+                case 1:
 <<<<<<< HEAD
-            this.BtnLogout = ((System.Windows.Controls.Button)(target));
-            
-            #line 67 "..\..\..\MainWindow.xaml"
-            this.BtnLogout.Click += new System.Windows.RoutedEventHandler(this.BtnLogout_Click);
+                    this.BtnLogout = ((System.Windows.Controls.Button)(target));
+
+#line 67 "..\..\..\MainWindow.xaml"
+                    this.BtnLogout.Click += new System.Windows.RoutedEventHandler(this.BtnLogout_Click);
 =======
             
             #line 29 "..\..\..\MainWindow.xaml"
             ((System.Windows.Controls.Button)(target)).Click += new System.Windows.RoutedEventHandler(this.BtnHome_Click);
 >>>>>>> 96817d0965f83a60b1d30b6d543668a509d43ef9
-            
-            #line default
-            #line hidden
-            return;
-            case 2:
+
+#line default
+#line hidden
+                    return;
+                case 2:
 <<<<<<< HEAD
-            this.MainFrame = ((System.Windows.Controls.Frame)(target));
+                    this.MainFrame = ((System.Windows.Controls.Frame)(target));
 =======
             
             #line 42 "..\..\..\MainWindow.xaml"
@@ -134,10 +140,13 @@ namespace CoffeeRuu {
             case 4:
             this.MainContent = ((System.Windows.Controls.Frame)(target));
 >>>>>>> 96817d0965f83a60b1d30b6d543668a509d43ef9
-            return;
+                    return;
             }
             this._contentLoaded = true;
         }
+
+        internal System.Windows.Controls.ScrollViewer HomeContent;
+        internal System.Windows.Controls.Frame MainContent;
     }
 }
 
