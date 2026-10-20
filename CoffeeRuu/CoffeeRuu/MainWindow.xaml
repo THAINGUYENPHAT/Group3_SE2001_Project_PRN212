@@ -59,6 +59,10 @@
                     <Button Content="📊  Báo cáo"
                             Height="42"
                             Margin="0,0,0,10"/>
+                    <Button Content="🪑  Quản lý Bàn"
+                            Height="42"
+                            Margin="0,0,0,10"
+                            Click="BtnTable_Click"/>    
                 </StackPanel>
 
                 <!-- Nút Đăng xuất ở dưới cùng -->
