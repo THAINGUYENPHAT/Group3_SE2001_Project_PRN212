@@ -3972,23 +3972,23 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\nhnho\\.nuget\\packages\\": {},
+    "C:\\Users\\tuan2\\.nuget\\packages\\": {},
     "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\chamebanmoi\\Group3_SE2001_Project_PRN212\\CoffeeRuu\\CoffeeRuu\\CoffeeRuu.csproj",
+      "projectUniqueName": "D:\\New folder\\Group3_SE2001_Project_PRN212\\CoffeeRuu\\CoffeeRuu\\CoffeeRuu.csproj",
       "projectName": "CoffeeRuu",
-      "projectPath": "D:\\chamebanmoi\\Group3_SE2001_Project_PRN212\\CoffeeRuu\\CoffeeRuu\\CoffeeRuu.csproj",
-      "packagesPath": "C:\\Users\\nhnho\\.nuget\\packages\\",
-      "outputPath": "D:\\chamebanmoi\\Group3_SE2001_Project_PRN212\\CoffeeRuu\\CoffeeRuu\\obj\\",
+      "projectPath": "D:\\New folder\\Group3_SE2001_Project_PRN212\\CoffeeRuu\\CoffeeRuu\\CoffeeRuu.csproj",
+      "packagesPath": "C:\\Users\\tuan2\\.nuget\\packages\\",
+      "outputPath": "D:\\New folder\\Group3_SE2001_Project_PRN212\\CoffeeRuu\\CoffeeRuu\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
       ],
       "configFilePaths": [
-        "C:\\Users\\nhnho\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\tuan2\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
@@ -4060,7 +4060,7 @@
             "privateAssets": "none"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.400/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.401/PortableRuntimeIdentifierGraph.json"
       }
     }
   }
