@@ -32,7 +32,12 @@
                 <TextBlock Text="Thông tin bàn" FontSize="20" FontWeight="Bold" Margin="0,0,0,20"/>
 
                 <TextBlock Text="Tên bàn/Số bàn:" FontWeight="SemiBold" Margin="0,0,0,5"/>
-                <TextBox Text="{Binding TableNameInput, UpdateSourceTrigger=PropertyChanged}" Height="30" Margin="0,0,0,15" VerticalContentAlignment="Center"/>
+                <TextBox Text="{Binding TableNameInput, Mode=OneWay}" 
+                         IsReadOnly="True" 
+                         Focusable="True"
+                         Height="30" 
+                         Margin="0,0,0,15" 
+                         VerticalContentAlignment="Center"/>
 
                 <TextBlock Text="Sức chứa (Số ghế):" FontWeight="SemiBold" Margin="0,0,0,5"/>
                 <TextBox Text="{Binding CapacityInput, UpdateSourceTrigger=PropertyChanged}" Height="30" Margin="0,0,0,15" VerticalContentAlignment="Center"/>
@@ -44,12 +49,16 @@
                           Height="30" Margin="0,0,0,15" VerticalContentAlignment="Center"/>
 
                 <!-- Thông báo lỗi/thành công -->
+                <!-- Thông báo lỗi/thành công -->
                 <TextBlock Text="{Binding StatusMessage}" Foreground="Red" TextWrapping="Wrap" Margin="0,0,0,15"/>
 
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                    <Button Content="Cập nhật" Command="{Binding UpdateCommand}" Width="90" Height="35" Margin="5"/>
-                    <Button Content="Làm mới" Command="{Binding ClearCommand}" Width="90" Height="35" Margin="5"/>
+                    <Button Content="Thêm" Command="{Binding AddCommand}" Width="70" Height="35" Margin="5"/>
+                    <Button Content="Cập nhật" Command="{Binding UpdateCommand}" Width="70" Height="35" Margin="5"/>
+                    <Button Content="Xóa" Command="{Binding DeleteCommand}" Width="70" Height="35" Margin="5" />
+                    <Button Content="Làm mới" Command="{Binding ClearCommand}" Width="70" Height="35" Margin="5"/>
                 </StackPanel>
+
             </StackPanel>
         </Border>
     </Grid>

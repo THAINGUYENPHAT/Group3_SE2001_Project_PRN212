@@ -20,24 +20,6 @@ namespace CoffeeRuu.Services
             return await _tableRepository.GetAllAsync();
         }
 
-        public async Task AddTableAsync(string name, int capacity)
-        {
-            ValidateTable(name, capacity);
-
-            bool exists = await _tableRepository.NameExistsAsync(name.Trim());
-            if (exists) throw new InvalidOperationException("Tên bàn đã tồn tại.");
-
-            var table = new CafeTable
-            {
-                TableName = name.Trim(),
-                Capacity = capacity,
-                TableStatus = "Available", 
-                IsActive = true
-            };
-
-            await _tableRepository.AddAsync(table);
-        }
-
         public async Task UpdateTableAsync(int id, string name, int capacity)
         {
             ValidateTable(name, capacity);
@@ -68,6 +50,31 @@ namespace CoffeeRuu.Services
 
             if (capacity <= 0)
                 throw new ArgumentException("Sức chứa (số ghế) phải lớn hơn 0.");
+        }
+        public async Task AddTableAsync(string tableName, int capacity, string status)
+        {
+            ValidateTable(tableName, capacity);
+
+            bool exists = await _tableRepository.NameExistsAsync(tableName.Trim());
+            if (exists) throw new InvalidOperationException("Tên bàn đã tồn tại.");
+
+            var newTable = new CafeTable
+            {
+                TableName = tableName.Trim(),
+                Capacity = capacity,
+                TableStatus = status,
+                IsActive = true
+            };
+
+            await _tableRepository.AddAsync(newTable);
+        }
+        public async Task DeleteTableAsync(int id)
+        {
+            bool deleted = await _tableRepository.DeleteAsync(id);
+            if (!deleted)
+            {
+                throw new KeyNotFoundException("Không tìm thấy bàn cần xóa.");
+            }
         }
     }
 }
