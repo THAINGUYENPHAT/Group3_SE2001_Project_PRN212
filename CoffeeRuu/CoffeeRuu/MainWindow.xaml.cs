@@ -8,6 +8,10 @@ namespace CoffeeRuu
         public MainWindow()
         {
             InitializeComponent();
+
+            // 1. Tự động load trang chủ ngay khi mở cửa sổ chính
+            MainContent.Navigate(new HomeView());
+            MainContent.Visibility = Visibility.Visible;
         }
 
         private void BtnLogout_Click(object sender, RoutedEventArgs e)
@@ -30,19 +34,19 @@ namespace CoffeeRuu
         // Chuyển về trang chủ
         private void BtnHome_Click(object sender, RoutedEventArgs e)
         {
-            HomeContent.Visibility = Visibility.Visible;
-            MainContent.Visibility = Visibility.Collapsed;
+            if (!(MainContent.Content is HomeView))
+            {
+                MainContent.Navigate(new HomeView());
+            }
         }
 
-        // Chuyển sang quản lý kho (Đã sửa lại logic kiểm tra)
+        // Chuyển sang quản lý kho
         private void BtnInventory_Click(object sender, RoutedEventArgs e)
         {
             if (!(MainContent.Content is InventoryView))
             {
                 MainContent.Navigate(new InventoryView());
             }
-            HomeContent.Visibility = Visibility.Collapsed;
-            MainContent.Visibility = Visibility.Visible;
         }
 
         // Chuyển sang quản lý Bàn
@@ -52,8 +56,6 @@ namespace CoffeeRuu
             {
                 MainContent.Navigate(new TableView());
             }
-            HomeContent.Visibility = Visibility.Collapsed;
-            MainContent.Visibility = Visibility.Visible;
         }
     }
 }

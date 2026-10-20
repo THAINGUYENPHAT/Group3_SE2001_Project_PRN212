@@ -14,8 +14,7 @@
         </Grid.ColumnDefinitions>
 
         <!-- Thanh menu bên trái -->
-        <Border Grid.Column="0"
-                Background="#3B2F2F">
+        <Border Grid.Column="0" Background="#3B2F2F">
             <Grid Margin="20">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
@@ -33,11 +32,10 @@
 
                 <!-- Danh sách Menu chính -->
                 <StackPanel Grid.Row="1">
-                    
-                <Button Content="🏠  Trang chủ"
-                        Height="42"
-                        Margin="0,0,0,10"
-                        Click="BtnHome_Click"/>
+                    <Button Content="🏠  Trang chủ"
+                            Height="42"
+                            Margin="0,0,0,10"
+                            Click="BtnHome_Click"/>
 
                     <Button Content="☕  Sản phẩm"
                             Height="42"
@@ -47,10 +45,10 @@
                             Height="42"
                             Margin="0,0,0,10"/>
 
-                <Button Content="📦  Kho hàng"
-                        Height="42"
-                        Margin="0,0,0,10"
-                        Click="BtnInventory_Click"/>
+                    <Button Content="📦  Kho hàng"
+                            Height="42"
+                            Margin="0,0,0,10"
+                            Click="BtnInventory_Click"/>
 
                     <Button Content="👥  Nhân viên"
                             Height="42"
@@ -59,10 +57,12 @@
                     <Button Content="📊  Báo cáo"
                             Height="42"
                             Margin="0,0,0,10"/>
+
+                    <!-- Nút quản lý bàn của bạn -->
                     <Button Content="🪑  Quản lý Bàn"
                             Height="42"
                             Margin="0,0,0,10"
-                            Click="BtnTable_Click"/>    
+                            Click="BtnTable_Click"/>
                 </StackPanel>
 
                 <!-- Nút Đăng xuất ở dưới cùng -->
@@ -75,107 +75,8 @@
             </Grid>
         </Border>
 
-        <!-- Nội dung trang chủ -->
-        <ScrollViewer x:Name="HomeContent"
-                      Grid.Column="1"
-                      Visibility="Visible"
-                      VerticalScrollBarVisibility="Auto">
-            <StackPanel Margin="30">
-                <TextBlock Text="Tổng quan"
-                           FontSize="30"
-                           FontWeight="Bold"
-                           Foreground="#3B2F2F"/>
-
-                <TextBlock Text="Chào mừng đến với hệ thống quản lý CoffeeRuu!"
-                           FontSize="16"
-                           Margin="0,8,0,25"
-                           Foreground="#666666"/>
-
-                <UniformGrid Columns="2"
-                             Margin="0,0,0,25">
-
-                    <Border Background="White"
-                            CornerRadius="10"
-                            Padding="20"
-                            Margin="5">
-                        <StackPanel>
-                            <TextBlock Text="☕ Sản phẩm"
-                                       FontSize="18"
-                                       Foreground="#777777"/>
-                            <TextBlock Text="Quản lý sản phẩm"
-                                       FontSize="22"
-                                       FontWeight="Bold"
-                                       Margin="0,10,0,0"/>
-                        </StackPanel>
-                    </Border>
-
-                    <Border Background="White"
-                            CornerRadius="10"
-                            Padding="20"
-                            Margin="5">
-                        <StackPanel>
-                            <TextBlock Text="🧾 Đơn hàng"
-                                       FontSize="18"
-                                       Foreground="#777777"/>
-                            <TextBlock Text="Quản lý đơn hàng"
-                                       FontSize="22"
-                                       FontWeight="Bold"
-                                       Margin="0,10,0,0"/>
-                        </StackPanel>
-                    </Border>
-
-                    <Border Background="White"
-                            CornerRadius="10"
-                            Padding="20"
-                            Margin="5">
-                        <StackPanel>
-                            <TextBlock Text="📦 Kho hàng"
-                                       FontSize="18"
-                                       Foreground="#777777"/>
-                            <TextBlock Text="Quản lý nguyên liệu"
-                                       FontSize="22"
-                                       FontWeight="Bold"
-                                       Margin="0,10,0,0"/>
-                        </StackPanel>
-                    </Border>
-
-                    <Border Background="White"
-                            CornerRadius="10"
-                            Padding="20"
-                            Margin="5">
-                        <StackPanel>
-                            <TextBlock Text="📊 Báo cáo"
-                                       FontSize="18"
-                                       Foreground="#777777"/>
-                            <TextBlock Text="Theo dõi doanh thu"
-                                       FontSize="22"
-                                       FontWeight="Bold"
-                                       Margin="0,10,0,0"/>
-                        </StackPanel>
-                    </Border>
-
-                </UniformGrid>
-
-                <TextBlock Text="Chức năng hệ thống"
-                           FontSize="22"
-                           FontWeight="Bold"
-                           Margin="0,0,0,15"/>
-
-                <Border Background="White"
-                        CornerRadius="10"
-                        Padding="20">
-                    <TextBlock Text="Chọn một chức năng ở thanh menu bên trái để bắt đầu quản lý quán cà phê."
-                               FontSize="15"
-                               TextWrapping="Wrap"/>
-                </Border>
-            </StackPanel>
-        </ScrollViewer>
-        <!-- Thêm x:Name="MainFrame" vào thẻ Frame -->
-        <Frame x:Name="MainFrame" 
-       NavigationUIVisibility="Hidden"/>
         <Frame x:Name="MainContent"
                Grid.Column="1"
-               NavigationUIVisibility="Hidden"
-               Visibility="Collapsed"/>
+               NavigationUIVisibility="Hidden"/>
     </Grid>
 </Window>
