@@ -1,5 +1,4 @@
 ﻿using CoffeeRuu.Data;
-using CoffeeRuu.Models;
 using CoffeeRuu.ViewModels;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -25,7 +24,9 @@ namespace CoffeeRuu.Repositories
             return new CoffeeRuuDbContext(_options);
         }
 
-        // Lấy danh sách menu
+        // ================================
+        // LẤY MENU
+        // ================================
         public async Task<List<MenuChoice>> GetMenuAsync()
         {
             await using var db = CreateContext();
@@ -48,7 +49,9 @@ namespace CoffeeRuu.Repositories
                 .ToListAsync();
         }
 
-        // Lấy bàn đang hoạt động
+        // ================================
+        // LẤY DANH SÁCH BÀN
+        // ================================
         public async Task<List<TableChoice>> GetTablesAsync()
         {
             await using var db = CreateContext();
@@ -68,7 +71,9 @@ namespace CoffeeRuu.Repositories
                 .ToListAsync();
         }
 
-        // Lấy danh sách đơn hàng
+        // ================================
+        // LẤY DANH SÁCH ĐƠN
+        // ================================
         public async Task<List<OrderListRow>> GetOrdersAsync()
         {
             await using var db = CreateContext();
@@ -93,7 +98,9 @@ namespace CoffeeRuu.Repositories
                 .ToListAsync();
         }
 
-        // Lấy các món đang được pha chế
+        // ================================
+        // LẤY MÓN CHO KDS
+        // ================================
         public async Task<List<KdsItemRow>> GetKdsAsync()
         {
             await using var db = CreateContext();
@@ -114,9 +121,11 @@ namespace CoffeeRuu.Repositories
                     OrderItemId = i.OrderItemId,
                     OrderId = i.OrderId,
                     OrderCode = i.Order.OrderCode,
+
                     TableName = i.Order.Table != null
                         ? i.Order.Table.TableName
                         : "Mang đi",
+
                     ProductName = i.ProductNameSnapshot,
                     SizeName = i.SizeNameSnapshot,
                     Quantity = i.Quantity,

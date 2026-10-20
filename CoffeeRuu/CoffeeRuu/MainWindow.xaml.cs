@@ -1,5 +1,7 @@
-﻿
+﻿using System;
+using System.Configuration;
 using System.Windows;
+using System.Windows.Controls;
 using CoffeeRuu.Data;
 using CoffeeRuu.Repositories;
 using CoffeeRuu.Services;
@@ -21,11 +23,11 @@ namespace CoffeeRuu
         {
             var page = new CoffeeRuu.Views.WarehousePage();
 
-            ModuleHost.Navigate(page);
+            MainContent.Navigate(page);
 
             HomeContent.Visibility = Visibility.Collapsed;
 
-            ModuleHost.Visibility = Visibility.Visible;
+            MainContent.Visibility = Visibility.Visible;
         }
 
 
@@ -41,13 +43,28 @@ namespace CoffeeRuu
             };
 
             // Hiển thị trang Order Processing
-            ModuleHost.Navigate(orderPage);
+            MainContent.Navigate(orderPage);
 
             // Ẩn trang chủ
             HomeContent.Visibility = Visibility.Collapsed;
 
             // Hiện Order Processing
-            ModuleHost.Visibility = Visibility.Visible;
+            MainContent.Visibility = Visibility.Visible;
+        }
+
+        // KDS - PHA CHẾ
+
+        private void OpenKds_Click(
+            object sender,
+            RoutedEventArgs e)
+        {
+            var kdsPage = new KdsView
+            {
+                DataContext = new KdsViewModel(
+                    GetOrderModuleService())
+            };
+
+            ShowPage(kdsPage);
         }
 
 
@@ -75,6 +92,15 @@ namespace CoffeeRuu
             _orderService = new OrderService(repository);
 
             return _orderService;
+        }
+
+        // HIỂN THỊ PAGE TRONG MAINWINDOW
+        private void ShowPage(Page page)
+        {
+            MainContent.Navigate(page);
+
+            HomeContent.Visibility = Visibility.Collapsed;
+            MainContent.Visibility = Visibility.Visible;
         }
 
 

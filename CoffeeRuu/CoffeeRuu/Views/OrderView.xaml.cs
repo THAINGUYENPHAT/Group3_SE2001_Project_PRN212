@@ -21,14 +21,20 @@ namespace CoffeeRuu.Views
     /// </summary>
     public partial class OrderView : Page
     {
+        private bool _loaded;
         public OrderView()
         {
             InitializeComponent();
         }
         private async void Page_Loaded(
-        object sender,
-        RoutedEventArgs e)
+            object sender,
+            RoutedEventArgs e)
         {
+            if (_loaded)
+                return;
+
+            _loaded = true;
+
             if (DataContext is OrderViewModel vm)
             {
                 await vm.InitializeAsync();

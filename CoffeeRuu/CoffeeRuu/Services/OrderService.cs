@@ -1,43 +1,54 @@
-﻿using System;
+﻿using CoffeeRuu.Data;
+using CoffeeRuu.Models;
+using CoffeeRuu.Repositories;
+using CoffeeRuu.ViewModels;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Data;
-using CoffeeRuu.Data;
-using CoffeeRuu.Models;
-using CoffeeRuu.Repositories;
-using CoffeeRuu.ViewModels;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
-
+using System.Data;
 
 namespace CoffeeRuu.Services
 {
     public class OrderService
     {
-        private readonly OrderRepository _repo;
+        private readonly OrderRepository _repository;
 
-        public OrderService(OrderRepository repo)
+        public OrderService(OrderRepository repository)
         {
-            _repo = repo;
+            _repository = repository;
         }
 
+        // ==========================
+        // LẤY DỮ LIỆU
+        // ==========================
+
         public Task<List<MenuChoice>> GetMenuAsync()
-            => _repo.GetMenuAsync();
+        {
+            return _repository.GetMenuAsync();
+        }
 
         public Task<List<TableChoice>> GetTablesAsync()
-            => _repo.GetTablesAsync();
+        {
+            return _repository.GetTablesAsync();
+        }
 
         public Task<List<OrderListRow>> GetOrdersAsync()
-            => _repo.GetOrdersAsync();
+        {
+            return _repository.GetOrdersAsync();
+        }
 
         public Task<List<KdsItemRow>> GetKdsAsync()
-            => _repo.GetKdsAsync();
+        {
+            return _repository.GetKdsAsync();
+        }
 
-        // =================================
-        // TẠO ĐƠN HÀNG
-        // =================================
+        // ==========================
+        // 1. TẠO ĐƠN HÀNG
+        // ==========================
 
         public async Task<Order> CreateOrderAsync(
             IReadOnlyCollection<CartLine> cart,
@@ -46,34 +57,39 @@ namespace CoffeeRuu.Services
             int employeeId,
             string? note)
         {
-            if (cart.Count == 0)
-                throw new Exception("Giỏ hàng đang trống.");
+            if (cart == null || cart.Count == 0)
+                throw new InvalidOperationException(
+                    "Giỏ hàng đang trống.");
 
-            if (orderType != "Takeaway" &&
-                orderType != "DineIn")
-                throw new Exception("Loại đơn không hợp lệ.");
+            if (orderType != "DineIn" &&
+                orderType != "Takeaway")
+                throw new InvalidOperationException(
+                    "Loại đơn không hợp lệ.");
 
-            if (orderType == "DineIn" && tableId == null)
-                throw new Exception("Vui lòng chọn bàn.");
+            if (orderType == "DineIn" && !tableId.HasValue)
+                throw new InvalidOperationException(
+                    "Vui lòng chọn bàn.");
 
-            if (note?.Length > 500)
-                throw new Exception("Ghi chú đơn quá dài.");
+            if ((note?.Length ?? 0) > 500)
+                throw new InvalidOperationException(
+                    "Ghi chú đơn tối đa 500 ký tự.");
 
-            if (cart.Any(x =>
-                x.Quantity < 1 ||
-                x.Quantity > 100 ||
-                (x.Note?.Length ?? 0) > 300))
+            if (cart.Any(i =>
+                i.Quantity <= 0 ||
+                i.Quantity > 100 ||
+                (i.Note?.Length ?? 0) > 300))
             {
-                throw new Exception(
+                throw new InvalidOperationException(
                     "Số lượng hoặc ghi chú món không hợp lệ.");
             }
 
             if (orderType == "Takeaway")
                 tableId = null;
 
-            await using var db = _repo.CreateContext();
+            await using var db =
+                _repository.CreateContext();
 
-            await using var tx =
+            await using var transaction =
                 await db.Database.BeginTransactionAsync(
                     IsolationLevel.Serializable);
 
@@ -90,78 +106,93 @@ namespace CoffeeRuu.Services
                          t.TableStatus == "Occupied"));
 
                 if (!tableValid)
-                    throw new Exception("Bàn không hợp lệ.");
+                    throw new InvalidOperationException(
+                        "Bàn không hợp lệ hoặc ngừng hoạt động.");
             }
 
-            // Lấy giá từ database, không dùng giá tự nhập
-            var sizeIds = cart
-                .Select(x => x.ProductSizeId)
+            // Lấy giá và sản phẩm thực tế
+            var productSizeIds = cart
+                .Select(i => i.ProductSizeId)
                 .Distinct()
                 .ToList();
 
             var products = await db.ProductSizes
                 .AsNoTracking()
                 .Where(s =>
-                    sizeIds.Contains(s.ProductSizeId) &&
+                    productSizeIds.Contains(s.ProductSizeId) &&
                     s.IsAvailable &&
                     s.Product.IsAvailable &&
                     s.Product.Category.IsActive)
                 .Select(s => new
                 {
                     s.ProductSizeId,
-                    s.Price,
                     s.SizeName,
+                    s.Price,
                     s.Product.ProductName
                 })
                 .ToDictionaryAsync(s => s.ProductSizeId);
 
-            if (products.Count != sizeIds.Count)
-            {
-                throw new Exception(
-                    "Có sản phẩm đã ngừng bán. Hãy làm mới menu.");
-            }
+            if (products.Count != productSizeIds.Count)
+                throw new InvalidOperationException(
+                    "Có sản phẩm không còn bán. Hãy làm mới menu.");
 
-            DateTime now = DateTime.Now;
+            var now = DateTime.Now;
 
             var order = new Order
             {
                 OrderCode = "CR" +
-                    Guid.NewGuid().ToString("N")[..20],
+                    Guid.NewGuid().ToString("N")[..18],
 
                 TableId = tableId,
                 CreatedBy = employeeId,
                 OrderType = orderType,
                 OrderStatus = "New",
-                CreatedAt = now,
+
+                Subtotal = 0,
                 DiscountAmount = 0,
-                Note = note
+                TotalAmount = 0,
+
+                Note = note?.Trim(),
+                CreatedAt = now
             };
 
-            // Lưu từng món
-            foreach (var line in cart)
+            // Thêm món vào đơn
+            foreach (var cartItem in cart)
             {
-                var product = products[line.ProductSizeId];
+                var product =
+                    products[cartItem.ProductSizeId];
+
+                decimal lineTotal =
+                    product.Price * cartItem.Quantity;
 
                 order.OrderItems.Add(new OrderItem
                 {
-                    ProductSizeId = line.ProductSizeId,
-                    ProductNameSnapshot = product.ProductName,
-                    SizeNameSnapshot = product.SizeName,
+                    ProductSizeId =
+                        cartItem.ProductSizeId,
+
+                    ProductNameSnapshot =
+                        product.ProductName,
+
+                    SizeNameSnapshot =
+                        product.SizeName,
+
                     UnitPrice = product.Price,
-                    Quantity = line.Quantity,
-                    LineTotal = product.Price * line.Quantity,
+                    Quantity = cartItem.Quantity,
+                    LineTotal = lineTotal,
+
                     PreparationStatus = "Queued",
-                    Note = line.Note
+                    Note = (cartItem.Note ?? "").Trim()
                 });
             }
 
-            // Tính tiền
+            // Tính tổng tiền
             order.Subtotal = order.OrderItems
                 .Sum(i => i.LineTotal);
 
-            order.TotalAmount = order.Subtotal;
+            order.TotalAmount =
+                order.Subtotal - order.DiscountAmount;
 
-            // Ghi lịch sử tạo đơn
+            // Lưu lịch sử tạo đơn
             order.OrderStatusHistories.Add(
                 new OrderStatusHistory
                 {
@@ -175,14 +206,14 @@ namespace CoffeeRuu.Services
             db.Orders.Add(order);
 
             await db.SaveChangesAsync();
-            await tx.CommitAsync();
+            await transaction.CommitAsync();
 
             return order;
         }
 
-        // =================================
-        // KDS: CẬP NHẬT TRẠNG THÁI MÓN
-        // =================================
+        // ==========================
+        // 2. KDS: CẬP NHẬT PHA CHẾ
+        // ==========================
 
         public async Task UpdatePreparationAsync(
             int orderItemId,
@@ -192,11 +223,14 @@ namespace CoffeeRuu.Services
             if (nextStatus != "Preparing" &&
                 nextStatus != "Ready")
             {
-                throw new Exception("Trạng thái không hợp lệ.");
+                throw new InvalidOperationException(
+                    "Trạng thái pha chế không hợp lệ.");
             }
 
-            await using var db = _repo.CreateContext();
+            await using var db =
+                _repository.CreateContext();
 
+            // Xác định đơn hàng chứa món
             int? orderId = await db.OrderItems
                 .AsNoTracking()
                 .Where(i => i.OrderItemId == orderItemId)
@@ -204,93 +238,114 @@ namespace CoffeeRuu.Services
                 .FirstOrDefaultAsync();
 
             if (!orderId.HasValue)
-                throw new Exception("Không tìm thấy món.");
+                throw new InvalidOperationException(
+                    "Không tìm thấy món.");
 
-            await using var tx =
+            await using var transaction =
                 await db.Database.BeginTransactionAsync(
                     IsolationLevel.Serializable);
 
             await CheckEmployeeAsync(db, employeeId);
-
             await LockOrderAsync(db, orderId.Value);
 
             var order = await db.Orders
                 .Include(o => o.OrderItems)
-                .SingleAsync(o => o.OrderId == orderId.Value);
+                .SingleOrDefaultAsync(o =>
+                    o.OrderId == orderId.Value);
 
-            if (order.OrderStatus == "Completed" ||
-                order.OrderStatus == "Cancelled")
+            if (order == null)
+                throw new InvalidOperationException(
+                    "Không tìm thấy đơn hàng.");
+
+            if (order.OrderStatus != "New" &&
+                order.OrderStatus != "Preparing" &&
+                order.OrderStatus != "Ready")
             {
-                throw new Exception("Đơn đã kết thúc.");
+                throw new InvalidOperationException(
+                    "Đơn hàng không còn được pha chế.");
             }
 
             var item = order.OrderItems
-                .Single(i => i.OrderItemId == orderItemId);
+                .SingleOrDefault(i =>
+                    i.OrderItemId == orderItemId);
 
-            bool valid =
+            if (item == null)
+                throw new InvalidOperationException(
+                    "Món không thuộc đơn hàng này.");
+
+            // Chỉ cho chuyển theo thứ tự
+            bool isValid =
                 (item.PreparationStatus == "Queued" &&
                  nextStatus == "Preparing") ||
                 (item.PreparationStatus == "Preparing" &&
                  nextStatus == "Ready");
 
-            if (!valid)
-            {
-                throw new Exception(
-                    $"Không thể chuyển {item.PreparationStatus} " +
-                    $"sang {nextStatus}.");
-            }
+            if (!isValid)
+                throw new InvalidOperationException(
+                    $"Không thể chuyển từ " +
+                    $"{item.PreparationStatus} sang {nextStatus}.");
 
-            // Thay đổi trạng thái món
             item.PreparationStatus = nextStatus;
 
-            // Nếu mọi món Ready thì toàn đơn Ready
-            string orderStatus =
-                order.OrderItems.All(i =>
-                    i.PreparationStatus == "Ready")
-                    ? "Ready"
-                    : "Preparing";
+            // Tính lại trạng thái tổng của đơn
+            bool allReady = order.OrderItems
+                .All(i => i.PreparationStatus == "Ready");
+
+            string newOrderStatus = allReady
+                ? "Ready"
+                : "Preparing";
 
             ChangeOrderStatus(
-                db, order, orderStatus, employeeId);
+                db,
+                order,
+                newOrderStatus,
+                employeeId,
+                "Cập nhật tiến độ pha chế");
 
             await db.SaveChangesAsync();
-            await tx.CommitAsync();
+            await transaction.CommitAsync();
         }
 
-        // =================================
-        // BÀN GIAO ĐƠN
-        // =================================
+        // ==========================
+        // 3. BÀN GIAO ĐƠN
+        // ==========================
 
         public async Task CompleteOrderAsync(
             int orderId,
             int employeeId)
         {
-            await using var db = _repo.CreateContext();
+            await using var db =
+                _repository.CreateContext();
 
-            await using var tx =
+            await using var transaction =
                 await db.Database.BeginTransactionAsync(
                     IsolationLevel.Serializable);
 
             await CheckEmployeeAsync(db, employeeId);
-
             await LockOrderAsync(db, orderId);
 
             var order = await db.Orders
                 .Include(o => o.OrderItems)
-                .SingleOrDefaultAsync(o => o.OrderId == orderId);
+                .SingleOrDefaultAsync(o =>
+                    o.OrderId == orderId);
 
             if (order == null)
-                throw new Exception("Không tìm thấy đơn.");
+                throw new InvalidOperationException(
+                    "Không tìm thấy đơn hàng.");
 
-            if (order.OrderStatus != "Ready" ||
-                order.OrderItems.Count == 0 ||
+            if (order.OrderStatus != "Ready")
+                throw new InvalidOperationException(
+                    "Đơn chưa sẵn sàng để bàn giao.");
+
+            if (order.OrderItems.Count == 0 ||
                 order.OrderItems.Any(i =>
                     i.PreparationStatus != "Ready"))
             {
-                throw new Exception(
-                    "Chỉ bàn giao khi tất cả món đã pha xong.");
+                throw new InvalidOperationException(
+                    "Vẫn còn món chưa pha xong.");
             }
 
+            // Cập nhật các món đã giao
             foreach (var item in order.OrderItems)
             {
                 item.PreparationStatus = "Served";
@@ -299,55 +354,59 @@ namespace CoffeeRuu.Services
             order.CompletedAt = DateTime.Now;
 
             ChangeOrderStatus(
-                db, order, "Completed", employeeId);
+                db,
+                order,
+                "Completed",
+                employeeId,
+                "Đã bàn giao đơn hàng");
 
             await db.SaveChangesAsync();
-            await tx.CommitAsync();
+            await transaction.CommitAsync();
         }
 
-        // =================================
-        // HỦY ĐƠN CHƯA PHA CHẾ
-        // =================================
+        // ==========================
+        // 4. HỦY ĐƠN MỚI
+        // ==========================
 
         public async Task CancelNewOrderAsync(
             int orderId,
             int employeeId)
         {
-            await using var db = _repo.CreateContext();
+            await using var db =
+                _repository.CreateContext();
 
-            await using var tx =
+            await using var transaction =
                 await db.Database.BeginTransactionAsync(
                     IsolationLevel.Serializable);
 
             await CheckEmployeeAsync(db, employeeId);
-
             await LockOrderAsync(db, orderId);
 
             var order = await db.Orders
                 .Include(o => o.OrderItems)
-                .SingleOrDefaultAsync(o => o.OrderId == orderId);
+                .SingleOrDefaultAsync(o =>
+                    o.OrderId == orderId);
 
             if (order == null)
-                throw new Exception("Không tìm thấy đơn.");
+                throw new InvalidOperationException(
+                    "Không tìm thấy đơn hàng.");
 
             if (order.OrderStatus != "New" ||
                 order.OrderItems.Any(i =>
                     i.PreparationStatus != "Queued"))
             {
-                throw new Exception(
+                throw new InvalidOperationException(
                     "Chỉ được hủy đơn chưa pha chế.");
             }
 
-            // Không xử lý thanh toán ở module này
-            bool isPaid = await db.Payments.AnyAsync(p =>
-                p.OrderId == orderId &&
-                p.PaymentStatus == "Success");
+            // Không hủy đơn đã có giao dịch thanh toán
+            bool hasPayment = await db.Payments
+                .AnyAsync(p => p.OrderId == orderId);
 
-            if (isPaid)
-            {
-                throw new Exception(
-                    "Đơn đã thanh toán, cần bộ phận Payment xử lý.");
-            }
+            if (hasPayment)
+                throw new InvalidOperationException(
+                    "Đơn có giao dịch thanh toán. " +
+                    "Cần bộ phận Payment xử lý.");
 
             foreach (var item in order.OrderItems)
             {
@@ -355,15 +414,19 @@ namespace CoffeeRuu.Services
             }
 
             ChangeOrderStatus(
-                db, order, "Cancelled", employeeId);
+                db,
+                order,
+                "Cancelled",
+                employeeId,
+                "Hủy đơn chưa pha chế");
 
             await db.SaveChangesAsync();
-            await tx.CommitAsync();
+            await transaction.CommitAsync();
         }
 
-        // =================================
-        // CÁC HÀM HỖ TRỢ
-        // =================================
+        // ==========================
+        // 5. KIỂM TRA NHÂN VIÊN
+        // ==========================
 
         private static async Task CheckEmployeeAsync(
             CoffeeRuuDbContext db,
@@ -375,15 +438,20 @@ namespace CoffeeRuu.Services
                     e.IsActive);
 
             if (!valid)
-                throw new Exception(
-                    "EmployeeId không tồn tại hoặc ngừng hoạt động.");
+                throw new InvalidOperationException(
+                    "EmployeeId không hợp lệ hoặc ngừng hoạt động.");
         }
+
+        // ==========================
+        // 6. KHÓA ĐƠN KHI CẬP NHẬT
+        // ==========================
 
         private static async Task LockOrderAsync(
             CoffeeRuuDbContext db,
             int orderId)
         {
-            var connection = db.Database.GetDbConnection();
+            var connection =
+                db.Database.GetDbConnection();
 
             await using var command =
                 connection.CreateCommand();
@@ -393,33 +461,39 @@ namespace CoffeeRuu.Services
                     .GetDbTransaction();
 
             command.CommandText = @"
-            SELECT OrderId
-            FROM dbo.Orders WITH (UPDLOCK, HOLDLOCK)
-            WHERE OrderId = @orderId";
+                SELECT OrderId
+                FROM dbo.Orders WITH (UPDLOCK, HOLDLOCK)
+                WHERE OrderId = @id";
 
             var parameter = command.CreateParameter();
-
-            parameter.ParameterName = "@orderId";
+            parameter.ParameterName = "@id";
             parameter.Value = orderId;
 
             command.Parameters.Add(parameter);
 
-            var result = await command.ExecuteScalarAsync();
+            var result =
+                await command.ExecuteScalarAsync();
 
             if (result == null || result == DBNull.Value)
-                throw new Exception("Không tìm thấy đơn.");
+                throw new InvalidOperationException(
+                    "Không tìm thấy đơn hàng.");
         }
+
+        // ==========================
+        // 7. LƯU LỊCH SỬ TRẠNG THÁI
+        // ==========================
 
         private static void ChangeOrderStatus(
             CoffeeRuuDbContext db,
             Order order,
             string nextStatus,
-            int employeeId)
+            int employeeId,
+            string note)
         {
-            if (order.OrderStatus == nextStatus)
-                return;
-
             string oldStatus = order.OrderStatus;
+
+            if (oldStatus == nextStatus)
+                return;
 
             order.OrderStatus = nextStatus;
 
@@ -431,7 +505,7 @@ namespace CoffeeRuu.Services
                     OldStatus = oldStatus,
                     NewStatus = nextStatus,
                     ChangedAt = DateTime.Now,
-                    Note = "Cập nhật trạng thái đơn hàng"
+                    Note = note
                 });
         }
     }

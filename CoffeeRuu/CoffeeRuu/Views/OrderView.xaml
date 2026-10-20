@@ -6,20 +6,20 @@
       xmlns:local="clr-namespace:CoffeeRuu.Views"
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800"
-      Title="OrderView"
-      Background="#F5F6FA"
-      Loaded="Page_Loaded">
+      Background="White"
+      Loaded="Page_Loaded"
+      Title="Order Processing">
 
     <Page.Resources>
 
-        <!-- Khung trắng -->
+        <!-- Card -->
         <Style x:Key="CardStyle" TargetType="Border">
             <Setter Property="Background" Value="White"/>
             <Setter Property="CornerRadius" Value="10"/>
-            <Setter Property="Padding" Value="15"/>
+            <Setter Property="Padding" Value="16"/>
         </Style>
 
-        <!-- Ô nhập -->
+        <!-- TextBox -->
         <Style x:Key="InputStyle" TargetType="TextBox">
             <Setter Property="Height" Value="34"/>
             <Setter Property="Padding" Value="8,5"/>
@@ -33,17 +33,17 @@
             <Setter Property="Margin" Value="0,5,0,12"/>
         </Style>
 
-        <!-- Nút chính -->
+        <!-- Primary Button -->
         <Style x:Key="PrimaryButton" TargetType="Button">
             <Setter Property="Background" Value="#3B2F2F"/>
             <Setter Property="Foreground" Value="White"/>
             <Setter Property="BorderThickness" Value="0"/>
-            <Setter Property="Padding" Value="12,8"/>
+            <Setter Property="Padding" Value="12,9"/>
             <Setter Property="FontWeight" Value="SemiBold"/>
             <Setter Property="Cursor" Value="Hand"/>
         </Style>
 
-        <!-- Nút phụ -->
+        <!-- Secondary Button -->
         <Style x:Key="SecondaryButton"
                TargetType="Button"
                BasedOn="{StaticResource PrimaryButton}">
@@ -51,12 +51,14 @@
             <Setter Property="Foreground" Value="#3B2F2F"/>
         </Style>
 
-        <!-- Bảng -->
+        <!-- Table -->
         <Style TargetType="DataGrid">
             <Setter Property="AutoGenerateColumns" Value="False"/>
             <Setter Property="IsReadOnly" Value="True"/>
+            <Setter Property="CanUserAddRows" Value="False"/>
+            <Setter Property="SelectionMode" Value="Single"/>
             <Setter Property="RowHeight" Value="35"/>
-            <Setter Property="ColumnHeaderHeight" Value="35"/>
+            <Setter Property="ColumnHeaderHeight" Value="36"/>
             <Setter Property="GridLinesVisibility"
                     Value="Horizontal"/>
             <Setter Property="HorizontalGridLinesBrush"
@@ -74,37 +76,40 @@
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <!-- TIÊU ĐỀ -->
-        <StackPanel Grid.Row="0" Margin="0,0,0,15">
+        <!-- HEADER -->
+        <StackPanel Grid.Row="0" Margin="0,0,0,16">
 
             <TextBlock Text="Order Processing"
                        FontSize="26"
                        FontWeight="Bold"
                        Foreground="#3B2F2F"/>
 
-            <TextBlock Text="Quản lý và xử lý đơn hàng CoffeeRuu"
+            <TextBlock Text="Quản lý và xử lý đơn hàng"
                        FontSize="13"
                        Foreground="#777777"
                        Margin="0,5,0,0"/>
 
         </StackPanel>
 
-        <!-- CÁC TAB -->
+        <!-- MAIN CONTENT -->
         <TabControl Grid.Row="1"
                     Background="Transparent"
                     BorderThickness="0">
 
-            <!-- TAB 1: TẠO ĐƠN -->
+            <!-- ======================= -->
+            <!-- TAB TẠO ĐƠN HÀNG -->
+            <!-- ======================= -->
+
             <TabItem Header="  Tạo đơn hàng  ">
 
                 <Grid Margin="0,12,0,0">
 
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="245"/>
+                        <ColumnDefinition Width="250"/>
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
 
-                    <!-- THÔNG TIN ĐƠN HÀNG -->
+                    <!-- ORDER INFORMATION -->
                     <ScrollViewer Grid.Column="0"
                                   Margin="0,0,12,0"
                                   VerticalScrollBarVisibility="Auto">
@@ -113,13 +118,14 @@
 
                             <StackPanel>
 
-                                <TextBlock Text="Thông tin đơn hàng"
-                                           FontSize="17"
-                                           FontWeight="SemiBold"
-                                           Foreground="#3B2F2F"
-                                           Margin="0,0,0,15"/>
+                                <TextBlock
+                                    Text="Thông tin đơn hàng"
+                                    FontSize="17"
+                                    FontWeight="SemiBold"
+                                    Foreground="#3B2F2F"
+                                    Margin="0,0,0,15"/>
 
-                                <TextBlock Text="Mã nhân viên (demo)"/>
+                                <TextBlock Text="Mã nhân viên"/>
 
                                 <TextBox
                                     Style="{StaticResource InputStyle}"
@@ -134,13 +140,13 @@
                                     SelectedItem="{Binding OrderType,
                                     Mode=TwoWay}"/>
 
-                                <TextBlock Text="Chọn bàn"/>
+                                <TextBlock Text="Bàn"/>
 
                                 <ComboBox
                                     Style="{StaticResource ComboStyle}"
                                     ItemsSource="{Binding Tables}"
-                                    DisplayMemberPath="TableName"
                                     SelectedItem="{Binding SelectedTable}"
+                                    DisplayMemberPath="TableName"
                                     IsEnabled="{Binding IsDineIn}"/>
 
                                 <TextBlock Text="Sản phẩm / Size"/>
@@ -148,8 +154,8 @@
                                 <ComboBox
                                     Style="{StaticResource ComboStyle}"
                                     ItemsSource="{Binding Menu}"
-                                    DisplayMemberPath="Display"
-                                    SelectedItem="{Binding SelectedMenu}"/>
+                                    SelectedItem="{Binding SelectedMenu}"
+                                    DisplayMemberPath="Display"/>
 
                                 <TextBlock Text="Số lượng"/>
 
@@ -174,9 +180,10 @@
                             </StackPanel>
 
                         </Border>
+
                     </ScrollViewer>
 
-                    <!-- GIỎ HÀNG -->
+                    <!-- CART -->
                     <Border Grid.Column="1"
                             Style="{StaticResource CardStyle}">
 
@@ -206,6 +213,7 @@
 
                             </DockPanel>
 
+                            <!-- CART TABLE -->
                             <DataGrid Grid.Row="1"
                                       ItemsSource="{Binding Cart}"
                                       SelectedItem="{Binding SelectedCart}"
@@ -214,15 +222,15 @@
                                 <DataGrid.Columns>
 
                                     <DataGridTextColumn
-                                        Header="Tên món"
+                                        Header="Sản phẩm"
                                         Binding="{Binding ProductName}"
                                         Width="*"
-                                        MinWidth="90"/>
+                                        MinWidth="100"/>
 
                                     <DataGridTextColumn
                                         Header="Size"
                                         Binding="{Binding SizeName}"
-                                        Width="50"/>
+                                        Width="55"/>
 
                                     <DataGridTextColumn
                                         Header="SL"
@@ -235,11 +243,16 @@
                                         StringFormat={}{0:N0}}"
                                         Width="95"/>
 
+                                    <DataGridTextColumn
+                                        Header="Ghi chú"
+                                        Binding="{Binding Note}"
+                                        Width="100"/>
+
                                 </DataGrid.Columns>
 
                             </DataGrid>
 
-                            <!-- TỔNG TIỀN -->
+                            <!-- CREATE ORDER -->
                             <StackPanel Grid.Row="2"
                                         Margin="0,15,0,0">
 
@@ -254,13 +267,12 @@
                                     UpdateSourceTrigger=PropertyChanged}"/>
 
                                 <TextBlock
-                                    Text="{Binding CartTotal,
-                                    StringFormat='Tổng cộng: {0:N0} đ'}"
+                                    Text="{Binding CartTotalText}"
                                     FontSize="19"
                                     FontWeight="Bold"
                                     Foreground="#3B2F2F"
                                     HorizontalAlignment="Right"
-                                    Margin="0,0,0,14"/>
+                                    Margin="0,0,0,15"/>
 
                                 <Button
                                     Content="XÁC NHẬN TẠO ĐƠN"
@@ -270,22 +282,28 @@
                             </StackPanel>
 
                         </Grid>
+
                     </Border>
 
                 </Grid>
 
             </TabItem>
 
-            <!-- TAB 2: DANH SÁCH ĐƠN HÀNG -->
+            <!-- ======================= -->
+            <!-- TAB DANH SÁCH ĐƠN -->
+            <!-- ======================= -->
+
             <TabItem Header="  Danh sách đơn hàng  ">
 
-                <Border Style="{StaticResource CardStyle}"
-                        Margin="0,12,0,0">
+                <Border
+                    Style="{StaticResource CardStyle}"
+                    Margin="0,12,0,0">
 
                     <DockPanel>
 
-                        <StackPanel DockPanel.Dock="Top"
-                                    Margin="0,0,0,12">
+                        <StackPanel
+                            DockPanel.Dock="Top"
+                            Margin="0,0,0,14">
 
                             <TextBlock
                                 Text="Danh sách đơn hàng"
@@ -303,7 +321,7 @@
                                     Margin="0,0,8,8"/>
 
                                 <Button
-                                    Content="Bàn giao"
+                                    Content="Bàn giao đơn"
                                     Command="{Binding CompleteCommand}"
                                     Style="{StaticResource PrimaryButton}"
                                     Margin="0,0,8,8"/>
@@ -315,9 +333,10 @@
                                     Margin="0,0,8,8"/>
 
                             </WrapPanel>
+
                         </StackPanel>
 
-                        <!-- BẢNG DANH SÁCH ĐƠN -->
+                        <!-- ORDERS TABLE -->
                         <DataGrid
                             ItemsSource="{Binding Orders}"
                             SelectedItem="{Binding SelectedOrder}"
@@ -334,22 +353,28 @@
                                 <DataGridTextColumn
                                     Header="Bàn"
                                     Binding="{Binding TableName}"
-                                    Width="80"/>
+                                    Width="85"/>
 
                                 <DataGridTextColumn
                                     Header="Loại đơn"
                                     Binding="{Binding OrderType}"
-                                    Width="85"/>
+                                    Width="90"/>
 
                                 <DataGridTextColumn
                                     Header="Trạng thái"
                                     Binding="{Binding OrderStatus}"
-                                    Width="90"/>
+                                    Width="95"/>
 
                                 <DataGridTextColumn
                                     Header="Tổng tiền"
                                     Binding="{Binding TotalAmount,
                                     StringFormat={}{0:N0}}"
+                                    Width="105"/>
+
+                                <DataGridTextColumn
+                                    Header="Thời gian"
+                                    Binding="{Binding CreatedAt,
+                                    StringFormat={}{0:dd/MM HH:mm}}"
                                     Width="100"/>
 
                             </DataGrid.Columns>
@@ -357,13 +382,14 @@
                         </DataGrid>
 
                     </DockPanel>
+
                 </Border>
 
             </TabItem>
 
         </TabControl>
 
-        <!-- THÔNG BÁO -->
+        <!-- MESSAGE -->
         <TextBlock Grid.Row="2"
                    Text="{Binding Message}"
                    Foreground="#A34F36"

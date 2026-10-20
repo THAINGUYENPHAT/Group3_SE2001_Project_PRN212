@@ -1,11 +1,11 @@
-﻿using System;
+﻿using CoffeeRuu.Services;
+using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Collections.ObjectModel;
 using System.Windows.Input;
-using CoffeeRuu.Services;
 
 namespace CoffeeRuu.ViewModels
 {
@@ -13,14 +13,22 @@ namespace CoffeeRuu.ViewModels
     {
         private readonly OrderService _service;
 
-        public ObservableCollection<MenuChoice> Menu { get; } = new();
-        public ObservableCollection<TableChoice> Tables { get; } = new();
-        public ObservableCollection<CartLine> Cart { get; } = new();
-        public ObservableCollection<OrderListRow> Orders { get; } = new();
+        public ObservableCollection<MenuChoice> Menu { get; }
+            = new();
+
+        public ObservableCollection<TableChoice> Tables { get; }
+            = new();
+
+        public ObservableCollection<CartLine> Cart { get; }
+            = new();
+
+        public ObservableCollection<OrderListRow> Orders { get; }
+            = new();
 
         public string[] OrderTypes { get; } =
             new[] { "Takeaway", "DineIn" };
 
+        // Sản phẩm chọn từ menu
         private MenuChoice? _selectedMenu;
 
         public MenuChoice? SelectedMenu
@@ -29,6 +37,7 @@ namespace CoffeeRuu.ViewModels
             set => Set(ref _selectedMenu, value);
         }
 
+        // Bàn được chọn
         private TableChoice? _selectedTable;
 
         public TableChoice? SelectedTable
@@ -37,6 +46,7 @@ namespace CoffeeRuu.ViewModels
             set => Set(ref _selectedTable, value);
         }
 
+        // Món được chọn trong giỏ
         private CartLine? _selectedCart;
 
         public CartLine? SelectedCart
@@ -45,6 +55,7 @@ namespace CoffeeRuu.ViewModels
             set => Set(ref _selectedCart, value);
         }
 
+        // Đơn hàng được chọn
         private OrderListRow? _selectedOrder;
 
         public OrderListRow? SelectedOrder
@@ -53,6 +64,7 @@ namespace CoffeeRuu.ViewModels
             set => Set(ref _selectedOrder, value);
         }
 
+        // Loại đơn
         private string _orderType = "Takeaway";
 
         public string OrderType
@@ -61,12 +73,18 @@ namespace CoffeeRuu.ViewModels
             set
             {
                 if (Set(ref _orderType, value))
+                {
+                    if (_orderType == "Takeaway")
+                        SelectedTable = null;
+
                     Notify(nameof(IsDineIn));
+                }
             }
         }
 
         public bool IsDineIn => OrderType == "DineIn";
 
+        // Mã nhân viên demo
         private string _employeeIdText = "";
 
         public string EmployeeIdText
@@ -75,6 +93,7 @@ namespace CoffeeRuu.ViewModels
             set => Set(ref _employeeIdText, value);
         }
 
+        // Số lượng
         private string _quantityText = "1";
 
         public string QuantityText
@@ -83,6 +102,7 @@ namespace CoffeeRuu.ViewModels
             set => Set(ref _quantityText, value);
         }
 
+        // Ghi chú món
         private string _itemNote = "";
 
         public string ItemNote
@@ -91,6 +111,7 @@ namespace CoffeeRuu.ViewModels
             set => Set(ref _itemNote, value);
         }
 
+        // Ghi chú đơn
         private string _orderNote = "";
 
         public string OrderNote
@@ -99,6 +120,7 @@ namespace CoffeeRuu.ViewModels
             set => Set(ref _orderNote, value);
         }
 
+        // Thông báo
         private string _message = "";
 
         public string Message
@@ -107,6 +129,7 @@ namespace CoffeeRuu.ViewModels
             set => Set(ref _message, value);
         }
 
+        // Trạng thái xử lý
         private bool _isBusy;
 
         public bool IsBusy
@@ -115,15 +138,20 @@ namespace CoffeeRuu.ViewModels
             set => Set(ref _isBusy, value);
         }
 
+        // Tổng tiền
         public decimal CartTotal =>
-            Cart.Sum(x => x.LineTotal);
+            Cart.Sum(i => i.LineTotal);
 
+        public string CartTotalText =>
+            $"Tổng cộng: {CartTotal:N0} đ";
+
+        // Commands
         public ICommand AddCommand { get; }
         public ICommand RemoveCommand { get; }
         public ICommand CreateCommand { get; }
         public ICommand RefreshCommand { get; }
-        public ICommand CompleteCommand { get; }
         public ICommand CancelCommand { get; }
+        public ICommand CompleteCommand { get; }
 
         public OrderViewModel(OrderService service)
         {
@@ -134,28 +162,28 @@ namespace CoffeeRuu.ViewModels
             RemoveCommand = new RelayCommand(RemoveItem);
 
             CreateCommand = new RelayCommand(
-                async () => await RunAsync(CreateAsync));
+                async () => await RunAsync(CreateOrderAsync));
 
             RefreshCommand = new RelayCommand(
-                async () => await RunAsync(LoadAsync));
-
-            CompleteCommand = new RelayCommand(
-                async () => await RunAsync(CompleteAsync));
+                async () => await RunAsync(LoadDataAsync));
 
             CancelCommand = new RelayCommand(
-                async () => await RunAsync(CancelAsync));
+                async () => await RunAsync(CancelOrderAsync));
+
+            CompleteCommand = new RelayCommand(
+                async () => await RunAsync(CompleteOrderAsync));
         }
 
         public Task InitializeAsync()
         {
-            return RunAsync(LoadAsync);
+            return RunAsync(LoadDataAsync);
         }
 
-        // =================================
+        // ===========================
         // TẢI DỮ LIỆU
-        // =================================
+        // ===========================
 
-        private async Task LoadAsync()
+        private async Task LoadDataAsync()
         {
             var menu = await _service.GetMenuAsync();
             var tables = await _service.GetTablesAsync();
@@ -166,11 +194,12 @@ namespace CoffeeRuu.ViewModels
             Replace(Orders, orders);
 
             SelectedMenu = Menu.FirstOrDefault();
+            SelectedOrder = null;
         }
 
-        // =================================
+        // ===========================
         // THÊM MÓN VÀO GIỎ
-        // =================================
+        // ===========================
 
         private void AddItem()
         {
@@ -183,8 +212,8 @@ namespace CoffeeRuu.ViewModels
                 return;
             }
 
-            if (!int.TryParse(QuantityText, out int qty) ||
-                qty < 1 || qty > 100)
+            if (!int.TryParse(QuantityText, out int quantity) ||
+                quantity < 1 || quantity > 100)
             {
                 Message = "Số lượng phải từ 1 đến 100.";
                 return;
@@ -198,25 +227,33 @@ namespace CoffeeRuu.ViewModels
 
             Cart.Add(new CartLine
             {
-                ProductSizeId = SelectedMenu.ProductSizeId,
-                ProductName = SelectedMenu.ProductName,
-                SizeName = SelectedMenu.SizeName,
-                UnitPrice = SelectedMenu.Price,
-                Quantity = qty,
+                ProductSizeId =
+                    SelectedMenu.ProductSizeId,
+
+                ProductName =
+                    SelectedMenu.ProductName,
+
+                SizeName =
+                    SelectedMenu.SizeName,
+
+                UnitPrice =
+                    SelectedMenu.Price,
+
+                Quantity = quantity,
                 Note = ItemNote.Trim()
             });
 
             QuantityText = "1";
             ItemNote = "";
 
-            Notify(nameof(CartTotal));
+            NotifyCartTotal();
 
-            Message = "Đã thêm món vào giỏ.";
+            Message = "Đã thêm món vào đơn.";
         }
 
-        // =================================
-        // XÓA MÓN KHỎI GIỎ
-        // =================================
+        // ===========================
+        // XÓA MÓN
+        // ===========================
 
         private void RemoveItem()
         {
@@ -225,23 +262,23 @@ namespace CoffeeRuu.ViewModels
 
             if (SelectedCart == null)
             {
-                Message = "Chọn món cần xóa.";
+                Message = "Hãy chọn món cần xóa.";
                 return;
             }
 
             Cart.Remove(SelectedCart);
             SelectedCart = null;
 
-            Notify(nameof(CartTotal));
+            NotifyCartTotal();
 
-            Message = "Đã xóa món.";
+            Message = "Đã xóa món khỏi đơn.";
         }
 
-        // =================================
-        // TẠO ĐƠN HÀNG
-        // =================================
+        // ===========================
+        // XÁC NHẬN TẠO ĐƠN
+        // ===========================
 
-        private async Task CreateAsync()
+        private async Task CreateOrderAsync()
         {
             int employeeId = GetEmployeeId();
 
@@ -257,66 +294,80 @@ namespace CoffeeRuu.ViewModels
 
             OrderNote = "";
             ItemNote = "";
+            QuantityText = "1";
 
-            Notify(nameof(CartTotal));
+            NotifyCartTotal();
 
-            await LoadAsync();
+            await LoadDataAsync();
 
             Message =
                 $"Đã tạo đơn {order.OrderCode}. " +
-                $"Tổng: {order.TotalAmount:N0} đ.";
+                $"Tổng tiền: {order.TotalAmount:N0} đ.";
         }
 
-        // =================================
-        // BÀN GIAO ĐƠN
-        // =================================
-
-        private async Task CompleteAsync()
-        {
-            if (SelectedOrder == null)
-                throw new Exception("Chọn đơn cần bàn giao.");
-
-            await _service.CompleteOrderAsync(
-                SelectedOrder.OrderId,
-                GetEmployeeId());
-
-            await LoadAsync();
-
-            Message = "Đã bàn giao đơn hàng.";
-        }
-
-        // =================================
+        // ===========================
         // HỦY ĐƠN
-        // =================================
+        // ===========================
 
-        private async Task CancelAsync()
+        private async Task CancelOrderAsync()
         {
             if (SelectedOrder == null)
-                throw new Exception("Chọn đơn cần hủy.");
+                throw new InvalidOperationException(
+                    "Hãy chọn đơn cần hủy.");
+
+            int orderId = SelectedOrder.OrderId;
 
             await _service.CancelNewOrderAsync(
-                SelectedOrder.OrderId,
+                orderId,
                 GetEmployeeId());
 
-            await LoadAsync();
+            await LoadDataAsync();
 
             Message = "Đã hủy đơn hàng.";
         }
 
-        // =================================
+        // ===========================
+        // BÀN GIAO ĐƠN
+        // ===========================
+
+        private async Task CompleteOrderAsync()
+        {
+            if (SelectedOrder == null)
+                throw new InvalidOperationException(
+                    "Hãy chọn đơn cần bàn giao.");
+
+            int orderId = SelectedOrder.OrderId;
+
+            await _service.CompleteOrderAsync(
+                orderId,
+                GetEmployeeId());
+
+            await LoadDataAsync();
+
+            Message = "Đã bàn giao đơn hàng.";
+        }
+
+        // ===========================
         // HÀM HỖ TRỢ
-        // =================================
+        // ===========================
 
         private int GetEmployeeId()
         {
-            if (!int.TryParse(EmployeeIdText, out int id) ||
-                id <= 0)
+            if (!int.TryParse(
+                EmployeeIdText, out int employeeId) ||
+                employeeId <= 0)
             {
-                throw new Exception(
-                    "Nhập EmployeeId hợp lệ.");
+                throw new InvalidOperationException(
+                    "Vui lòng nhập EmployeeId hợp lệ.");
             }
 
-            return id;
+            return employeeId;
+        }
+
+        private void NotifyCartTotal()
+        {
+            Notify(nameof(CartTotal));
+            Notify(nameof(CartTotalText));
         }
 
         private async Task RunAsync(Func<Task> action)
@@ -343,14 +394,12 @@ namespace CoffeeRuu.ViewModels
 
         private static void Replace<T>(
             ObservableCollection<T> target,
-            IEnumerable<T> values)
+            IEnumerable<T> source)
         {
             target.Clear();
 
-            foreach (var item in values)
-            {
+            foreach (var item in source)
                 target.Add(item);
-            }
         }
     }
 }

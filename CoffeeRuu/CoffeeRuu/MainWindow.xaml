@@ -35,6 +35,10 @@
                         Height="42"
                         Margin="0,0,0,10"
                         Click="OpenOrders_Click"/>
+                <Button Content="📺  KDS - Pha chế"
+                        Height="42"
+                        Margin="0,0,0,10"
+                        Click="OpenKds_Click"/>
 
                 <Button Content="📦  Kho hàng"
                         Height="42"
@@ -146,7 +150,7 @@
         </ScrollViewer>
         
         <Frame Grid.Column="1"
-       x:Name="ModuleHost"
+       x:Name="MainContent"
        NavigationUIVisibility="Hidden"
        Visibility="Collapsed"/>
     </Grid>

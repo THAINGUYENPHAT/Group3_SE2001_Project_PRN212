@@ -28,8 +28,9 @@ namespace CoffeeRuu.ViewModels
         public int ProductSizeId { get; set; }
         public string ProductName { get; set; } = "";
         public string SizeName { get; set; } = "";
-        public int Quantity { get; set; }
+
         public decimal UnitPrice { get; set; }
+        public int Quantity { get; set; }
         public string Note { get; set; } = "";
 
         public decimal LineTotal => UnitPrice * Quantity;
@@ -50,12 +51,16 @@ namespace CoffeeRuu.ViewModels
     {
         public int OrderItemId { get; set; }
         public int OrderId { get; set; }
+
         public string OrderCode { get; set; } = "";
         public string TableName { get; set; } = "";
+
         public string ProductName { get; set; } = "";
         public string SizeName { get; set; } = "";
+
         public int Quantity { get; set; }
         public string Note { get; set; } = "";
+
         public string PreparationStatus { get; set; } = "";
         public DateTime CreatedAt { get; set; }
     }

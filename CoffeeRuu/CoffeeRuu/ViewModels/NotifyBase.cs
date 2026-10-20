@@ -23,7 +23,8 @@ namespace CoffeeRuu.ViewModels
             field = value;
 
             PropertyChanged?.Invoke(
-                this, new PropertyChangedEventArgs(name));
+                this,
+                new PropertyChangedEventArgs(name));
 
             return true;
         }
@@ -32,7 +33,8 @@ namespace CoffeeRuu.ViewModels
             [CallerMemberName] string? name = null)
         {
             PropertyChanged?.Invoke(
-                this, new PropertyChangedEventArgs(name));
+                this,
+                new PropertyChangedEventArgs(name));
         }
     }
 }
