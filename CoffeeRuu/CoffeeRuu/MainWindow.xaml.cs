@@ -1,5 +1,4 @@
-﻿
-using System.Windows;
+﻿using System.Windows;
 using CoffeeRuu.Views;
 
 namespace CoffeeRuu
@@ -10,7 +9,7 @@ namespace CoffeeRuu
         {
             InitializeComponent();
         }
-<<<<<<< HEAD
+
         private void BtnLogout_Click(object sender, RoutedEventArgs e)
         {
             MessageBoxResult result = MessageBox.Show(
@@ -21,35 +20,24 @@ namespace CoffeeRuu
 
             if (result == MessageBoxResult.Yes)
             {
-                // 1. Khởi tạo cửa sổ Đăng nhập (Thay LoginWindow bằng tên file Cửa sổ Login của bạn)
                 LoginView login = new LoginView();
-
-                // 2. Gán làm cửa sổ chính mới của ứng dụng
                 Application.Current.MainWindow = login;
-
-                // 3. Hiển thị cửa sổ Đăng nhập
                 login.Show();
-
-                // 4. Đóng cửa sổ MainWindow hiện tại
                 this.Close();
             }
-        }   
-=======
+        }
 
         // Chuyển về trang chủ
-        private void BtnHome_Click(
-            object sender, RoutedEventArgs e)
+        private void BtnHome_Click(object sender, RoutedEventArgs e)
         {
             HomeContent.Visibility = Visibility.Visible;
             MainContent.Visibility = Visibility.Collapsed;
         }
 
-        // Chuyển sang quản lý kho
-
-        private void BtnInventory_Click(
-          object sender, RoutedEventArgs e)
+        // Chuyển sang quản lý kho (Đã sửa lại logic kiểm tra)
+        private void BtnInventory_Click(object sender, RoutedEventArgs e)
         {
-            if (MainContent.Content == null)
+            if (!(MainContent.Content is InventoryView))
             {
                 MainContent.Navigate(new InventoryView());
             }
@@ -57,6 +45,15 @@ namespace CoffeeRuu
             MainContent.Visibility = Visibility.Visible;
         }
 
->>>>>>> 96817d0965f83a60b1d30b6d543668a509d43ef9
+        // Chuyển sang quản lý Bàn
+        private void BtnTable_Click(object sender, RoutedEventArgs e)
+        {
+            if (!(MainContent.Content is TableView))
+            {
+                MainContent.Navigate(new TableView());
+            }
+            HomeContent.Visibility = Visibility.Collapsed;
+            MainContent.Visibility = Visibility.Visible;
+        }
     }
 }

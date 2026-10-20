@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "D7d2O3UuB6Y=",
+  "dgSpecHash": "pgnZJ5/cgbU=",
   "success": true,
-  "projectFilePath": "D:\\Chuyên_Ngành_CNTT\\FA_2026\\PRN212\\Project\\Group3_SE2001_Project_PRN212\\CoffeeRuu\\CoffeeRuu\\CoffeeRuu.csproj",
+  "projectFilePath": "D:\\Group3_SE2001_Project_PRN212\\CoffeeRuu\\CoffeeRuu\\CoffeeRuu.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\tuan2\\.nuget\\packages\\azure.core\\1.41.0\\azure.core.1.41.0.nupkg.sha512",
     "C:\\Users\\tuan2\\.nuget\\packages\\azure.identity\\1.12.1\\azure.identity.1.12.1.nupkg.sha512",
