@@ -10,6 +10,7 @@ namespace CoffeeRuu
         {
             InitializeComponent();
         }
+<<<<<<< HEAD
         private void BtnLogout_Click(object sender, RoutedEventArgs e)
         {
             MessageBoxResult result = MessageBox.Show(
@@ -33,5 +34,29 @@ namespace CoffeeRuu
                 this.Close();
             }
         }   
+=======
+
+        // Chuyển về trang chủ
+        private void BtnHome_Click(
+            object sender, RoutedEventArgs e)
+        {
+            HomeContent.Visibility = Visibility.Visible;
+            MainContent.Visibility = Visibility.Collapsed;
+        }
+
+        // Chuyển sang quản lý kho
+
+        private void BtnInventory_Click(
+          object sender, RoutedEventArgs e)
+        {
+            if (MainContent.Content == null)
+            {
+                MainContent.Navigate(new InventoryView());
+            }
+            HomeContent.Visibility = Visibility.Collapsed;
+            MainContent.Visibility = Visibility.Visible;
+        }
+
+>>>>>>> 96817d0965f83a60b1d30b6d543668a509d43ef9
     }
 }

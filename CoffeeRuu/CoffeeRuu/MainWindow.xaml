@@ -31,11 +31,18 @@
                            Foreground="White"
                            Margin="0,10,0,30"/>
 
+<<<<<<< HEAD
                 <!-- Danh sách Menu chính -->
                 <StackPanel Grid.Row="1">
                     <Button Content="🏠  Trang chủ"
                             Height="42"
                             Margin="0,0,0,10"/>
+=======
+                <Button Content="🏠  Trang chủ"
+                        Height="42"
+                        Margin="0,0,0,10"
+                        Click="BtnHome_Click"/>
+>>>>>>> 96817d0965f83a60b1d30b6d543668a509d43ef9
 
                     <Button Content="☕  Sản phẩm"
                             Height="42"
@@ -45,9 +52,16 @@
                             Height="42"
                             Margin="0,0,0,10"/>
 
+<<<<<<< HEAD
                     <Button Content="📦  Kho hàng"
                             Height="42"
                             Margin="0,0,0,10"/>
+=======
+                <Button Content="📦  Kho hàng"
+                        Height="42"
+                        Margin="0,0,0,10"
+                        Click="BtnInventory_Click"/>
+>>>>>>> 96817d0965f83a60b1d30b6d543668a509d43ef9
 
                     <Button Content="👥  Nhân viên"
                             Height="42"
@@ -69,7 +83,9 @@
         </Border>
 
         <!-- Nội dung trang chủ -->
-        <ScrollViewer Grid.Column="1"
+        <ScrollViewer x:Name="HomeContent"
+                      Grid.Column="1"
+                      Visibility="Visible"
                       VerticalScrollBarVisibility="Auto">
             <StackPanel Margin="30">
                 <TextBlock Text="Tổng quan"
@@ -161,8 +177,15 @@
                 </Border>
             </StackPanel>
         </ScrollViewer>
+<<<<<<< HEAD
         <!-- Thêm x:Name="MainFrame" vào thẻ Frame -->
         <Frame x:Name="MainFrame" 
        NavigationUIVisibility="Hidden"/>
+=======
+        <Frame x:Name="MainContent"
+               Grid.Column="1"
+               NavigationUIVisibility="Hidden"
+               Visibility="Collapsed"/>
+>>>>>>> 96817d0965f83a60b1d30b6d543668a509d43ef9
     </Grid>
 </Window>
