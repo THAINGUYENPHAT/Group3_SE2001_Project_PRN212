@@ -1,30 +1,54 @@
 ﻿
 using System;
-using System.Windows;
+using System.Configuration;
 using CoffeeRuu.Data;
 using Microsoft.EntityFrameworkCore;
-using System.Configuration;
 
 namespace CoffeeRuu
 {
-    public partial class App : Application
+    public partial class App : System.Windows.Application
     {
-        public static CoffeeRuuDbContext CreateDbContext()
+        public static DbContextOptions<CoffeeRuuDbContext>
+            CreateDbContextOptions()
         {
-            var connectionString =
-                ConfigurationManager.ConnectionStrings["CoffeeRuuConnection"]
-                    .ConnectionString;
+            string? connectionString =
+                Environment.GetEnvironmentVariable(
+                    "COFFEERUU_CONNECTION");
 
-            var options = new DbContextOptionsBuilder<CoffeeRuuDbContext>();
+            if (string.IsNullOrWhiteSpace(connectionString))
+            {
+                connectionString =
+                    ConfigurationManager
+                        .ConnectionStrings["CoffeeRuuConnection"]
+                        ?.ConnectionString;
+            }
+
+            if (string.IsNullOrWhiteSpace(connectionString))
+            {
+                throw new InvalidOperationException(
+                    "Không tìm thấy connection string CoffeeRuuConnection. " +
+                    "Hãy kiểm tra biến môi trường COFFEERUU_CONNECTION " +
+                    "hoặc cấu hình ConnectionStrings trong App.config.");
+            }
+
+            var options =
+                new DbContextOptionsBuilder<CoffeeRuuDbContext>();
+
             options.UseSqlServer(connectionString);
 
-            return new CoffeeRuuDbContext(options.Options);
+            return options.Options;
         }
 
-        protected override void OnStartup(StartupEventArgs e)
+        public static CoffeeRuuDbContext CreateDbContext()
+        {
+            return new CoffeeRuuDbContext(
+                CreateDbContextOptions());
+        }
+
+        protected override void OnStartup(
+            System.Windows.StartupEventArgs e)
         {
             base.OnStartup(e);
-
         }
     }
 }
