@@ -35,57 +35,55 @@
                     <Button Content="🏠  Trang chủ"
                             Height="42"
                             Margin="0,0,0,10"
-                            Click="BtnHome_Click"/>
+                            Command="{Binding NavigateHomeCommand}"/>
 
-                    <Button Content="📃 Menu" 
-                        Height="42" 
-                        Margin="0,0,0,10"
-                        Click="BtnMenu_Click"/>
-
-                    <Button Content="☕  Sản phẩm"
+                    <Button Content="📃 Menu"
                             Height="42"
                             Margin="0,0,0,10"
-                           Click="BtnProduct_Click" />
+                            Command="{Binding NavigateMenuCommand}"/>
 
-                    <Button Content="🧾  Đơn hàng"
+                    <Button Content="☕ Sản phẩm"
                             Height="42"
                             Margin="0,0,0,10"
-                            Click="OpenOrders_Click"/>
-                    <Button Content="📺  KDS - Pha chế"
+                            Command="{Binding NavigateProductCommand}"/>
+
+                    <Button Content="🧾 Đơn hàng"
                             Height="42"
                             Margin="0,0,0,10"
-                            Click="OpenKds_Click"/>
+                            Command="{Binding NavigateOrdersCommand}"/>             
+
+                    <Button Content="📺 KDS - Pha chế"
+                            Height="42"
+                            Margin="0,0,0,10"
+                            Command="{Binding NavigateKdsCommand}"/>
 
                     <Button Content="📦  Kho hàng"
                             Height="42"
                             Margin="0,0,0,10"
-                            Click="BtnInventory_Click"/>
+                            Command="{Binding InventoryCommand}"/>
+
+                    <Button Content="📊  Báo cáo"
+                            Height="42"
+                            Margin="0,0,0,10"
+                            Command="{Binding ReportCommand}"/>
+
+                    <Button Content="🪑  Quản lý Bàn"
+                            Height="42"
+                            Margin="0,0,0,10"
+                            Command="{Binding TableCommand}"/>
 
                     <Button Content="👥  Nhân viên"
                             Height="42"
                             Margin="0,0,0,10"/>
 
-                    <Button Content="📊  Báo cáo"
-                            Height="42"
-                            Margin="0,0,0,10"
-                            Click="BtnReport_Click"/>
-
-                    
-
-                    <!-- Nút quản lý bàn của bạn -->
-                    <Button Content="🪑  Quản lý Bàn"
-                            Height="42"
-                            Margin="0,0,0,10"
-                            Click="BtnTable_Click"/>
                 </StackPanel>
 
                 <!-- Nút Đăng xuất ở dưới cùng -->
                 <Button Grid.Row="2"
-                        x:Name="BtnLogout"
                         Content="🚪  Đăng xuất"
                         Height="42"
                         Margin="0,10,0,10"
-                        Click="BtnLogout_Click"/>
+                        Command="{Binding LogoutCommand}"/>
             </Grid>
         </Border>
 

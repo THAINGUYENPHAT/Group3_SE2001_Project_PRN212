@@ -78,9 +78,11 @@ namespace CoffeeRuu.ViewModels
                 }
 
                 var home = new MainWindow();
+
+                Application.Current.MainWindow = home;
+
                 home.Show();
 
-                // Dong cua so Login sau khi mo Home
                 foreach (Window window in Application.Current.Windows)
                 {
                     if (window is LoginView)
