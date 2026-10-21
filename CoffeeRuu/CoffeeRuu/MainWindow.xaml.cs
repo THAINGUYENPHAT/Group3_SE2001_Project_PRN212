@@ -1,4 +1,4 @@
-
+﻿
 using System.Windows;
 using CoffeeRuu.Views;
 
@@ -24,16 +24,10 @@ namespace CoffeeRuu
         private void BtnInventory_Click(
           object sender, RoutedEventArgs e)
         {
-            MainContent.Navigate(new InventoryView());
-            HomeContent.Visibility = Visibility.Collapsed;
-            MainContent.Visibility = Visibility.Visible;
-        }
-
-
-        // Chuyển sang màn hình báo cáo (Analytics & Reports)
-        private void BtnReport_Click(object sender, RoutedEventArgs e)
-        {
-            MainContent.Navigate(new ReportView());
+            if (MainContent.Content == null)
+            {
+                MainContent.Navigate(new InventoryView());
+            }
             HomeContent.Visibility = Visibility.Collapsed;
             MainContent.Visibility = Visibility.Visible;
         }
