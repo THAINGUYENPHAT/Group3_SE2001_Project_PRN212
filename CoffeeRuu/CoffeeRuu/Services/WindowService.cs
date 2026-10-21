@@ -26,12 +26,14 @@ namespace CoffeeRuu.Services
                 return;
             }
 
-            LoginView loginView = new LoginView();
+            // Mo lai man hinh dang nhap
+            MainWindow loginWindow = new MainWindow();
 
-            Application.Current.MainWindow = loginView;
+            Application.Current.MainWindow = loginWindow;
 
-            loginView.Show();
+            loginWindow.Show();
 
+            // Dong cua so chinh hien tai
             _currentWindow.Close();
         }
     }

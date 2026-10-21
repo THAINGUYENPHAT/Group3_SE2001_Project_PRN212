@@ -5,7 +5,6 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Input;
-using CoffeeRuu.Data;
 using CoffeeRuu.Services;
 using CoffeeRuu.Views;
 
@@ -47,13 +46,21 @@ namespace CoffeeRuu.ViewModels
         {
             if (string.IsNullOrWhiteSpace(Username))
             {
-                MessageBox.Show("Vui long nhap ten dang nhap!");
+                MessageBox.Show(
+                    "Vui lòng nhập tên đăng nhập!",
+                    "Thông báo",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Warning);
                 return;
             }
 
             if (string.IsNullOrWhiteSpace(Password))
             {
-                MessageBox.Show("Vui long nhap mat khau!");
+                MessageBox.Show(
+                    "Vui lòng nhập mật khẩu!",
+                    "Thông báo",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Warning);
                 return;
             }
 
@@ -67,25 +74,28 @@ namespace CoffeeRuu.ViewModels
                 if (employee == null ||
                     !employee.IsActive ||
                     !PasswordService.VerifyPassword(
-                        Password, employee.PasswordHash))
+                        Password,
+                        employee.PasswordHash))
                 {
                     MessageBox.Show(
-                        "Ten dang nhap hoac mat khau khong dung.",
-                        "Dang nhap that bai",
+                        "Tên đăng nhập hoặc mật khẩu không đúng.",
+                        "Đăng nhập thất bại",
                         MessageBoxButton.OK,
                         MessageBoxImage.Warning);
                     return;
                 }
 
-                var home = new MainWindow();
+                // Dang nhap thanh cong: mo giao dien chinh
+                var home = new MainShellWindow();
 
                 Application.Current.MainWindow = home;
 
                 home.Show();
 
+                // Dong cua so dang nhap
                 foreach (Window window in Application.Current.Windows)
                 {
-                    if (window is LoginView)
+                    if (window is MainWindow)
                     {
                         window.Close();
                         break;
@@ -96,7 +106,7 @@ namespace CoffeeRuu.ViewModels
             {
                 MessageBox.Show(
                     ex.Message,
-                    "Loi dang nhap",
+                    "Lỗi đăng nhập",
                     MessageBoxButton.OK,
                     MessageBoxImage.Error);
             }
