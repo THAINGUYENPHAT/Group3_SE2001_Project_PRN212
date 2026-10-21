@@ -37,9 +37,17 @@
                             Height="42"
                             Margin="0,0,0,10"
                             Click="BtnHome_Click"/>
+
+
+                    <Button Content="📃 Menu" 
+                        Height="42" 
+                        Margin="0,0,0,10"
+                        Click="BtnMenu_Click"/>
+
                     <Button Content="☕  Sản phẩm"
                             Height="42"
-                            Margin="0,0,0,10"/>
+                            Margin="0,0,0,10"
+                           Click="BtnProduct_Click" />
 
                     <Button Content="🧾  Đơn hàng"
                             Height="42"
@@ -55,9 +63,7 @@
                             Height="42"
                             Margin="0,0,0,10"/>
 
-                    <Button Content="📊  Báo cáo"
-                            Height="42"
-                            Margin="0,0,0,10"/>
+                    
 
                     <!-- Nút quản lý bàn của bạn -->
                     <Button Content="🪑  Quản lý Bàn"

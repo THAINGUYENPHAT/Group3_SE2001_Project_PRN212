@@ -59,5 +59,29 @@ namespace CoffeeRuu
                 MainContent.Navigate(new TableView());
             }
         }
+
+        // Chuyển sang giao diện Menu gọi món (bán hàng)
+        private void BtnMenu_Click(object sender, RoutedEventArgs e)
+        {
+            if (!(MainContent.Content is PosMenuView))
+            {
+                MainContent.Navigate(new PosMenuView());
+            }
+        }
+
+
+
+        // Chuyển sang quản lý sản phẩm
+        private void BtnProduct_Click(object sender, RoutedEventArgs e)
+        {
+            if (!(MainContent.Content is ProductManagementView))
+            {
+                MainContent.Navigate(new ProductManagementView());
+            }
+
+            MainContent.Visibility = Visibility.Collapsed;
+            MainContent.Visibility = Visibility.Visible;
+        }
+
     }
 }

@@ -10,11 +10,11 @@ none
 false
 TRACE;DEBUG;NET;NET8_0;NETCOREAPP;WINDOWS;WINDOWS7_0;NET5_0_OR_GREATER;NET6_0_OR_GREATER;NET7_0_OR_GREATER;NET8_0_OR_GREATER;NETCOREAPP1_0_OR_GREATER;NETCOREAPP1_1_OR_GREATER;NETCOREAPP2_0_OR_GREATER;NETCOREAPP2_1_OR_GREATER;NETCOREAPP2_2_OR_GREATER;NETCOREAPP3_0_OR_GREATER;NETCOREAPP3_1_OR_GREATER;WINDOWS7_0_OR_GREATER
 C:\D\FPT\Kỳ 5\PRN212\Assignment\Group3_SE2001_Project_PRN212\CoffeeRuu\CoffeeRuu\App.xaml
-7711523759
+101901915319
 
-502093244577
+55-1037057807
 228-921668053
-MainWindow.xaml;Views\HomeView.xaml;Views\IngredientView.xaml;Views\InventoryView.xaml;Views\LoginView.xaml;Views\SupplierView.xaml;Views\TableView.xaml;
+MainWindow.xaml;Views\HomeView.xaml;Views\IngredientView.xaml;Views\InventoryView.xaml;Views\LoginView.xaml;Views\MenuView.xaml;Views\PosMenuView.xaml;Views\ProductManagementView.xaml;Views\SupplierView.xaml;Views\TableView.xaml;
 
-False
+True
 
