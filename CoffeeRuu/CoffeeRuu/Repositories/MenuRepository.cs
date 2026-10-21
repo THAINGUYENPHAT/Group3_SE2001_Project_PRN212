@@ -1,4 +1,4 @@
-﻿
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -17,7 +17,7 @@ namespace CoffeeRuu.Repositories
             _context = context;
         }
 
-        // Lấy danh sách món uống kèm danh mục và size
+        // 1. Lấy toàn bộ món, danh mục và size/giá.
         public async Task<List<Product>> GetAllProductsAsync()
         {
             return await _context.Products
@@ -27,7 +27,7 @@ namespace CoffeeRuu.Repositories
                 .ToListAsync();
         }
 
-        // Lấy một món uống theo ID
+        // 2. Lấy món theo ID.
         public async Task<Product?> GetProductByIdAsync(int productId)
         {
             return await _context.Products
@@ -36,23 +36,26 @@ namespace CoffeeRuu.Repositories
                 .FirstOrDefaultAsync(p => p.ProductId == productId);
         }
 
-        // Thêm món uống mới
+        // 3. Thêm món mới cùng danh sách size/giá.
         public async Task AddProductAsync(Product product)
         {
             await _context.Products.AddAsync(product);
             await _context.SaveChangesAsync();
         }
 
-        // Cập nhật món uống
-
-
+        // 4. Cập nhật món và size/giá.
         public async Task UpdateProductAsync(Product product)
         {
             var existing = await _context.Products
-                .FirstOrDefaultAsync(p => p.ProductId == product.ProductId);
+                .Include(p => p.ProductSizes)
+                .FirstOrDefaultAsync(
+                    p => p.ProductId == product.ProductId);
 
             if (existing == null)
-                return;
+            {
+                throw new InvalidOperationException(
+                    "Không tìm thấy món cần cập nhật.");
+            }
 
             existing.ProductName = product.ProductName;
             existing.CategoryId = product.CategoryId;
@@ -60,17 +63,50 @@ namespace CoffeeRuu.Repositories
             existing.ImageUrl = product.ImageUrl;
             existing.IsAvailable = product.IsAvailable;
 
+            foreach (var incomingSize in product.ProductSizes)
+            {
+                if (incomingSize.ProductSizeId > 0)
+                {
+                    var existingSize = existing.ProductSizes
+                        .FirstOrDefault(
+                            s => s.ProductSizeId ==
+                                 incomingSize.ProductSizeId);
+
+                    if (existingSize == null)
+                    {
+                        throw new InvalidOperationException(
+                            "Không tìm thấy size cần cập nhật.");
+                    }
+
+                    existingSize.SizeName = incomingSize.SizeName;
+                    existingSize.Price = incomingSize.Price;
+                    existingSize.IsAvailable =
+                        incomingSize.IsAvailable;
+                }
+                else
+                {
+                    existing.ProductSizes.Add(new ProductSize
+                    {
+                        SizeName = incomingSize.SizeName,
+                        Price = incomingSize.Price,
+                        IsAvailable = incomingSize.IsAvailable
+                    });
+                }
+            }
+
             await _context.SaveChangesAsync();
         }
 
-        // Xóa món uống
+        // 5. Xóa món theo ID.
         public async Task DeleteProductAsync(int productId)
         {
             var product = await _context.Products
                 .FirstOrDefaultAsync(p => p.ProductId == productId);
 
             if (product == null)
+            {
                 return;
+            }
 
             _context.Products.Remove(product);
             await _context.SaveChangesAsync();

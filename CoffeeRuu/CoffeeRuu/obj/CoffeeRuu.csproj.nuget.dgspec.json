@@ -1,23 +1,23 @@
 {
   "format": 1,
   "restore": {
-    "D:\\New folder\\Group3_SE2001_Project_PRN212\\CoffeeRuu\\CoffeeRuu\\CoffeeRuu.csproj": {}
+    "D:\\ProjectPRN212_2110\\Group3_SE2001_Project_PRN212\\CoffeeRuu\\CoffeeRuu\\CoffeeRuu.csproj": {}
   },
   "projects": {
-    "D:\\New folder\\Group3_SE2001_Project_PRN212\\CoffeeRuu\\CoffeeRuu\\CoffeeRuu.csproj": {
+    "D:\\ProjectPRN212_2110\\Group3_SE2001_Project_PRN212\\CoffeeRuu\\CoffeeRuu\\CoffeeRuu.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\New folder\\Group3_SE2001_Project_PRN212\\CoffeeRuu\\CoffeeRuu\\CoffeeRuu.csproj",
+        "projectUniqueName": "D:\\ProjectPRN212_2110\\Group3_SE2001_Project_PRN212\\CoffeeRuu\\CoffeeRuu\\CoffeeRuu.csproj",
         "projectName": "CoffeeRuu",
-        "projectPath": "D:\\New folder\\Group3_SE2001_Project_PRN212\\CoffeeRuu\\CoffeeRuu\\CoffeeRuu.csproj",
-        "packagesPath": "C:\\Users\\tuan2\\.nuget\\packages\\",
-        "outputPath": "D:\\New folder\\Group3_SE2001_Project_PRN212\\CoffeeRuu\\CoffeeRuu\\obj\\",
+        "projectPath": "D:\\ProjectPRN212_2110\\Group3_SE2001_Project_PRN212\\CoffeeRuu\\CoffeeRuu\\CoffeeRuu.csproj",
+        "packagesPath": "C:\\Users\\nhnho\\.nuget\\packages\\",
+        "outputPath": "D:\\ProjectPRN212_2110\\Group3_SE2001_Project_PRN212\\CoffeeRuu\\CoffeeRuu\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\tuan2\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\nhnho\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
@@ -89,7 +89,7 @@
               "privateAssets": "none"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.401/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.400/PortableRuntimeIdentifierGraph.json"
         }
       }
     }

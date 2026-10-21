@@ -1,69 +1,154 @@
-﻿<Window x:Class="CoffeeRuu.Views.ProductDialog"
-        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+﻿<Window x:Class="CoffeeRuu.Views.ProductDialog"        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="Thông tin món uống"
-        Height="440" Width="460"
+        Height="650"
+        Width="560"
+        MinHeight="580"
         WindowStartupLocation="CenterOwner"
-        ResizeMode="NoResize"
+        ResizeMode="CanResize"
         Background="#F7F5F0">
 
-    <Grid Margin="24">
+    <Grid Margin="22">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <TextBlock x:Name="TitleText"
-                   Text="Thông tin món uống"
+        <TextBlock Text="{Binding DialogTitle}"
                    FontSize="22"
                    FontWeight="Bold"
                    Foreground="#3E2723"
-                   Margin="0,0,0,20"/>
+                   Margin="0,0,0,16"/>
 
-        <StackPanel Grid.Row="1">
+        <ScrollViewer Grid.Row="1"
+                      VerticalScrollBarVisibility="Auto">
+            <StackPanel>
 
-            <TextBlock Text="Tên món uống"
-                       Margin="0,0,0,6"
-                       FontWeight="SemiBold"/>
-            <TextBox x:Name="ProductNameBox"
-                     Height="34"
-                     Padding="8"
-                     Margin="0,0,0,14"/>
+                <TextBlock Text="Tên món uống"
+                           Margin="0,0,0,5"
+                           FontWeight="SemiBold"/>
 
-            <TextBlock Text="Danh mục"
-                       Margin="0,0,0,6"
-                       FontWeight="SemiBold"/>
-            <ComboBox x:Name="CategoryComboBox"
-                      Height="34"
-                      Padding="6"
-                      DisplayMemberPath="CategoryName"
-                      SelectedValuePath="CategoryId"
-                      Margin="0,0,0,14"/>
+                <TextBox Height="34"
+                         Padding="8"
+                         Margin="0,0,0,12"
+                         Text="{Binding ProductName,
+                             UpdateSourceTrigger=PropertyChanged}"/>
 
-            <TextBlock Text="Mô tả"
-                       Margin="0,0,0,6"
-                       FontWeight="SemiBold"/>
-            <TextBox x:Name="DescriptionBox"
-                     Height="65"
-                     Padding="8"
-                     AcceptsReturn="True"
-                     TextWrapping="Wrap"
-                     VerticalScrollBarVisibility="Auto"
-                     Margin="0,0,0,14"/>
+                <TextBlock Text="Danh mục"
+                           Margin="0,0,0,5"
+                           FontWeight="SemiBold"/>
 
-            <CheckBox x:Name="AvailableCheckBox"
-                      Content="Món đang được bán"
-                      IsChecked="True"
-                      FontWeight="SemiBold"
-                      Foreground="#4E342E"/>
+                <ComboBox Height="34"
+                          Padding="6"
+                          Margin="0,0,0,12"
+                          ItemsSource="{Binding Categories}"
+                          SelectedItem="{Binding SelectedCategory,
+                              Mode=TwoWay}"
+                          DisplayMemberPath="CategoryName"/>
 
-        </StackPanel>
+                <TextBlock Text="Mô tả"
+                           Margin="0,0,0,5"
+                           FontWeight="SemiBold"/>
+
+                <TextBox Height="60"
+                         Padding="8"
+                         AcceptsReturn="True"
+                         TextWrapping="Wrap"
+                         VerticalScrollBarVisibility="Auto"
+                         Margin="0,0,0,12"
+                         Text="{Binding Description,
+                             UpdateSourceTrigger=PropertyChanged}"/>
+
+                <CheckBox Content="Món đang được bán"
+                          IsChecked="{Binding IsAvailable,
+                              Mode=TwoWay}"
+                          FontWeight="SemiBold"
+                          Foreground="#4E342E"
+                          Margin="0,0,0,16"/>
+
+                <Separator Background="#D7CCC8"
+                           Margin="0,0,0,12"/>
+
+                <Grid Margin="0,0,0,8">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <TextBlock Text="Size và giá bán"
+                               FontSize="16"
+                               FontWeight="Bold"
+                               Foreground="#3E2723"
+                               VerticalAlignment="Center"/>
+
+                    <Button Grid.Column="1"
+                            Content="+ Thêm size"
+                            Padding="10,6"
+                            Background="#4E342E"
+                            Foreground="White"
+                            BorderThickness="0"
+                            Command="{Binding AddSizeCommand}"/>
+                </Grid>
+
+                <TextBlock Text="Có thể sửa tên size, giá và bỏ chọn trạng thái bán để ngừng bán size đó."
+                           TextWrapping="Wrap"
+                           FontSize="11"
+                           Foreground="#795548"
+                           Margin="0,0,0,8"/>
+
+                <DataGrid ItemsSource="{Binding ProductSizes}"
+                          AutoGenerateColumns="False"
+                          CanUserAddRows="False"
+                          CanUserDeleteRows="False"
+                          CanUserReorderColumns="False"
+                          CanUserResizeRows="False"
+                          HeadersVisibility="Column"
+                          RowHeaderWidth="0"
+                          MinHeight="130"
+                          MaxHeight="220"
+                          Background="White"
+                          BorderBrush="#D7CCC8"
+                          GridLinesVisibility="Horizontal"
+                          HorizontalScrollBarVisibility="Disabled"
+                          VerticalScrollBarVisibility="Auto">
+
+                    <DataGrid.Columns>
+
+                        <DataGridTextColumn Header="Tên size"
+                                            Width="*"
+                                            MinWidth="110"
+                                            Binding="{Binding SizeName,
+                                                UpdateSourceTrigger=PropertyChanged}"/>
+
+                        <DataGridTextColumn Header="Giá (đ)"
+                                            Width="100"
+                                            MinWidth="90"
+                                            Binding="{Binding Price,
+                                                UpdateSourceTrigger=LostFocus,
+                                                StringFormat=N0}"/>
+
+                        <DataGridCheckBoxColumn Header="Đang bán"
+                                                Width="75"
+                                                Binding="{Binding IsAvailable,
+                                                    Mode=TwoWay,
+                                                    UpdateSourceTrigger=PropertyChanged}"/>
+
+                    </DataGrid.Columns>
+                </DataGrid>
+
+                <TextBlock Text="{Binding ErrorMessage}"
+                           Foreground="#C62828"
+                           TextWrapping="Wrap"
+                           Margin="0,12,0,4"/>
+
+            </StackPanel>
+        </ScrollViewer>
 
         <StackPanel Grid.Row="2"
                     Orientation="Horizontal"
                     HorizontalAlignment="Right"
-                    Margin="0,18,0,0">
+                    Margin="0,16,0,0">
 
             <Button Content="Hủy"
                     Width="90"
@@ -71,15 +156,16 @@
                     Margin="0,0,10,0"
                     Background="#D7CCC8"
                     Foreground="#3E2723"
-                    Click="CancelButton_Click"/>
+                    BorderThickness="0"
+                    Command="{Binding CancelCommand}"/>
 
             <Button Content="Lưu"
                     Width="100"
                     Height="36"
                     Background="#4E342E"
                     Foreground="White"
-                    Click="SaveButton_Click"/>
-
+                    BorderThickness="0"
+                    Command="{Binding SaveCommand}"/>
         </StackPanel>
     </Grid>
 </Window>
