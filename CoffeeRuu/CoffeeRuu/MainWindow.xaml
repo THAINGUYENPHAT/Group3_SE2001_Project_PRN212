@@ -51,7 +51,12 @@
 
                     <Button Content="🧾  Đơn hàng"
                             Height="42"
-                            Margin="0,0,0,10"/>
+                            Margin="0,0,0,10"
+                            Click="OpenOrders_Click"/>
+                    <Button Content="📺  KDS - Pha chế"
+                            Height="42"
+                            Margin="0,0,0,10"
+                            Click="OpenKds_Click"/>
 
 
                     <Button Content="📦  Kho hàng"

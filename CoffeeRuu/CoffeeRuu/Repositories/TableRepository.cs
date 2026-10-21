@@ -68,5 +68,22 @@ namespace CoffeeRuu.Repositories
             await context.SaveChangesAsync();
             return true;
         }
+        public async Task<bool> DeleteAsync(int id)
+        {
+            using var context = _contextFactory();
+            var table = await context.CafeTables.FirstOrDefaultAsync(t => t.TableId == id);
+
+            if (table == null) return false;
+
+            bool hasOrders = await context.Orders.AnyAsync(o => o.TableId == id);
+            if (hasOrders)
+            {
+                throw new InvalidOperationException("Không thể xóa bàn này vì đã có lịch sử đơn hàng. Hãy đổi trạng thái thành 'OutOfService'.");
+            }
+
+            context.CafeTables.Remove(table);
+            await context.SaveChangesAsync();
+            return true;
+        }
     }
 }

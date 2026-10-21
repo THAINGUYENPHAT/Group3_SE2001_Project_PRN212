@@ -1,6 +1,7 @@
 ﻿
 using System;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using CoffeeRuu.Models;
@@ -11,10 +12,11 @@ namespace CoffeeRuu.Views
     public partial class MenuView : UserControl
     {
         private readonly MenuService _menuService;
+
         public MenuView()
-    : this(new CoffeeRuu.Services.MenuService(
-        new CoffeeRuu.Repositories.MenuRepository(
-            App.CreateDbContext())))
+            : this(new MenuService(
+                new CoffeeRuu.Repositories.MenuRepository(
+                    App.CreateDbContext())))
         {
         }
 
@@ -23,7 +25,6 @@ namespace CoffeeRuu.Views
             InitializeComponent();
 
             _menuService = menuService;
-
             Loaded += MenuView_Loaded;
         }
 
@@ -33,7 +34,8 @@ namespace CoffeeRuu.Views
             await LoadMenuAsync();
         }
 
-        private async System.Threading.Tasks.Task LoadMenuAsync()
+        // READ: Tải danh sách món uống
+        private async Task LoadMenuAsync()
         {
             try
             {
@@ -43,13 +45,11 @@ namespace CoffeeRuu.Views
             catch (Exception ex)
             {
                 MessageBox.Show(
-                    "Không thể tải thực đơn: " + ex.Message,
-                    "Lỗi",
-                    MessageBoxButton.OK,
-                    MessageBoxImage.Error);
+                    "Không thể tải thực đơn: " + ex.Message);
             }
         }
 
+        // SEARCH: Tìm theo tên món
         private async void SearchButton_Click(
             object sender, RoutedEventArgs e)
         {
@@ -61,8 +61,7 @@ namespace CoffeeRuu.Views
                 string keyword = SearchBox.Text.Trim();
 
                 MenuDataGrid.ItemsSource = products
-                    .Where(p =>
-                        p.ProductName != null &&
+                    .Where(p => p.ProductName != null &&
                         p.ProductName.Contains(
                             keyword,
                             StringComparison.OrdinalIgnoreCase))
@@ -74,27 +73,71 @@ namespace CoffeeRuu.Views
             }
         }
 
-        private void AddButton_Click(
+        // CREATE: Thêm món uống
+        private async void AddButton_Click(
             object sender, RoutedEventArgs e)
         {
-            MessageBox.Show(
-                "Tiếp theo sẽ xây dựng form thêm món uống.",
-                "Quản lý thực đơn");
+            var dialog = new ProductDialog
+            {
+                Owner = Window.GetWindow(this)
+            };
+
+            if (dialog.ShowDialog() != true ||
+                dialog.ProductResult == null)
+                return;
+
+            try
+            {
+                await _menuService.AddProductAsync(
+                    dialog.ProductResult);
+
+                await LoadMenuAsync();
+
+                MessageBox.Show("Thêm món uống thành công!");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(
+                    "Không thể thêm món: " + ex.Message);
+            }
         }
 
-        private void EditButton_Click(
+        // UPDATE: Sửa món được chọn
+        private async void EditButton_Click(
             object sender, RoutedEventArgs e)
         {
-            if (MenuDataGrid.SelectedItem is not Product product)
+            if (MenuDataGrid.SelectedItem is not Product selected)
             {
                 MessageBox.Show("Vui lòng chọn món cần sửa.");
                 return;
             }
 
-            MessageBox.Show(
-                $"Bạn đã chọn món: {product.ProductName}",
-                "Sửa món uống");
+            var dialog = new ProductDialog(selected)
+            {
+                Owner = Window.GetWindow(this)
+            };
+
+            if (dialog.ShowDialog() != true ||
+                dialog.ProductResult == null)
+                return;
+
+            try
+            {
+                await _menuService.UpdateProductAsync(
+                    dialog.ProductResult);
+
+                await LoadMenuAsync();
+
+                MessageBox.Show("Cập nhật món uống thành công!");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(
+                    "Không thể sửa món: " + ex.Message);
+            }
         }
+
+        // DELETE: Ẩn món khỏi thực đơn
 
         private async void DeleteButton_Click(
             object sender, RoutedEventArgs e)
@@ -106,29 +149,34 @@ namespace CoffeeRuu.Views
             }
 
             MessageBoxResult result = MessageBox.Show(
-                $"Bạn có chắc muốn ẩn món '{product.ProductName}' khỏi thực đơn?",
-                "Xác nhận",
+                $"Bạn có chắc chắn muốn xóa món '{product.ProductName}' không?\n" +
+                "Thao tác này sẽ xóa bản ghi món khỏi database.",
+                "Xác nhận xóa",
                 MessageBoxButton.YesNo,
-                MessageBoxImage.Question);
+                MessageBoxImage.Warning);
 
             if (result != MessageBoxResult.Yes)
                 return;
 
             try
             {
-                // Ẩn món thay vì xóa bản ghi khỏi database
-                product.IsAvailable = false;
-
-                await _menuService.UpdateProductAsync(product);
+                await _menuService.DeleteProductAsync(product.ProductId);
 
                 await LoadMenuAsync();
 
-                MessageBox.Show("Đã ẩn món khỏi thực đơn.");
+                MessageBox.Show("Đã xóa món uống thành công.");
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Không thể cập nhật món: " + ex.Message);
+                MessageBox.Show(
+                    "Không thể xóa món uống. Có thể món đang được sử dụng " +
+                    "trong size, công thức hoặc đơn hàng.\n\nChi tiết: " +
+                    ex.Message,
+                    "Lỗi xóa",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Error);
             }
         }
+
     }
 }

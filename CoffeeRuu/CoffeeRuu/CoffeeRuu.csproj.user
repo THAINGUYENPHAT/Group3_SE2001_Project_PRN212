@@ -20,6 +20,9 @@
     <Compile Update="Views\PosMenuView.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="Views\ProductDialog.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Update="Views\ProductManagementView.xaml.cs">
       <SubType>Code</SubType>
     </Compile>

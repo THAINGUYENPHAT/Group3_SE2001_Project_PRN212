@@ -44,9 +44,22 @@ namespace CoffeeRuu.Repositories
         }
 
         // Cập nhật món uống
+
+
         public async Task UpdateProductAsync(Product product)
         {
-            _context.Products.Update(product);
+            var existing = await _context.Products
+                .FirstOrDefaultAsync(p => p.ProductId == product.ProductId);
+
+            if (existing == null)
+                return;
+
+            existing.ProductName = product.ProductName;
+            existing.CategoryId = product.CategoryId;
+            existing.Description = product.Description;
+            existing.ImageUrl = product.ImageUrl;
+            existing.IsAvailable = product.IsAvailable;
+
             await _context.SaveChangesAsync();
         }
 
