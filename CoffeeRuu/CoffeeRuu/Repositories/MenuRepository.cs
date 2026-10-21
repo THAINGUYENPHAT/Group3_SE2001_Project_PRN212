@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
-using CoffeeRuu.Models;
 using CoffeeRuu.Data;
+using CoffeeRuu.Models;
 
 namespace CoffeeRuu.Repositories
 {
@@ -17,56 +17,82 @@ namespace CoffeeRuu.Repositories
             _context = context;
         }
 
-        // Lấy danh sách món uống kèm danh mục và size
+        // Lấy danh sách sản phẩm kèm danh mục và giá từng size
         public async Task<List<Product>> GetAllProductsAsync()
         {
             return await _context.Products
+                .AsNoTracking()
                 .Include(p => p.Category)
                 .Include(p => p.ProductSizes)
-                .AsNoTracking()
+                .Where(p => p.IsAvailable)
+                .OrderBy(p => p.ProductName)
                 .ToListAsync();
         }
 
-        // Lấy một món uống theo ID
+        // Lấy sản phẩm theo ID, kèm danh mục và size
         public async Task<Product?> GetProductByIdAsync(int productId)
         {
             return await _context.Products
+                .AsNoTracking()
                 .Include(p => p.Category)
                 .Include(p => p.ProductSizes)
                 .FirstOrDefaultAsync(p => p.ProductId == productId);
         }
 
-        // Thêm món uống mới
+        // Lấy sản phẩm theo danh mục
+        public async Task<List<Product>> GetProductsByCategoryAsync(
+            int categoryId)
+        {
+            return await _context.Products
+                .AsNoTracking()
+                .Include(p => p.Category)
+                .Include(p => p.ProductSizes)
+                .Where(p => p.IsAvailable &&
+                            p.CategoryId == categoryId)
+                .OrderBy(p => p.ProductName)
+                .ToListAsync();
+        }
+
+        // Tìm sản phẩm theo tên bắt đầu bằng từ khóa
+        public async Task<List<Product>> SearchProductsAsync(string keyword)
+        {
+            keyword = keyword?.Trim() ?? "";
+
+            var query = _context.Products
+                .AsNoTracking()
+                .Include(p => p.Category)
+                .Include(p => p.ProductSizes)
+                .Where(p => p.IsAvailable);
+
+            if (!string.IsNullOrWhiteSpace(keyword))
+            {
+                query = query.Where(p =>
+                    p.ProductName.StartsWith(keyword));
+            }
+
+            return await query
+                .OrderBy(p => p.ProductName)
+                .ToListAsync();
+        }
+        // Thêm sản phẩm
         public async Task AddProductAsync(Product product)
         {
             await _context.Products.AddAsync(product);
             await _context.SaveChangesAsync();
         }
 
-        // Cập nhật món uống
-
-
+        // Cập nhật sản phẩm
         public async Task UpdateProductAsync(Product product)
         {
-            var existing = await _context.Products
-                .FirstOrDefaultAsync(p => p.ProductId == product.ProductId);
-
-            if (existing == null)
-                return;
-
-            existing.ProductName = product.ProductName;
-            existing.CategoryId = product.CategoryId;
-            existing.Description = product.Description;
-            existing.ImageUrl = product.ImageUrl;
-            existing.IsAvailable = product.IsAvailable;
-
+            _context.Products.Update(product);
             await _context.SaveChangesAsync();
         }
 
-        // Xóa món uống
+        // Xóa sản phẩm khỏi database
         public async Task DeleteProductAsync(int productId)
         {
             var product = await _context.Products
+                .Include(p => p.ProductSizes)
                 .FirstOrDefaultAsync(p => p.ProductId == productId);
 
             if (product == null)
