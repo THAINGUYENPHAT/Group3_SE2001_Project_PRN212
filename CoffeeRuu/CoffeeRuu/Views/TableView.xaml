@@ -1,0 +1,65 @@
+﻿<UserControl x:Class="CoffeeRuu.Views.TableView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             Background="#F5F6FA">
+
+    <Grid Margin="20">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="6*"/>
+            <ColumnDefinition Width="4*"/>
+        </Grid.ColumnDefinitions>
+
+        <!-- Danh sách bàn -->
+        <Border Grid.Column="0" Background="White" CornerRadius="8" Padding="10" Margin="0,0,10,0">
+            <DataGrid AutoGenerateColumns="False" 
+                      ItemsSource="{Binding Tables}" 
+                      SelectedItem="{Binding SelectedTable}" 
+                      IsReadOnly="True" 
+                      HeadersVisibility="Column"
+                      GridLinesVisibility="Horizontal">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="ID" Binding="{Binding TableId}" Width="50"/>
+                    <DataGridTextColumn Header="Tên bàn" Binding="{Binding TableName}" Width="*"/>
+                    <DataGridTextColumn Header="Sức chứa" Binding="{Binding Capacity}" Width="80"/>
+                    <DataGridTextColumn Header="Trạng thái" Binding="{Binding TableStatus}" Width="100"/>
+                </DataGrid.Columns>
+            </DataGrid>
+        </Border>
+
+        <!-- Form nhập liệu -->
+        <Border Grid.Column="1" Background="White" CornerRadius="8" Padding="20">
+            <StackPanel>
+                <TextBlock Text="Thông tin bàn" FontSize="20" FontWeight="Bold" Margin="0,0,0,20"/>
+
+                <TextBlock Text="Tên bàn/Số bàn:" FontWeight="SemiBold" Margin="0,0,0,5"/>
+                <TextBox Text="{Binding TableNameInput, Mode=OneWay}" 
+                         IsReadOnly="True" 
+                         Focusable="True"
+                         Height="30" 
+                         Margin="0,0,0,15" 
+                         VerticalContentAlignment="Center"/>
+
+                <TextBlock Text="Sức chứa (Số ghế):" FontWeight="SemiBold" Margin="0,0,0,5"/>
+                <TextBox Text="{Binding CapacityInput, UpdateSourceTrigger=PropertyChanged}" Height="30" Margin="0,0,0,15" VerticalContentAlignment="Center"/>
+
+                <!-- Thêm ComboBox chọn Trạng thái -->
+                <TextBlock Text="Trạng thái:" FontWeight="SemiBold" Margin="0,0,0,5"/>
+                <ComboBox ItemsSource="{Binding StatusList}" 
+                          SelectedItem="{Binding StatusInput, UpdateSourceTrigger=PropertyChanged}" 
+                          Height="30" Margin="0,0,0,15" VerticalContentAlignment="Center"/>
+
+                <!-- Thông báo lỗi/thành công -->
+                <!-- Thông báo lỗi/thành công -->
+                <TextBlock Text="{Binding StatusMessage}" Foreground="Red" TextWrapping="Wrap" Margin="0,0,0,15"/>
+
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                    <Button Content="Thêm" Command="{Binding AddCommand}" Width="70" Height="35" Margin="5"/>
+                    <Button Content="Cập nhật" Command="{Binding UpdateCommand}" Width="70" Height="35" Margin="5"/>
+                    <Button Content="Xóa" Command="{Binding DeleteCommand}" Width="70" Height="35" Margin="5" />
+                    <Button Content="Làm mới" Command="{Binding ClearCommand}" Width="70" Height="35" Margin="5"/>
+                </StackPanel>
+
+            </StackPanel>
+        </Border>
+    </Grid>
+</UserControl>

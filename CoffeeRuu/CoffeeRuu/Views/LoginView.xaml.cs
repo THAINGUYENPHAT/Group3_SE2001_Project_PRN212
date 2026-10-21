@@ -1,5 +1,6 @@
 ﻿
 using System.Windows;
+using System.Windows.Controls;
 using CoffeeRuu.ViewModels;
 
 namespace CoffeeRuu.Views

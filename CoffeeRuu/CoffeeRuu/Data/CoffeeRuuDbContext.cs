@@ -460,5 +460,6 @@ public partial class CoffeeRuuDbContext : DbContext
         OnModelCreatingPartial(modelBuilder);
     }
 
+
     partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
 }
