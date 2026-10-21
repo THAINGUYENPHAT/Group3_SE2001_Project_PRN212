@@ -156,6 +156,16 @@ namespace CoffeeRuu
         }
 
 
+        // Chuyển sang màn hình báo cáo (Analytics & Reports)
+        private void BtnReport_Click(object sender, RoutedEventArgs e)
+        {
+            if (!(MainContent.Content is ReportView))
+            {
+                MainContent.Navigate(new ReportView());
+            }
+        }
+
+
         // chuyển sang kds pha chế
 
         private void OpenKds_Click(
