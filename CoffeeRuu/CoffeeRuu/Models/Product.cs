@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-
+using System.Linq;
 namespace CoffeeRuu.Models;
 
 public partial class Product
@@ -22,4 +22,18 @@ public partial class Product
     public virtual Category Category { get; set; } = null!;
 
     public virtual ICollection<ProductSize> ProductSizes { get; set; } = new List<ProductSize>();
+
+    // Giá từng size, lấy từ bảng ProductSizes
+    public decimal? PriceS =>
+        ProductSizes.FirstOrDefault(
+            s => s.SizeName.EndsWith("(S)") && s.IsAvailable)?.Price;
+
+    public decimal? PriceM =>
+        ProductSizes.FirstOrDefault(
+            s => s.SizeName.EndsWith("(M)") && s.IsAvailable)?.Price;
+
+    public decimal? PriceL =>
+        ProductSizes.FirstOrDefault(
+            s => s.SizeName.EndsWith("(L)") && s.IsAvailable)?.Price;
+
 }
