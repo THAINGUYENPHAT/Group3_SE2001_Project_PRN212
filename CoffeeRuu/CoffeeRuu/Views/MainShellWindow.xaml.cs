@@ -67,6 +67,10 @@ namespace CoffeeRuu.Views
             _navigationService.Register(
                 "Table",
                 () => new TableView());
+
+            _navigationService.Register(
+                "Employee",
+                () => new EmployeeManagementView());
         }
     }
 }
