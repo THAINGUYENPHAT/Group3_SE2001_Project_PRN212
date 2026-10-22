@@ -1,7 +1,7 @@
 <Window x:Class="CoffeeRuu.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="CoffeeRuu - Hệ thống quản lý"
+        Title="CoffeeRuu - Đăng nhập"
         Height="600"
         Width="950"
         MinHeight="500"
@@ -11,155 +11,94 @@
 
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="260"/>
-            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="1.1*"/>
+            <ColumnDefinition Width="1*"/>
         </Grid.ColumnDefinitions>
 
-        <!-- Bên trái: Thanh Navigation Menu -->
+        <!-- Ben trai: gioi thieu ung dung -->
         <Border Grid.Column="0"
                 Background="#4E342E"
-                Padding="20">
-            <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="*"/>
-                    <RowDefinition Height="Auto"/>
-                </Grid.RowDefinitions>
+                Padding="40">
 
-                <!-- Header Brand -->
-                <StackPanel Grid.Row="0" Margin="0,10,0,20">
-                    <TextBlock Text="CoffeeRuu"
-                               FontSize="32"
-                               FontWeight="Bold"
-                               Foreground="#FFF8E7"
-                               HorizontalAlignment="Center"/>
+            <StackPanel VerticalAlignment="Center">
+                <TextBlock Text="CoffeeRuu"
+                           FontSize="42"
+                           FontWeight="Bold"
+                           Foreground="#FFF8E7"
+                           HorizontalAlignment="Center"/>
 
-                    <TextBlock Text="MINI CAFE MANAGEMENT SYSTEM"
-                               FontSize="11"
-                               Foreground="#D7CCC8"
-                               Margin="0,6,0,0"
-                               HorizontalAlignment="Center"/>
-                </StackPanel>
+                <TextBlock Text="MINI CAFE MANAGEMENT SYSTEM"
+                           FontSize="13"
+                           Foreground="#D7CCC8"
+                           Margin="0,12,0,30"
+                           HorizontalAlignment="Center"/>
 
-                <!-- Danh sách Menu chính -->
-                <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
-                    <StackPanel>
-                        <Button Content="🏠  Trang chủ"
-                                Height="42"
-                                Margin="0,0,0,10"
-                                Click="BtnHome_Click"/>
+                <TextBlock Text="Quản lý quán cà phê&#10;đơn giản và hiệu quả"
+                           FontSize="25"
+                           FontWeight="SemiBold"
+                           Foreground="White"
+                           TextAlignment="Center"
+                           LineHeight="38"/>
 
-                        <Button Content="📃 Menu" 
-                                Height="42" 
-                                Margin="0,0,0,10"
-                                Click="BtnMenu_Click"/>
-
-                        <Button Content="☕  Sản phẩm"
-                                Height="42"
-                                Margin="0,0,0,10"
-                                Click="BtnProduct_Click"/>
-
-                        <Button Content="🧾  Đơn hàng"
-                                Height="42"
-                                Margin="0,0,0,10"
-                                Click="OpenOrders_Click"/>
-
-                        <Button Content="📺  KDS - Pha chế"
-                                Height="42"
-                                Margin="0,0,0,10"
-                                Click="OpenKds_Click"/>
-
-                        <Button Content="📦  Kho hàng"
-                                Height="42"
-                                Margin="0,0,0,10"
-                                Click="BtnInventory_Click"/>
-
-                        <Button Content="👥  Nhân viên"
-                                Height="42"
-                                Margin="0,0,0,10"/>
-
-                        <Button Content="📊  Báo cáo"
-                                Height="42"
-                                Margin="0,0,0,10"
-                                Click="BtnReport_Click"/>
-
-                        <Button Content="🪑  Quản lý Bàn"
-                                Height="42"
-                                Margin="0,0,0,10"
-                                Click="BtnTable_Click"/>
-                    </StackPanel>
-                </ScrollViewer>
-
-                <!-- Nút Đăng xuất ở dưới cùng -->
-                <Button Grid.Row="2"
-                        x:Name="BtnLogout"
-                        Content="🚪  Đăng xuất"
-                        Height="42"
-                        Margin="0,10,0,0"
-                        Click="BtnLogout_Click"/>
-            </Grid>
+                <TextBlock Text="Quản lý menu • Đơn hàng • Kho hàng"
+                           FontSize="13"
+                           Foreground="#D7CCC8"
+                           Margin="0,25,0,0"
+                           TextAlignment="Center"/>
+            </StackPanel>
         </Border>
 
-        <!-- Bên phải: Nội dung chính / Frame điều hướng -->
-        <Grid Grid.Column="1">
-            <!-- Content Dashboard Mặc định -->
-            <ScrollViewer x:Name="HomeContent"
-                          Visibility="Visible"
-                          VerticalScrollBarVisibility="Auto">
-                <StackPanel Margin="30">
-                    <TextBlock Text="Tổng quan"
-                               FontSize="30"
-                               FontWeight="Bold"
-                               Foreground="#3B2F2F"/>
+        <!-- Ben phai: form dang nhap -->
+        <Grid Grid.Column="1" Margin="45">
+            <StackPanel VerticalAlignment="Center">
 
-                    <TextBlock Text="Chào mừng đến với hệ thống quản lý CoffeeRuu!"
-                               FontSize="16"
-                               Margin="0,8,0,25"
-                               Foreground="#666666"/>
+                <TextBlock Text="Chào mừng trở lại!"
+                           FontSize="29"
+                           FontWeight="Bold"
+                           Foreground="#4E342E"/>
 
-                    <UniformGrid Columns="2" Margin="0,0,0,25">
-                        <Border Background="White" CornerRadius="10" Padding="20" Margin="5">
-                            <StackPanel>
-                                <TextBlock Text="☕ Sản phẩm" FontSize="18" Foreground="#777777"/>
-                                <TextBlock Text="Quản lý sản phẩm" FontSize="22" FontWeight="Bold" Margin="0,10,0,0"/>
-                            </StackPanel>
-                        </Border>
+                <TextBlock Text="Đăng nhập vào hệ thống CoffeeRuu"
+                           FontSize="14"
+                           Foreground="#795548"
+                           Margin="0,8,0,30"/>
 
-                        <Border Background="White" CornerRadius="10" Padding="20" Margin="5">
-                            <StackPanel>
-                                <TextBlock Text="🧾 Đơn hàng" FontSize="18" Foreground="#777777"/>
-                                <TextBlock Text="Quản lý đơn hàng" FontSize="22" FontWeight="Bold" Margin="0,10,0,0"/>
-                            </StackPanel>
-                        </Border>
+                <TextBlock Text="Tên đăng nhập"
+                           FontWeight="SemiBold"
+                           Margin="0,0,0,8"/>
 
-                        <Border Background="White" CornerRadius="10" Padding="20" Margin="5">
-                            <StackPanel>
-                                <TextBlock Text="📦 Kho hàng" FontSize="18" Foreground="#777777"/>
-                                <TextBlock Text="Quản lý nguyên liệu" FontSize="22" FontWeight="Bold" Margin="0,10,0,0"/>
-                            </StackPanel>
-                        </Border>
+                <TextBox x:Name="UsernameTextBox"
+                         Text="{Binding Username, UpdateSourceTrigger=PropertyChanged}"
+                         Height="42"
+                         FontSize="15"
+                         Padding="10,8"
+                         Margin="0,0,0,20"/>
 
-                        <Border Background="White" CornerRadius="10" Padding="20" Margin="5">
-                            <StackPanel>
-                                <TextBlock Text="📊 Báo cáo" FontSize="18" Foreground="#777777"/>
-                                <TextBlock Text="Theo dõi doanh thu" FontSize="22" FontWeight="Bold" Margin="0,10,0,0"/>
-                            </StackPanel>
-                        </Border>
-                    </UniformGrid>
+                <TextBlock Text="Mật khẩu"
+                           FontWeight="SemiBold"
+                           Margin="0,0,0,8"/>
 
-                    <TextBlock Text="Chức năng hệ thống" FontSize="22" FontWeight="Bold" Margin="0,0,0,15"/>
+                <PasswordBox x:Name="PasswordInput"
+                             Height="42"
+                             FontSize="15"
+                             Padding="10,8"
+                             Margin="0,0,0,25"/>
 
-                    <Border Background="White" CornerRadius="10" Padding="20">
-                        <TextBlock Text="Chọn một chức năng ở thanh menu bên trái để bắt đầu quản lý quán cà phê."
-                                   FontSize="15"
-                                   TextWrapping="Wrap"/>
-                    </Border>
-                </StackPanel>
-            </ScrollViewer>
+                <Button Content="ĐĂNG NHẬP"
+                        Command="{Binding LoginCommand}"
+                        Height="45"
+                        FontSize="15"
+                        FontWeight="Bold"
+                        Foreground="White"
+                        Background="#6D4C41"
+                        BorderThickness="0"
+                        Cursor="Hand"/>
 
-            <!-- Frame để hiển thị các Page khi bấm Menu -->
-            <Frame x:Name="MainContent"
-                   NavigationUIVisibility="Hidden"/>
+                <TextBlock Text="CoffeeRuu © 2026"
+                           Foreground="#8D6E63"
+                           FontSize="12"
+                           HorizontalAlignment="Center"
+                           Margin="0,30,0,0"/>
+            </StackPanel>
         </Grid>
     </Grid>
 </Window>
