@@ -1,0 +1,298 @@
+﻿<Page x:Class="CoffeeRuu.Views.StockReceiptView"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      Title="StockReceiptView"
+      Background="#F5F6FA"
+      Loaded="Page_Loaded">
+
+    <Page.Resources>
+        <Style TargetType="TextBlock">
+            <Setter Property="VerticalAlignment"
+                    Value="Center"/>
+        </Style>
+
+        <Style TargetType="Button">
+            <Setter Property="Padding" Value="14,7"/>
+            <Setter Property="Margin" Value="0,0,8,0"/>
+            <Setter Property="MinHeight" Value="34"/>
+        </Style>
+
+        <Style TargetType="DataGrid">
+            <Setter Property="AutoGenerateColumns"
+                    Value="False"/>
+            <Setter Property="CanUserAddRows"
+                    Value="False"/>
+            <Setter Property="IsReadOnly" Value="False"/>
+            <Setter Property="HeadersVisibility"
+                    Value="Column"/>
+            <Setter Property="GridLinesVisibility"
+                    Value="Horizontal"/>
+            <Setter Property="RowHeight" Value="42"/>
+        </Style>
+    </Page.Resources>
+
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <StackPanel Margin="20">
+
+            <!-- HEADER -->
+            <TextBlock Text="Nhập hàng"
+                       FontSize="23"
+                       FontWeight="Bold"
+                       Foreground="#263238"/>
+
+            <TextBlock Text="Tạo phiếu nhập và cập nhật số lượng tồn kho"
+                       Foreground="#757575"
+                       Margin="0,5,0,18"/>
+
+            <!-- THÔNG TIN PHIẾU -->
+            <Border Background="White"
+                    CornerRadius="8"
+                    Padding="16"
+                    Margin="0,0,0,14">
+
+                <StackPanel>
+                    <TextBlock Text="Thông tin phiếu nhập"
+                               FontSize="16"
+                               FontWeight="SemiBold"
+                               Margin="0,0,0,14"/>
+
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="20"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <StackPanel Grid.Column="0">
+                            <TextBlock Text="Nhà cung cấp"
+                                       Margin="0,0,0,6"/>
+
+                            <ComboBox
+                                ItemsSource="{Binding Suppliers}"
+                                SelectedItem="{Binding SelectedSupplier, Mode=TwoWay}"
+                                DisplayMemberPath="SupplierName"
+                                Height="36"/>
+                        </StackPanel>
+
+                        <StackPanel Grid.Column="2">
+                            <TextBlock Text="Ghi chú"
+                                       Margin="0,0,0,6"/>
+
+                            <TextBox
+                                Text="{Binding Note,
+                                    Mode=TwoWay,
+                                    UpdateSourceTrigger=PropertyChanged}"
+                                MaxLength="500"
+                                Height="36"
+                                VerticalContentAlignment="Center"
+                                Padding="8,0"/>
+                        </StackPanel>
+                    </Grid>
+                </StackPanel>
+            </Border>
+
+            <!-- DANH SÁCH NGUYÊN LIỆU -->
+            <Border Background="White"
+                    CornerRadius="8"
+                    Padding="16"
+                    Margin="0,0,0,14">
+
+                <StackPanel>
+                    <DockPanel Margin="0,0,0,12">
+                        <TextBlock Text="Danh sách nguyên liệu"
+                                   FontSize="16"
+                                   FontWeight="SemiBold"
+                                   DockPanel.Dock="Left"/>
+
+                        <StackPanel Orientation="Horizontal"
+                                    HorizontalAlignment="Right">
+
+                            <Button Content="+ Thêm dòng"
+                                    Command="{Binding AddLineCommand}"/>
+
+                            <Button Content="Xóa dòng"
+                                    Command="{Binding RemoveLineCommand}"
+                                    Background="#FCE8E6"
+                                    Foreground="#B3261E"/>
+                        </StackPanel>
+                    </DockPanel>
+
+                    <DataGrid
+                        ItemsSource="{Binding Lines}"
+                        SelectedItem="{Binding SelectedLine,
+                            Mode=TwoWay}"
+                        SelectionMode="Single"
+                        SelectionUnit="FullRow"
+                        Height="230">
+
+                        <DataGrid.Columns>
+
+                            <!-- NGUYÊN LIỆU -->
+                            <DataGridTemplateColumn
+                                Header="Nguyên liệu"
+                                Width="2*">
+
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+
+                                        <ComboBox
+                                            Margin="4"
+                                            VerticalContentAlignment="Center"
+                                            ItemsSource="{Binding AvailableIngredients}"
+                                            DisplayMemberPath="IngredientName"
+                                            SelectedItem="{Binding SelectedIngredient,
+                                            Mode=TwoWay,
+                                            UpdateSourceTrigger=PropertyChanged}"/>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+
+                            <!-- ĐƠN VỊ -->
+                            <DataGridTextColumn
+                                Header="Đơn vị"
+                                Width="*"
+                                IsReadOnly="True"
+                                Binding="{Binding
+                                    SelectedIngredient.Unit}"/>
+
+                            <!-- SỐ LƯỢNG -->
+                            <DataGridTemplateColumn
+                                Header="Số lượng nhập"
+                                Width="*">
+
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBox
+                                            Margin="4"
+                                            Padding="6"
+                                            VerticalContentAlignment="Center"
+                                            Text="{Binding QuantityText,
+                                                Mode=TwoWay,
+                                                UpdateSourceTrigger=PropertyChanged}"/>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+
+                            <!-- ĐƠN GIÁ -->
+                            <DataGridTemplateColumn
+                                Header="Đơn giá"
+                                Width="*">
+
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBox
+                                            Margin="4"
+                                            Padding="6"
+                                            VerticalContentAlignment="Center"
+                                            Text="{Binding UnitCostText,
+                                                Mode=TwoWay,
+                                                UpdateSourceTrigger=PropertyChanged}"/>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+
+                            <!-- THÀNH TIỀN -->
+                            <DataGridTextColumn
+                                Header="Thành tiền"
+                                Width="1.3*"
+                                IsReadOnly="True"
+                                Binding="{Binding LineTotal,
+                                    StringFormat={}{0:N2}}"/>
+
+                        </DataGrid.Columns>
+                    </DataGrid>
+
+                    <!-- TỔNG TIỀN -->
+                    <StackPanel Orientation="Horizontal"
+                                HorizontalAlignment="Right"
+                                Margin="0,16,0,12">
+
+                        <TextBlock Text="Tổng tiền: "
+                                   FontSize="16"
+                                   FontWeight="SemiBold"/>
+
+                        <TextBlock
+                            Text="{Binding TotalCost,
+                                StringFormat={}{0:N2}}"
+                            FontSize="18"
+                            FontWeight="Bold"
+                            Foreground="#1976D2"/>
+
+                        <TextBlock Text=" VNĐ"
+                                   FontSize="16"
+                                   FontWeight="SemiBold"/>
+                    </StackPanel>
+
+                    <!-- ACTIONS -->
+                    <StackPanel Orientation="Horizontal"
+                                HorizontalAlignment="Right">
+
+                        <Button Content="Làm mới"
+                                Command="{Binding RefreshCommand}"/>
+
+                        <Button Content="Xác nhận nhập hàng"
+                                Command="{Binding SaveCommand}"
+                                Background="#1976D2"
+                                Foreground="White"
+                                FontWeight="SemiBold"/>
+                    </StackPanel>
+
+                    <TextBlock
+                        Text="{Binding StatusMessage}"
+                        TextWrapping="Wrap"
+                        Foreground="#455A64"
+                        Margin="0,12,0,0"/>
+                </StackPanel>
+            </Border>
+
+            <!-- LỊCH SỬ NHẬP HÀNG -->
+            <Border Background="White"
+                    CornerRadius="8"
+                    Padding="16">
+
+                <StackPanel>
+                    <TextBlock Text="Phiếu nhập gần đây"
+                               FontSize="16"
+                               FontWeight="SemiBold"
+                               Margin="0,0,0,12"/>
+
+                    <DataGrid
+                        ItemsSource="{Binding RecentReceipts}"
+                        IsReadOnly="True"
+                        Height="210">
+
+                        <DataGrid.Columns>
+                            <DataGridTextColumn
+                                Header="Mã phiếu"
+                                Binding="{Binding StockReceiptId}"
+                                Width="*"/>
+
+                            <DataGridTextColumn
+                                Header="Nhà cung cấp"
+                                Binding="{Binding Supplier.SupplierName}"
+                                Width="2*"/>
+
+                            <DataGridTextColumn
+                                Header="Nhân viên nhập"
+                                Binding="{Binding
+                                    ReceivedByNavigation.FullName}"
+                                Width="2*"/>
+
+                            <DataGridTextColumn
+                                Header="Ngày nhập"
+                                Binding="{Binding ReceiptDate,
+                                    StringFormat='dd/MM/yyyy HH:mm'}"
+                                Width="1.6*"/>
+
+                            <DataGridTextColumn
+                                Header="Tổng tiền"
+                                Binding="{Binding TotalCost,
+                                    StringFormat={}{0:N2}}"
+                                Width="1.5*"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </StackPanel>
+            </Border>
+        </StackPanel>
+    </ScrollViewer>
+</Page>
