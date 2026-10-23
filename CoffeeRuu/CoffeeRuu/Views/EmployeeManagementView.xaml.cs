@@ -10,6 +10,7 @@ namespace CoffeeRuu.Views
     public partial class EmployeeManagementView : UserControl
     {
         private readonly EmployeeManagementViewModel _viewModel;
+        private bool _isPasswordVisible;
 
         public EmployeeManagementView()
         {
@@ -26,28 +27,65 @@ namespace CoffeeRuu.Views
         private void PasswordInput_PasswordChanged(
             object sender, RoutedEventArgs e)
         {
+            if (_isPasswordVisible)
+            {
+                return;
+            }
+
             if (DataContext is EmployeeManagementViewModel vm)
             {
-                string password = PasswordInput.Password;
-
-                if (vm.Password != password)
+                if (vm.Password != PasswordInput.Password)
                 {
-                    vm.Password = password;
+                    vm.Password = PasswordInput.Password;
                 }
             }
         }
 
-        private void PasswordInput_IsVisibleChanged(
-            object sender, DependencyPropertyChangedEventArgs e)
+        private void PasswordTextInput_TextChanged(
+            object sender, TextChangedEventArgs e)
         {
-            if (!PasswordInput.IsVisible)
+            if (!_isPasswordVisible)
             {
-                PasswordInput.Clear();
+                return;
+            }
 
-                if (_viewModel.Password != "")
+            if (DataContext is EmployeeManagementViewModel vm)
+            {
+                if (vm.Password != PasswordTextInput.Text)
                 {
-                    _viewModel.Password = "";
+                    vm.Password = PasswordTextInput.Text;
                 }
+            }
+        }
+
+        private void TogglePasswordButton_Click(
+            object sender, RoutedEventArgs e)
+        {
+            _isPasswordVisible = !_isPasswordVisible;
+
+            if (_isPasswordVisible)
+            {
+                PasswordTextInput.Text = PasswordInput.Password;
+
+                PasswordInput.Visibility = Visibility.Collapsed;
+                PasswordTextInput.Visibility = Visibility.Visible;
+
+                PasswordTextInput.Focus();
+                PasswordTextInput.CaretIndex =
+                    PasswordTextInput.Text.Length;
+
+                TogglePasswordButton.Content = "🙈";
+            }
+            else
+            {
+                PasswordInput.Password = PasswordTextInput.Text;
+
+                PasswordTextInput.Visibility = Visibility.Collapsed;
+                PasswordInput.Visibility = Visibility.Visible;
+
+                PasswordInput.Focus();
+
+                TogglePasswordButton.Content = "👁";
             }
         }
 
@@ -57,9 +95,16 @@ namespace CoffeeRuu.Views
             if (e.PropertyName ==
                 nameof(EmployeeManagementViewModel.Password))
             {
-                if (PasswordInput.Password != _viewModel.Password)
+                string password = _viewModel.Password ?? "";
+
+                if (PasswordInput.Password != password)
                 {
-                    PasswordInput.Password = _viewModel.Password;
+                    PasswordInput.Password = password;
+                }
+
+                if (PasswordTextInput.Text != password)
+                {
+                    PasswordTextInput.Text = password;
                 }
             }
         }

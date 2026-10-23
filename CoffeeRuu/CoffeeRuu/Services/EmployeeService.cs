@@ -47,13 +47,26 @@ namespace CoffeeRuu.Services
 
             using var db = App.CreateDbContext();
 
-            if (db.Employees.Any(e => e.Username == username))
+            if (db.Employees.Any(e =>
+                e.Username.ToLower() == username.ToLower()))
             {
                 throw new InvalidOperationException(
                     "Tên đăng nhập đã tồn tại.");
             }
 
-            var role = db.Roles.FirstOrDefault(r => r.RoleId == roleId);
+            string? normalizedEmail = NormalizeEmail(email);
+
+            if (normalizedEmail != null &&
+                db.Employees.Any(e =>
+                    e.Email != null &&
+                    e.Email.ToLower() == normalizedEmail.ToLower()))
+            {
+                throw new InvalidOperationException(
+                    "Email này đã được tài khoản khác sử dụng.");
+            }
+
+            var role = db.Roles
+                .FirstOrDefault(r => r.RoleId == roleId);
 
             if (role == null)
             {
@@ -73,7 +86,7 @@ namespace CoffeeRuu.Services
                 PasswordHash = PasswordService.HashPassword(password),
                 FullName = fullName,
                 Phone = NormalizePhone(phone),
-                Email = NormalizeEmail(email),
+                Email = normalizedEmail,
                 RoleId = roleId,
                 IsActive = true,
                 CreatedAt = DateTime.Now
@@ -112,11 +125,23 @@ namespace CoffeeRuu.Services
             }
 
             if (db.Employees.Any(e =>
-                e.Username == username &&
+                e.Username.ToLower() == username.ToLower() &&
                 e.EmployeeId != employeeId))
             {
                 throw new InvalidOperationException(
                     "Tên đăng nhập đã được tài khoản khác sử dụng.");
+            }
+
+            string? normalizedEmail = NormalizeEmail(email);
+
+            if (normalizedEmail != null &&
+                db.Employees.Any(e =>
+                    e.Email != null &&
+                    e.Email.ToLower() == normalizedEmail.ToLower() &&
+                    e.EmployeeId != employeeId))
+            {
+                throw new InvalidOperationException(
+                    "Email này đã được tài khoản khác sử dụng.");
             }
 
             var newRole = db.Roles
@@ -131,7 +156,8 @@ namespace CoffeeRuu.Services
             bool currentIsAdmin = IsAdminRole(
                 employee.Role?.RoleName);
 
-            bool newRoleIsAdmin = IsAdminRole(newRole.RoleName);
+            bool newRoleIsAdmin = IsAdminRole(
+                newRole.RoleName);
 
             if (currentIsAdmin && !isActive)
             {
@@ -154,7 +180,7 @@ namespace CoffeeRuu.Services
             employee.Username = username;
             employee.FullName = fullName;
             employee.Phone = NormalizePhone(phone);
-            employee.Email = NormalizeEmail(email);
+            employee.Email = normalizedEmail;
             employee.RoleId = roleId;
             employee.IsActive = isActive;
             employee.UpdatedAt = DateTime.Now;
@@ -162,7 +188,9 @@ namespace CoffeeRuu.Services
             db.SaveChanges();
         }
 
-        public void ChangePassword(int employeeId, string newPassword)
+        public void ChangePassword(
+            int employeeId,
+            string newPassword)
         {
             ValidatePassword(newPassword);
 
@@ -233,6 +261,20 @@ namespace CoffeeRuu.Services
                 throw new ArgumentException(
                     "Vui lòng nhập họ và tên.");
             }
+
+            fullName = fullName.Trim();
+
+            bool isValid = fullName.All(c =>
+                char.IsLetter(c) ||
+                char.IsWhiteSpace(c) ||
+                c == '\'' ||
+                c == '-');
+
+            if (!isValid)
+            {
+                throw new ArgumentException(
+                    "Họ và tên chỉ được chứa chữ cái, khoảng trắng, dấu nháy hoặc dấu gạch nối.");
+            }
         }
 
         private static void ValidatePassword(string? password)
@@ -246,71 +288,82 @@ namespace CoffeeRuu.Services
             if (password.Length < 6)
             {
                 throw new ArgumentException(
-                    "Mật khẩu phải có ít nhất 8 ký tự.");
+                    "Mật khẩu phải có ít nhất 6 ký tự.");
             }
         }
+
 
         private static void ValidateContact(
             string? phone,
             string? email)
         {
-            if (!string.IsNullOrWhiteSpace(phone))
+            // 1. Bat buoc nhap so dien thoai
+            if (string.IsNullOrWhiteSpace(phone))
             {
-                string normalizedPhone = phone.Trim();
-
-                string digits = new string(
-                    normalizedPhone.Where(char.IsDigit).ToArray());
-
-                if (digits.Length < 9 || digits.Length > 15 ||
-                    normalizedPhone.Any(c =>
-                        !char.IsDigit(c) &&
-                        c != '+' &&
-                        c != '-' &&
-                        c != ' ' &&
-                        c != '(' &&
-                        c != ')'))
-                {
-                    throw new ArgumentException(
-                        "Số điện thoại không hợp lệ.");
-                }
-
-                if (normalizedPhone.Contains('+') &&
-                    normalizedPhone.IndexOf('+') != 0)
-                {
-                    throw new ArgumentException(
-                        "Dấu + trong số điện thoại chỉ được đặt ở đầu.");
-                }
-
-                if (normalizedPhone.Count(c => c == '+') > 1)
-                {
-                    throw new ArgumentException(
-                        "Số điện thoại không hợp lệ.");
-                }
+                throw new ArgumentException(
+                    "Vui lòng nhập số điện thoại.");
             }
 
-            if (!string.IsNullOrWhiteSpace(email))
+            string normalizedPhone = phone.Trim();
+
+            string digits = new string(
+                normalizedPhone.Where(char.IsDigit).ToArray());
+
+            if (digits.Length < 9 ||
+                digits.Length > 15 ||
+                normalizedPhone.Any(c =>
+                    !char.IsDigit(c) &&
+                    c != '+' &&
+                    c != '-' &&
+                    c != ' ' &&
+                    c != '(' &&
+                    c != ')'))
             {
-                string normalizedEmail = email.Trim();
+                throw new ArgumentException(
+                    "Số điện thoại không hợp lệ.");
+            }
 
-                try
-                {
-                    var address = new MailAddress(normalizedEmail);
+            if (normalizedPhone.Contains('+') &&
+                normalizedPhone.IndexOf('+') != 0)
+            {
+                throw new ArgumentException(
+                    "Dấu + trong số điện thoại chỉ được đặt ở đầu.");
+            }
 
-                    if (!string.Equals(
-                        address.Address,
-                        normalizedEmail,
-                        StringComparison.OrdinalIgnoreCase))
-                    {
-                        throw new FormatException();
-                    }
-                }
-                catch
+            if (normalizedPhone.Count(c => c == '+') > 1)
+            {
+                throw new ArgumentException(
+                    "Số điện thoại không hợp lệ.");
+            }
+
+            // 2. Bat buoc nhap email
+            if (string.IsNullOrWhiteSpace(email))
+            {
+                throw new ArgumentException(
+                    "Vui lòng nhập email.");
+            }
+
+            string normalizedEmail = email.Trim();
+
+            try
+            {
+                var address = new MailAddress(normalizedEmail);
+
+                if (!string.Equals(
+                    address.Address,
+                    normalizedEmail,
+                    StringComparison.OrdinalIgnoreCase))
                 {
-                    throw new ArgumentException(
-                        "Địa chỉ email không hợp lệ.");
+                    throw new FormatException();
                 }
+            }
+            catch
+            {
+                throw new ArgumentException(
+                    "Địa chỉ email không hợp lệ.");
             }
         }
+
 
         private static string? NormalizePhone(string? phone)
         {
