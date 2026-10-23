@@ -3,28 +3,64 @@
   "WorkspaceRootPath": "C:\\D\\FPT\\K\u1EF3 5\\PRN212\\Assignment\\Group3_SE2001_Project_PRN212\\CoffeeRuu\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{3B35363F-16B8-E8D9-749D-DEE533D1F23E}|CoffeeRuu\\CoffeeRuu.csproj|c:\\d\\fpt\\k\u1EF3 5\\prn212\\assignment\\group3_se2001_project_prn212\\coffeeruu\\coffeeruu\\mainwindow.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{3B35363F-16B8-E8D9-749D-DEE533D1F23E}|CoffeeRuu\\CoffeeRuu.csproj|solutionrelative:coffeeruu\\mainwindow.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{3B35363F-16B8-E8D9-749D-DEE533D1F23E}|CoffeeRuu\\CoffeeRuu.csproj|c:\\d\\fpt\\k\u1EF3 5\\prn212\\assignment\\group3_se2001_project_prn212\\coffeeruu\\coffeeruu\\views\\orderview.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
+      "RelativeMoniker": "D:0:0:{3B35363F-16B8-E8D9-749D-DEE533D1F23E}|CoffeeRuu\\CoffeeRuu.csproj|solutionrelative:coffeeruu\\views\\orderview.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{3B35363F-16B8-E8D9-749D-DEE533D1F23E}|CoffeeRuu\\CoffeeRuu.csproj|c:\\d\\fpt\\k\u1EF3 5\\prn212\\assignment\\group3_se2001_project_prn212\\coffeeruu\\coffeeruu\\mainwindow.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
-      "RelativeMoniker": "D:0:0:{3B35363F-16B8-E8D9-749D-DEE533D1F23E}|CoffeeRuu\\CoffeeRuu.csproj|solutionrelative:coffeeruu\\mainwindow.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
+      "AbsoluteMoniker": "D:0:0:{3B35363F-16B8-E8D9-749D-DEE533D1F23E}|CoffeeRuu\\CoffeeRuu.csproj|c:\\d\\fpt\\k\u1EF3 5\\prn212\\assignment\\group3_se2001_project_prn212\\coffeeruu\\coffeeruu\\views\\orderview.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{3B35363F-16B8-E8D9-749D-DEE533D1F23E}|CoffeeRuu\\CoffeeRuu.csproj|solutionrelative:coffeeruu\\views\\orderview.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{3B35363F-16B8-E8D9-749D-DEE533D1F23E}|CoffeeRuu\\CoffeeRuu.csproj|c:\\d\\fpt\\k\u1EF3 5\\prn212\\assignment\\group3_se2001_project_prn212\\coffeeruu\\coffeeruu\\views\\posmenuview.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
+      "RelativeMoniker": "D:0:0:{3B35363F-16B8-E8D9-749D-DEE533D1F23E}|CoffeeRuu\\CoffeeRuu.csproj|solutionrelative:coffeeruu\\views\\posmenuview.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{3B35363F-16B8-E8D9-749D-DEE533D1F23E}|CoffeeRuu\\CoffeeRuu.csproj|c:\\d\\fpt\\k\u1EF3 5\\prn212\\assignment\\group3_se2001_project_prn212\\coffeeruu\\coffeeruu\\views\\productdialog.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
+      "RelativeMoniker": "D:0:0:{3B35363F-16B8-E8D9-749D-DEE533D1F23E}|CoffeeRuu\\CoffeeRuu.csproj|solutionrelative:coffeeruu\\views\\productdialog.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{3B35363F-16B8-E8D9-749D-DEE533D1F23E}|CoffeeRuu\\CoffeeRuu.csproj|c:\\d\\fpt\\k\u1EF3 5\\prn212\\assignment\\group3_se2001_project_prn212\\coffeeruu\\coffeeruu\\views\\reportview.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{3B35363F-16B8-E8D9-749D-DEE533D1F23E}|CoffeeRuu\\CoffeeRuu.csproj|solutionrelative:coffeeruu\\views\\reportview.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{3B35363F-16B8-E8D9-749D-DEE533D1F23E}|CoffeeRuu\\CoffeeRuu.csproj|c:\\d\\fpt\\k\u1EF3 5\\prn212\\assignment\\group3_se2001_project_prn212\\coffeeruu\\coffeeruu\\views\\reportview.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
+      "RelativeMoniker": "D:0:0:{3B35363F-16B8-E8D9-749D-DEE533D1F23E}|CoffeeRuu\\CoffeeRuu.csproj|solutionrelative:coffeeruu\\views\\reportview.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{3B35363F-16B8-E8D9-749D-DEE533D1F23E}|CoffeeRuu\\CoffeeRuu.csproj|c:\\d\\fpt\\k\u1EF3 5\\prn212\\assignment\\group3_se2001_project_prn212\\coffeeruu\\coffeeruu\\views\\supplierview.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
+      "RelativeMoniker": "D:0:0:{3B35363F-16B8-E8D9-749D-DEE533D1F23E}|CoffeeRuu\\CoffeeRuu.csproj|solutionrelative:coffeeruu\\views\\supplierview.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{3B35363F-16B8-E8D9-749D-DEE533D1F23E}|CoffeeRuu\\CoffeeRuu.csproj|c:\\d\\fpt\\k\u1EF3 5\\prn212\\assignment\\group3_se2001_project_prn212\\coffeeruu\\coffeeruu\\views\\menuview.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
+      "RelativeMoniker": "D:0:0:{3B35363F-16B8-E8D9-749D-DEE533D1F23E}|CoffeeRuu\\CoffeeRuu.csproj|solutionrelative:coffeeruu\\views\\menuview.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{3B35363F-16B8-E8D9-749D-DEE533D1F23E}|CoffeeRuu\\CoffeeRuu.csproj|c:\\d\\fpt\\k\u1EF3 5\\prn212\\assignment\\group3_se2001_project_prn212\\coffeeruu\\coffeeruu\\views\\homeview.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{3B35363F-16B8-E8D9-749D-DEE533D1F23E}|CoffeeRuu\\CoffeeRuu.csproj|solutionrelative:coffeeruu\\views\\homeview.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
+      "AbsoluteMoniker": "D:0:0:{3B35363F-16B8-E8D9-749D-DEE533D1F23E}|CoffeeRuu\\CoffeeRuu.csproj|c:\\d\\fpt\\k\u1EF3 5\\prn212\\assignment\\group3_se2001_project_prn212\\coffeeruu\\coffeeruu\\views\\mainshellwindow.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
+      "RelativeMoniker": "D:0:0:{3B35363F-16B8-E8D9-749D-DEE533D1F23E}|CoffeeRuu\\CoffeeRuu.csproj|solutionrelative:coffeeruu\\views\\mainshellwindow.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{3B35363F-16B8-E8D9-749D-DEE533D1F23E}|CoffeeRuu\\CoffeeRuu.csproj|c:\\d\\fpt\\k\u1EF3 5\\prn212\\assignment\\group3_se2001_project_prn212\\coffeeruu\\coffeeruu\\views\\homeview.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
       "RelativeMoniker": "D:0:0:{3B35363F-16B8-E8D9-749D-DEE533D1F23E}|CoffeeRuu\\CoffeeRuu.csproj|solutionrelative:coffeeruu\\views\\homeview.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{3B35363F-16B8-E8D9-749D-DEE533D1F23E}|CoffeeRuu\\CoffeeRuu.csproj|c:\\d\\fpt\\k\u1EF3 5\\prn212\\assignment\\group3_se2001_project_prn212\\coffeeruu\\coffeeruu\\views\\imenudialogservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{3B35363F-16B8-E8D9-749D-DEE533D1F23E}|CoffeeRuu\\CoffeeRuu.csproj|solutionrelative:coffeeruu\\views\\imenudialogservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{3B35363F-16B8-E8D9-749D-DEE533D1F23E}|CoffeeRuu\\CoffeeRuu.csproj|c:\\d\\fpt\\k\u1EF3 5\\prn212\\assignment\\group3_se2001_project_prn212\\coffeeruu\\coffeeruu\\views\\kdsview.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
+      "RelativeMoniker": "D:0:0:{3B35363F-16B8-E8D9-749D-DEE533D1F23E}|CoffeeRuu\\CoffeeRuu.csproj|solutionrelative:coffeeruu\\views\\kdsview.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{3B35363F-16B8-E8D9-749D-DEE533D1F23E}|CoffeeRuu\\CoffeeRuu.csproj|c:\\d\\fpt\\k\u1EF3 5\\prn212\\assignment\\group3_se2001_project_prn212\\coffeeruu\\coffeeruu\\views\\reportview.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
-      "RelativeMoniker": "D:0:0:{3B35363F-16B8-E8D9-749D-DEE533D1F23E}|CoffeeRuu\\CoffeeRuu.csproj|solutionrelative:coffeeruu\\views\\reportview.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
+      "AbsoluteMoniker": "D:0:0:{3B35363F-16B8-E8D9-749D-DEE533D1F23E}|CoffeeRuu\\CoffeeRuu.csproj|c:\\d\\fpt\\k\u1EF3 5\\prn212\\assignment\\group3_se2001_project_prn212\\coffeeruu\\coffeeruu\\mainwindow.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
+      "RelativeMoniker": "D:0:0:{3B35363F-16B8-E8D9-749D-DEE533D1F23E}|CoffeeRuu\\CoffeeRuu.csproj|solutionrelative:coffeeruu\\mainwindow.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{3B35363F-16B8-E8D9-749D-DEE533D1F23E}|CoffeeRuu\\CoffeeRuu.csproj|c:\\d\\fpt\\k\u1EF3 5\\prn212\\assignment\\group3_se2001_project_prn212\\coffeeruu\\coffeeruu\\mainwindow.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{3B35363F-16B8-E8D9-749D-DEE533D1F23E}|CoffeeRuu\\CoffeeRuu.csproj|solutionrelative:coffeeruu\\mainwindow.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{3B35363F-16B8-E8D9-749D-DEE533D1F23E}|CoffeeRuu\\CoffeeRuu.csproj|c:\\d\\fpt\\k\u1EF3 5\\prn212\\assignment\\group3_se2001_project_prn212\\coffeeruu\\coffeeruu\\views\\imenudialogservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{3B35363F-16B8-E8D9-749D-DEE533D1F23E}|CoffeeRuu\\CoffeeRuu.csproj|solutionrelative:coffeeruu\\views\\imenudialogservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{3B35363F-16B8-E8D9-749D-DEE533D1F23E}|CoffeeRuu\\CoffeeRuu.csproj|c:\\d\\fpt\\k\u1EF3 5\\prn212\\assignment\\group3_se2001_project_prn212\\coffeeruu\\coffeeruu\\viewmodels\\loginviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -39,32 +75,12 @@
       "RelativeMoniker": "D:0:0:{3B35363F-16B8-E8D9-749D-DEE533D1F23E}|CoffeeRuu\\CoffeeRuu.csproj|solutionrelative:coffeeruu\\views\\ingredientview.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{3B35363F-16B8-E8D9-749D-DEE533D1F23E}|CoffeeRuu\\CoffeeRuu.csproj|c:\\d\\fpt\\k\u1EF3 5\\prn212\\assignment\\group3_se2001_project_prn212\\coffeeruu\\coffeeruu\\views\\kdsview.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
-      "RelativeMoniker": "D:0:0:{3B35363F-16B8-E8D9-749D-DEE533D1F23E}|CoffeeRuu\\CoffeeRuu.csproj|solutionrelative:coffeeruu\\views\\kdsview.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{3B35363F-16B8-E8D9-749D-DEE533D1F23E}|CoffeeRuu\\CoffeeRuu.csproj|c:\\d\\fpt\\k\u1EF3 5\\prn212\\assignment\\group3_se2001_project_prn212\\coffeeruu\\coffeeruu\\views\\mainshellwindow.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
-      "RelativeMoniker": "D:0:0:{3B35363F-16B8-E8D9-749D-DEE533D1F23E}|CoffeeRuu\\CoffeeRuu.csproj|solutionrelative:coffeeruu\\views\\mainshellwindow.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{3B35363F-16B8-E8D9-749D-DEE533D1F23E}|CoffeeRuu\\CoffeeRuu.csproj|c:\\d\\fpt\\k\u1EF3 5\\prn212\\assignment\\group3_se2001_project_prn212\\coffeeruu\\coffeeruu\\app.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
       "RelativeMoniker": "D:0:0:{3B35363F-16B8-E8D9-749D-DEE533D1F23E}|CoffeeRuu\\CoffeeRuu.csproj|solutionrelative:coffeeruu\\app.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{3B35363F-16B8-E8D9-749D-DEE533D1F23E}|CoffeeRuu\\CoffeeRuu.csproj|c:\\d\\fpt\\k\u1EF3 5\\prn212\\assignment\\group3_se2001_project_prn212\\coffeeruu\\coffeeruu\\views\\tableview.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
       "RelativeMoniker": "D:0:0:{3B35363F-16B8-E8D9-749D-DEE533D1F23E}|CoffeeRuu\\CoffeeRuu.csproj|solutionrelative:coffeeruu\\views\\tableview.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{3B35363F-16B8-E8D9-749D-DEE533D1F23E}|CoffeeRuu\\CoffeeRuu.csproj|c:\\d\\fpt\\k\u1EF3 5\\prn212\\assignment\\group3_se2001_project_prn212\\coffeeruu\\coffeeruu\\views\\supplierview.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
-      "RelativeMoniker": "D:0:0:{3B35363F-16B8-E8D9-749D-DEE533D1F23E}|CoffeeRuu\\CoffeeRuu.csproj|solutionrelative:coffeeruu\\views\\supplierview.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{3B35363F-16B8-E8D9-749D-DEE533D1F23E}|CoffeeRuu\\CoffeeRuu.csproj|c:\\d\\fpt\\k\u1EF3 5\\prn212\\assignment\\group3_se2001_project_prn212\\coffeeruu\\coffeeruu\\views\\orderview.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
-      "RelativeMoniker": "D:0:0:{3B35363F-16B8-E8D9-749D-DEE533D1F23E}|CoffeeRuu\\CoffeeRuu.csproj|solutionrelative:coffeeruu\\views\\orderview.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{3B35363F-16B8-E8D9-749D-DEE533D1F23E}|CoffeeRuu\\CoffeeRuu.csproj|c:\\d\\fpt\\k\u1EF3 5\\prn212\\assignment\\group3_se2001_project_prn212\\coffeeruu\\coffeeruu\\views\\menuview.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
-      "RelativeMoniker": "D:0:0:{3B35363F-16B8-E8D9-749D-DEE533D1F23E}|CoffeeRuu\\CoffeeRuu.csproj|solutionrelative:coffeeruu\\views\\menuview.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{3B35363F-16B8-E8D9-749D-DEE533D1F23E}|CoffeeRuu\\CoffeeRuu.csproj|c:\\d\\fpt\\k\u1EF3 5\\prn212\\assignment\\group3_se2001_project_prn212\\coffeeruu\\coffeeruu\\assemblyinfo.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -81,14 +97,6 @@
     {
       "AbsoluteMoniker": "D:0:0:{3B35363F-16B8-E8D9-749D-DEE533D1F23E}|CoffeeRuu\\CoffeeRuu.csproj|c:\\d\\fpt\\k\u1EF3 5\\prn212\\assignment\\group3_se2001_project_prn212\\coffeeruu\\coffeeruu\\views\\mainshellwindow.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{3B35363F-16B8-E8D9-749D-DEE533D1F23E}|CoffeeRuu\\CoffeeRuu.csproj|solutionrelative:coffeeruu\\views\\mainshellwindow.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{3B35363F-16B8-E8D9-749D-DEE533D1F23E}|CoffeeRuu\\CoffeeRuu.csproj|c:\\d\\fpt\\k\u1EF3 5\\prn212\\assignment\\group3_se2001_project_prn212\\coffeeruu\\coffeeruu\\views\\orderview.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{3B35363F-16B8-E8D9-749D-DEE533D1F23E}|CoffeeRuu\\CoffeeRuu.csproj|solutionrelative:coffeeruu\\views\\orderview.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{3B35363F-16B8-E8D9-749D-DEE533D1F23E}|CoffeeRuu\\CoffeeRuu.csproj|c:\\d\\fpt\\k\u1EF3 5\\prn212\\assignment\\group3_se2001_project_prn212\\coffeeruu\\coffeeruu\\views\\posmenuview.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
-      "RelativeMoniker": "D:0:0:{3B35363F-16B8-E8D9-749D-DEE533D1F23E}|CoffeeRuu\\CoffeeRuu.csproj|solutionrelative:coffeeruu\\views\\posmenuview.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{3B35363F-16B8-E8D9-749D-DEE533D1F23E}|CoffeeRuu\\CoffeeRuu.csproj|c:\\d\\fpt\\k\u1EF3 5\\prn212\\assignment\\group3_se2001_project_prn212\\coffeeruu\\coffeeruu\\services\\passwordservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -119,12 +127,12 @@
   ],
   "DocumentGroupContainers": [
     {
-      "Orientation": 0,
+      "Orientation": 1,
       "VerticalTabListWidth": 256,
       "DocumentGroups": [
         {
-          "DockedWidth": 200,
-          "SelectedChildIndex": 2,
+          "DockedHeight": 200,
+          "SelectedChildIndex": 3,
           "Children": [
             {
               "$type": "Bookmark",
@@ -133,38 +141,38 @@
             {
               "$type": "Document",
               "DocumentIndex": 3,
-              "Title": "HomeView.xaml",
-              "DocumentMoniker": "C:\\D\\FPT\\K\u1EF3 5\\PRN212\\Assignment\\Group3_SE2001_Project_PRN212\\CoffeeRuu\\CoffeeRuu\\Views\\HomeView.xaml",
-              "RelativeDocumentMoniker": "CoffeeRuu\\Views\\HomeView.xaml",
-              "ToolTip": "C:\\D\\FPT\\K\u1EF3 5\\PRN212\\Assignment\\Group3_SE2001_Project_PRN212\\CoffeeRuu\\CoffeeRuu\\Views\\HomeView.xaml*",
-              "RelativeToolTip": "CoffeeRuu\\Views\\HomeView.xaml*",
+              "Title": "ProductDialog.xaml",
+              "DocumentMoniker": "C:\\D\\FPT\\K\u1EF3 5\\PRN212\\Assignment\\Group3_SE2001_Project_PRN212\\CoffeeRuu\\CoffeeRuu\\Views\\ProductDialog.xaml",
+              "RelativeDocumentMoniker": "CoffeeRuu\\Views\\ProductDialog.xaml",
+              "ToolTip": "C:\\D\\FPT\\K\u1EF3 5\\PRN212\\Assignment\\Group3_SE2001_Project_PRN212\\CoffeeRuu\\CoffeeRuu\\Views\\ProductDialog.xaml",
+              "RelativeToolTip": "CoffeeRuu\\Views\\ProductDialog.xaml",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
-              "WhenOpened": "2026-10-22T09:27:47.986Z",
+              "WhenOpened": "2026-10-22T11:23:05.193Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "ReportView.xaml.cs",
+              "DocumentMoniker": "C:\\D\\FPT\\K\u1EF3 5\\PRN212\\Assignment\\Group3_SE2001_Project_PRN212\\CoffeeRuu\\CoffeeRuu\\Views\\ReportView.xaml.cs",
+              "RelativeDocumentMoniker": "CoffeeRuu\\Views\\ReportView.xaml.cs",
+              "ToolTip": "C:\\D\\FPT\\K\u1EF3 5\\PRN212\\Assignment\\Group3_SE2001_Project_PRN212\\CoffeeRuu\\CoffeeRuu\\Views\\ReportView.xaml.cs",
+              "RelativeToolTip": "CoffeeRuu\\Views\\ReportView.xaml.cs",
+              "ViewState": "AgIAAEwAAAAAAAAAAADwvwAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-10-22T11:21:14.493Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 0,
-              "Title": "MainWindow.xaml.cs",
-              "DocumentMoniker": "C:\\D\\FPT\\K\u1EF3 5\\PRN212\\Assignment\\Group3_SE2001_Project_PRN212\\CoffeeRuu\\CoffeeRuu\\MainWindow.xaml.cs",
-              "RelativeDocumentMoniker": "CoffeeRuu\\MainWindow.xaml.cs",
-              "ToolTip": "C:\\D\\FPT\\K\u1EF3 5\\PRN212\\Assignment\\Group3_SE2001_Project_PRN212\\CoffeeRuu\\CoffeeRuu\\MainWindow.xaml.cs",
-              "RelativeToolTip": "CoffeeRuu\\MainWindow.xaml.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAcAAAAsAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-10-17T12:47:58.74Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "MainWindow.xaml",
-              "DocumentMoniker": "C:\\D\\FPT\\K\u1EF3 5\\PRN212\\Assignment\\Group3_SE2001_Project_PRN212\\CoffeeRuu\\CoffeeRuu\\MainWindow.xaml",
-              "RelativeDocumentMoniker": "CoffeeRuu\\MainWindow.xaml",
-              "ToolTip": "C:\\D\\FPT\\K\u1EF3 5\\PRN212\\Assignment\\Group3_SE2001_Project_PRN212\\CoffeeRuu\\CoffeeRuu\\MainWindow.xaml*",
-              "RelativeToolTip": "CoffeeRuu\\MainWindow.xaml*",
+              "Title": "OrderView.xaml",
+              "DocumentMoniker": "C:\\D\\FPT\\K\u1EF3 5\\PRN212\\Assignment\\Group3_SE2001_Project_PRN212\\CoffeeRuu\\CoffeeRuu\\Views\\OrderView.xaml",
+              "RelativeDocumentMoniker": "CoffeeRuu\\Views\\OrderView.xaml",
+              "ToolTip": "C:\\D\\FPT\\K\u1EF3 5\\PRN212\\Assignment\\Group3_SE2001_Project_PRN212\\CoffeeRuu\\CoffeeRuu\\Views\\OrderView.xaml",
+              "RelativeToolTip": "CoffeeRuu\\Views\\OrderView.xaml",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
-              "WhenOpened": "2026-10-17T12:48:02.763Z",
+              "WhenOpened": "2026-10-22T09:28:06.359Z",
               "EditorCaption": ""
             },
             {
@@ -181,7 +189,130 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 2,
+              "Title": "PosMenuView.xaml",
+              "DocumentMoniker": "C:\\D\\FPT\\K\u1EF3 5\\PRN212\\Assignment\\Group3_SE2001_Project_PRN212\\CoffeeRuu\\CoffeeRuu\\Views\\PosMenuView.xaml",
+              "RelativeDocumentMoniker": "CoffeeRuu\\Views\\PosMenuView.xaml",
+              "ToolTip": "C:\\D\\FPT\\K\u1EF3 5\\PRN212\\Assignment\\Group3_SE2001_Project_PRN212\\CoffeeRuu\\CoffeeRuu\\Views\\PosMenuView.xaml",
+              "RelativeToolTip": "CoffeeRuu\\Views\\PosMenuView.xaml",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
+              "WhenOpened": "2026-10-21T00:32:14.467Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "OrderView.xaml.cs",
+              "DocumentMoniker": "C:\\D\\FPT\\K\u1EF3 5\\PRN212\\Assignment\\Group3_SE2001_Project_PRN212\\CoffeeRuu\\CoffeeRuu\\Views\\OrderView.xaml.cs",
+              "RelativeDocumentMoniker": "CoffeeRuu\\Views\\OrderView.xaml.cs",
+              "ToolTip": "C:\\D\\FPT\\K\u1EF3 5\\PRN212\\Assignment\\Group3_SE2001_Project_PRN212\\CoffeeRuu\\CoffeeRuu\\Views\\OrderView.xaml.cs",
+              "RelativeToolTip": "CoffeeRuu\\Views\\OrderView.xaml.cs",
+              "ViewState": "AgIAAAwAAAAAAAAAAAAuwAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-10-21T01:45:30.231Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "MenuView.xaml",
+              "DocumentMoniker": "C:\\D\\FPT\\K\u1EF3 5\\PRN212\\Assignment\\Group3_SE2001_Project_PRN212\\CoffeeRuu\\CoffeeRuu\\Views\\MenuView.xaml",
+              "RelativeDocumentMoniker": "CoffeeRuu\\Views\\MenuView.xaml",
+              "ToolTip": "C:\\D\\FPT\\K\u1EF3 5\\PRN212\\Assignment\\Group3_SE2001_Project_PRN212\\CoffeeRuu\\CoffeeRuu\\Views\\MenuView.xaml",
+              "RelativeToolTip": "CoffeeRuu\\Views\\MenuView.xaml",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
+              "WhenOpened": "2026-10-22T09:28:04.622Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "HomeView.xaml.cs",
+              "DocumentMoniker": "C:\\D\\FPT\\K\u1EF3 5\\PRN212\\Assignment\\Group3_SE2001_Project_PRN212\\CoffeeRuu\\CoffeeRuu\\Views\\HomeView.xaml.cs",
+              "RelativeDocumentMoniker": "CoffeeRuu\\Views\\HomeView.xaml.cs",
+              "ToolTip": "C:\\D\\FPT\\K\u1EF3 5\\PRN212\\Assignment\\Group3_SE2001_Project_PRN212\\CoffeeRuu\\CoffeeRuu\\Views\\HomeView.xaml.cs",
+              "RelativeToolTip": "CoffeeRuu\\Views\\HomeView.xaml.cs",
+              "ViewState": "AgIAAAoAAAAAAAAAAAAswB4AAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-10-22T09:24:25.312Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "SupplierView.xaml",
+              "DocumentMoniker": "C:\\D\\FPT\\K\u1EF3 5\\PRN212\\Assignment\\Group3_SE2001_Project_PRN212\\CoffeeRuu\\CoffeeRuu\\Views\\SupplierView.xaml",
+              "RelativeDocumentMoniker": "CoffeeRuu\\Views\\SupplierView.xaml",
+              "ToolTip": "C:\\D\\FPT\\K\u1EF3 5\\PRN212\\Assignment\\Group3_SE2001_Project_PRN212\\CoffeeRuu\\CoffeeRuu\\Views\\SupplierView.xaml",
+              "RelativeToolTip": "CoffeeRuu\\Views\\SupplierView.xaml",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
+              "WhenOpened": "2026-10-22T09:28:10.41Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 10,
+              "Title": "HomeView.xaml",
+              "DocumentMoniker": "C:\\D\\FPT\\K\u1EF3 5\\PRN212\\Assignment\\Group3_SE2001_Project_PRN212\\CoffeeRuu\\CoffeeRuu\\Views\\HomeView.xaml",
+              "RelativeDocumentMoniker": "CoffeeRuu\\Views\\HomeView.xaml",
+              "ToolTip": "C:\\D\\FPT\\K\u1EF3 5\\PRN212\\Assignment\\Group3_SE2001_Project_PRN212\\CoffeeRuu\\CoffeeRuu\\Views\\HomeView.xaml*",
+              "RelativeToolTip": "CoffeeRuu\\Views\\HomeView.xaml*",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
+              "WhenOpened": "2026-10-22T09:27:47.986Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 11,
+              "Title": "KdsView.xaml",
+              "DocumentMoniker": "C:\\D\\FPT\\K\u1EF3 5\\PRN212\\Assignment\\Group3_SE2001_Project_PRN212\\CoffeeRuu\\CoffeeRuu\\Views\\KdsView.xaml",
+              "RelativeDocumentMoniker": "CoffeeRuu\\Views\\KdsView.xaml",
+              "ToolTip": "C:\\D\\FPT\\K\u1EF3 5\\PRN212\\Assignment\\Group3_SE2001_Project_PRN212\\CoffeeRuu\\CoffeeRuu\\Views\\KdsView.xaml",
+              "RelativeToolTip": "CoffeeRuu\\Views\\KdsView.xaml",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
+              "WhenOpened": "2026-10-22T09:27:57.041Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
+              "Title": "MainShellWindow.xaml",
+              "DocumentMoniker": "C:\\D\\FPT\\K\u1EF3 5\\PRN212\\Assignment\\Group3_SE2001_Project_PRN212\\CoffeeRuu\\CoffeeRuu\\Views\\MainShellWindow.xaml",
+              "RelativeDocumentMoniker": "CoffeeRuu\\Views\\MainShellWindow.xaml",
+              "ToolTip": "C:\\D\\FPT\\K\u1EF3 5\\PRN212\\Assignment\\Group3_SE2001_Project_PRN212\\CoffeeRuu\\CoffeeRuu\\Views\\MainShellWindow.xaml",
+              "RelativeToolTip": "CoffeeRuu\\Views\\MainShellWindow.xaml",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
+              "WhenOpened": "2026-10-22T09:15:50.823Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 12,
+              "Title": "MainWindow.xaml",
+              "DocumentMoniker": "C:\\D\\FPT\\K\u1EF3 5\\PRN212\\Assignment\\Group3_SE2001_Project_PRN212\\CoffeeRuu\\CoffeeRuu\\MainWindow.xaml",
+              "RelativeDocumentMoniker": "CoffeeRuu\\MainWindow.xaml",
+              "ToolTip": "C:\\D\\FPT\\K\u1EF3 5\\PRN212\\Assignment\\Group3_SE2001_Project_PRN212\\CoffeeRuu\\CoffeeRuu\\MainWindow.xaml",
+              "RelativeToolTip": "CoffeeRuu\\MainWindow.xaml",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
+              "WhenOpened": "2026-10-17T12:48:02.763Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 13,
+              "Title": "MainWindow.xaml.cs",
+              "DocumentMoniker": "C:\\D\\FPT\\K\u1EF3 5\\PRN212\\Assignment\\Group3_SE2001_Project_PRN212\\CoffeeRuu\\CoffeeRuu\\MainWindow.xaml.cs",
+              "RelativeDocumentMoniker": "CoffeeRuu\\MainWindow.xaml.cs",
+              "ToolTip": "C:\\D\\FPT\\K\u1EF3 5\\PRN212\\Assignment\\Group3_SE2001_Project_PRN212\\CoffeeRuu\\CoffeeRuu\\MainWindow.xaml.cs",
+              "RelativeToolTip": "CoffeeRuu\\MainWindow.xaml.cs",
+              "ViewState": "AgIAAA0AAAAAAAAAAAAQwAcAAAAsAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-10-17T12:47:58.74Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 14,
               "Title": "IMenuDialogService.cs",
               "DocumentMoniker": "C:\\D\\FPT\\K\u1EF3 5\\PRN212\\Assignment\\Group3_SE2001_Project_PRN212\\CoffeeRuu\\CoffeeRuu\\Views\\IMenuDialogService.cs",
               "RelativeDocumentMoniker": "CoffeeRuu\\Views\\IMenuDialogService.cs",
@@ -194,20 +325,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "HomeView.xaml.cs",
-              "DocumentMoniker": "C:\\D\\FPT\\K\u1EF3 5\\PRN212\\Assignment\\Group3_SE2001_Project_PRN212\\CoffeeRuu\\CoffeeRuu\\Views\\HomeView.xaml.cs",
-              "RelativeDocumentMoniker": "CoffeeRuu\\Views\\HomeView.xaml.cs",
-              "ToolTip": "C:\\D\\FPT\\K\u1EF3 5\\PRN212\\Assignment\\Group3_SE2001_Project_PRN212\\CoffeeRuu\\CoffeeRuu\\Views\\HomeView.xaml.cs*",
-              "RelativeToolTip": "CoffeeRuu\\Views\\HomeView.xaml.cs*",
-              "ViewState": "AgIAAAoAAAAAAAAAAAAswB4AAAABAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-10-22T09:24:25.312Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 6,
+              "DocumentIndex": 15,
               "Title": "LoginViewModel.cs",
               "DocumentMoniker": "C:\\D\\FPT\\K\u1EF3 5\\PRN212\\Assignment\\Group3_SE2001_Project_PRN212\\CoffeeRuu\\CoffeeRuu\\ViewModels\\LoginViewModel.cs",
               "RelativeDocumentMoniker": "CoffeeRuu\\ViewModels\\LoginViewModel.cs",
@@ -220,7 +338,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 7,
+              "DocumentIndex": 16,
               "Title": "InventoryView.xaml",
               "DocumentMoniker": "C:\\D\\FPT\\K\u1EF3 5\\PRN212\\Assignment\\Group3_SE2001_Project_PRN212\\CoffeeRuu\\CoffeeRuu\\Views\\InventoryView.xaml",
               "RelativeDocumentMoniker": "CoffeeRuu\\Views\\InventoryView.xaml",
@@ -232,7 +350,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 8,
+              "DocumentIndex": 17,
               "Title": "IngredientView.xaml",
               "DocumentMoniker": "C:\\D\\FPT\\K\u1EF3 5\\PRN212\\Assignment\\Group3_SE2001_Project_PRN212\\CoffeeRuu\\CoffeeRuu\\Views\\IngredientView.xaml",
               "RelativeDocumentMoniker": "CoffeeRuu\\Views\\IngredientView.xaml",
@@ -244,31 +362,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 9,
-              "Title": "KdsView.xaml",
-              "DocumentMoniker": "C:\\D\\FPT\\K\u1EF3 5\\PRN212\\Assignment\\Group3_SE2001_Project_PRN212\\CoffeeRuu\\CoffeeRuu\\Views\\KdsView.xaml",
-              "RelativeDocumentMoniker": "CoffeeRuu\\Views\\KdsView.xaml",
-              "ToolTip": "C:\\D\\FPT\\K\u1EF3 5\\PRN212\\Assignment\\Group3_SE2001_Project_PRN212\\CoffeeRuu\\CoffeeRuu\\Views\\KdsView.xaml",
-              "RelativeToolTip": "CoffeeRuu\\Views\\KdsView.xaml",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
-              "WhenOpened": "2026-10-22T09:27:57.041Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 10,
-              "Title": "MainShellWindow.xaml",
-              "DocumentMoniker": "C:\\D\\FPT\\K\u1EF3 5\\PRN212\\Assignment\\Group3_SE2001_Project_PRN212\\CoffeeRuu\\CoffeeRuu\\Views\\MainShellWindow.xaml",
-              "RelativeDocumentMoniker": "CoffeeRuu\\Views\\MainShellWindow.xaml",
-              "ToolTip": "C:\\D\\FPT\\K\u1EF3 5\\PRN212\\Assignment\\Group3_SE2001_Project_PRN212\\CoffeeRuu\\CoffeeRuu\\Views\\MainShellWindow.xaml",
-              "RelativeToolTip": "CoffeeRuu\\Views\\MainShellWindow.xaml",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
-              "WhenOpened": "2026-10-22T09:15:50.823Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 11,
+              "DocumentIndex": 18,
               "Title": "App.xaml",
               "DocumentMoniker": "C:\\D\\FPT\\K\u1EF3 5\\PRN212\\Assignment\\Group3_SE2001_Project_PRN212\\CoffeeRuu\\CoffeeRuu\\App.xaml",
               "RelativeDocumentMoniker": "CoffeeRuu\\App.xaml",
@@ -280,7 +374,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 12,
+              "DocumentIndex": 19,
               "Title": "TableView.xaml",
               "DocumentMoniker": "C:\\D\\FPT\\K\u1EF3 5\\PRN212\\Assignment\\Group3_SE2001_Project_PRN212\\CoffeeRuu\\CoffeeRuu\\Views\\TableView.xaml",
               "RelativeDocumentMoniker": "CoffeeRuu\\Views\\TableView.xaml",
@@ -292,43 +386,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 13,
-              "Title": "SupplierView.xaml",
-              "DocumentMoniker": "C:\\D\\FPT\\K\u1EF3 5\\PRN212\\Assignment\\Group3_SE2001_Project_PRN212\\CoffeeRuu\\CoffeeRuu\\Views\\SupplierView.xaml",
-              "RelativeDocumentMoniker": "CoffeeRuu\\Views\\SupplierView.xaml",
-              "ToolTip": "C:\\D\\FPT\\K\u1EF3 5\\PRN212\\Assignment\\Group3_SE2001_Project_PRN212\\CoffeeRuu\\CoffeeRuu\\Views\\SupplierView.xaml",
-              "RelativeToolTip": "CoffeeRuu\\Views\\SupplierView.xaml",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
-              "WhenOpened": "2026-10-22T09:28:10.41Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 14,
-              "Title": "OrderView.xaml",
-              "DocumentMoniker": "C:\\D\\FPT\\K\u1EF3 5\\PRN212\\Assignment\\Group3_SE2001_Project_PRN212\\CoffeeRuu\\CoffeeRuu\\Views\\OrderView.xaml",
-              "RelativeDocumentMoniker": "CoffeeRuu\\Views\\OrderView.xaml",
-              "ToolTip": "C:\\D\\FPT\\K\u1EF3 5\\PRN212\\Assignment\\Group3_SE2001_Project_PRN212\\CoffeeRuu\\CoffeeRuu\\Views\\OrderView.xaml",
-              "RelativeToolTip": "CoffeeRuu\\Views\\OrderView.xaml",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
-              "WhenOpened": "2026-10-22T09:28:06.359Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 15,
-              "Title": "MenuView.xaml",
-              "DocumentMoniker": "C:\\D\\FPT\\K\u1EF3 5\\PRN212\\Assignment\\Group3_SE2001_Project_PRN212\\CoffeeRuu\\CoffeeRuu\\Views\\MenuView.xaml",
-              "RelativeDocumentMoniker": "CoffeeRuu\\Views\\MenuView.xaml",
-              "ToolTip": "C:\\D\\FPT\\K\u1EF3 5\\PRN212\\Assignment\\Group3_SE2001_Project_PRN212\\CoffeeRuu\\CoffeeRuu\\Views\\MenuView.xaml",
-              "RelativeToolTip": "CoffeeRuu\\Views\\MenuView.xaml",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
-              "WhenOpened": "2026-10-22T09:28:04.622Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 16,
+              "DocumentIndex": 20,
               "Title": "AssemblyInfo.cs",
               "DocumentMoniker": "C:\\D\\FPT\\K\u1EF3 5\\PRN212\\Assignment\\Group3_SE2001_Project_PRN212\\CoffeeRuu\\CoffeeRuu\\AssemblyInfo.cs",
               "RelativeDocumentMoniker": "CoffeeRuu\\AssemblyInfo.cs",
@@ -341,7 +399,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 18,
+              "DocumentIndex": 22,
               "Title": "PosMenuView.xaml.cs",
               "DocumentMoniker": "C:\\D\\FPT\\K\u1EF3 5\\PRN212\\Assignment\\Group3_SE2001_Project_PRN212\\CoffeeRuu\\CoffeeRuu\\Views\\PosMenuView.xaml.cs",
               "RelativeDocumentMoniker": "CoffeeRuu\\Views\\PosMenuView.xaml.cs",
@@ -354,7 +412,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 17,
+              "DocumentIndex": 21,
               "Title": "App.config",
               "DocumentMoniker": "C:\\D\\FPT\\K\u1EF3 5\\PRN212\\Assignment\\Group3_SE2001_Project_PRN212\\CoffeeRuu\\CoffeeRuu\\App.config",
               "RelativeDocumentMoniker": "CoffeeRuu\\App.config",
@@ -367,7 +425,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 19,
+              "DocumentIndex": 23,
               "Title": "MainShellWindow.xaml.cs",
               "DocumentMoniker": "C:\\D\\FPT\\K\u1EF3 5\\PRN212\\Assignment\\Group3_SE2001_Project_PRN212\\CoffeeRuu\\CoffeeRuu\\Views\\MainShellWindow.xaml.cs",
               "RelativeDocumentMoniker": "CoffeeRuu\\Views\\MainShellWindow.xaml.cs",
@@ -380,18 +438,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 21,
-              "Title": "PosMenuView.xaml",
-              "DocumentMoniker": "C:\\D\\FPT\\K\u1EF3 5\\PRN212\\Assignment\\Group3_SE2001_Project_PRN212\\CoffeeRuu\\CoffeeRuu\\Views\\PosMenuView.xaml",
-              "RelativeDocumentMoniker": "CoffeeRuu\\Views\\PosMenuView.xaml",
-              "ToolTip": "C:\\D\\FPT\\K\u1EF3 5\\PRN212\\Assignment\\Group3_SE2001_Project_PRN212\\CoffeeRuu\\CoffeeRuu\\Views\\PosMenuView.xaml",
-              "RelativeToolTip": "CoffeeRuu\\Views\\PosMenuView.xaml",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
-              "WhenOpened": "2026-10-21T00:32:14.467Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 22,
+              "DocumentIndex": 24,
               "Title": "PasswordService.cs",
               "DocumentMoniker": "C:\\D\\FPT\\K\u1EF3 5\\PRN212\\Assignment\\Group3_SE2001_Project_PRN212\\CoffeeRuu\\CoffeeRuu\\Services\\PasswordService.cs",
               "RelativeDocumentMoniker": "CoffeeRuu\\Services\\PasswordService.cs",
@@ -403,7 +450,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 23,
+              "DocumentIndex": 25,
               "Title": "Microsoft.PackageDependencyResolution.targets",
               "DocumentMoniker": "C:\\Program Files\\dotnet\\sdk\\10.0.401\\Sdks\\Microsoft.NET.Sdk\\targets\\Microsoft.PackageDependencyResolution.targets",
               "RelativeDocumentMoniker": "..\\..\\..\\..\\..\\..\\..\\Program Files\\dotnet\\sdk\\10.0.401\\Sdks\\Microsoft.NET.Sdk\\targets\\Microsoft.PackageDependencyResolution.targets",
@@ -415,7 +462,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 24,
+              "DocumentIndex": 26,
               "Title": "CoffeeRuu.csproj.nuget.g.props",
               "DocumentMoniker": "C:\\D\\FPT\\K\u1EF3 5\\PRN212\\Assignment\\Group3_SE2001_Project_PRN212\\CoffeeRuu\\CoffeeRuu\\obj\\CoffeeRuu.csproj.nuget.g.props",
               "RelativeDocumentMoniker": "CoffeeRuu\\obj\\CoffeeRuu.csproj.nuget.g.props",
@@ -427,20 +474,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 20,
-              "Title": "OrderView.xaml.cs",
-              "DocumentMoniker": "C:\\D\\FPT\\K\u1EF3 5\\PRN212\\Assignment\\Group3_SE2001_Project_PRN212\\CoffeeRuu\\CoffeeRuu\\Views\\OrderView.xaml.cs",
-              "RelativeDocumentMoniker": "CoffeeRuu\\Views\\OrderView.xaml.cs",
-              "ToolTip": "C:\\D\\FPT\\K\u1EF3 5\\PRN212\\Assignment\\Group3_SE2001_Project_PRN212\\CoffeeRuu\\CoffeeRuu\\Views\\OrderView.xaml.cs",
-              "RelativeToolTip": "CoffeeRuu\\Views\\OrderView.xaml.cs",
-              "ViewState": "AgIAACEAAAAAAAAAAAAYwAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-10-21T01:45:30.231Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 25,
+              "DocumentIndex": 27,
               "Title": "RelayCommand.cs",
               "DocumentMoniker": "C:\\D\\FPT\\K\u1EF3 5\\PRN212\\Assignment\\Group3_SE2001_Project_PRN212\\CoffeeRuu\\CoffeeRuu\\ViewModels\\RelayCommand.cs",
               "RelativeDocumentMoniker": "CoffeeRuu\\ViewModels\\RelayCommand.cs",
@@ -452,7 +486,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 26,
+              "DocumentIndex": 28,
               "Title": "App.xaml.cs",
               "DocumentMoniker": "C:\\D\\FPT\\K\u1EF3 5\\PRN212\\Assignment\\Group3_SE2001_Project_PRN212\\CoffeeRuu\\CoffeeRuu\\App.xaml.cs",
               "RelativeDocumentMoniker": "CoffeeRuu\\App.xaml.cs",
@@ -464,7 +498,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 27,
+              "DocumentIndex": 29,
               "Title": "CoffeeRuuDbContext.cs",
               "DocumentMoniker": "C:\\D\\FPT\\K\u1EF3 5\\PRN212\\Assignment\\Group3_SE2001_Project_PRN212\\CoffeeRuu\\CoffeeRuu\\Data\\CoffeeRuuDbContext.cs",
               "RelativeDocumentMoniker": "CoffeeRuu\\Data\\CoffeeRuuDbContext.cs",
@@ -476,12 +510,22 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 28,
+              "DocumentIndex": 30,
               "Title": "CoffeeRuuTestDbContext.cs",
               "DocumentMoniker": "D:\\a HK5 FPTU\\PRN212\\Project_PRN\\CoffeeRuu\\CoffeeRuu\\DataTest\\CoffeeRuuTestDbContext.cs",
               "ToolTip": "D:\\a HK5 FPTU\\PRN212\\Project_PRN\\CoffeeRuu\\CoffeeRuu\\DataTest\\CoffeeRuuTestDbContext.cs",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-10-17T14:09:35.484Z"
+            }
+          ]
+        },
+        {
+          "DockedHeight": 200,
+          "SelectedChildIndex": -1,
+          "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:2:0:{d212f56b-c48a-434c-a121-1c5d80b59b9f}"
             }
           ]
         }
