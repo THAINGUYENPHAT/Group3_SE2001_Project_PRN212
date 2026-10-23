@@ -19,15 +19,26 @@
             <Setter Property="Margin" Value="0,0,6,6"/>
             <Setter Property="Cursor" Value="Hand"/>
         </Style>
+
+        <!-- Style nút chọn size để thêm món vào giỏ -->
+        <Style x:Key="SizeAddButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="#EFEBE9"/>
+            <Setter Property="BorderBrush" Value="#D7CCC8"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="6,4"/>
+            <Setter Property="Margin" Value="0,2"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+        </Style>
     </UserControl.Resources>
 
     <Grid Margin="12">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" MinWidth="0"/>
-            <ColumnDefinition Width="320" MinWidth="250"/>
+            <ColumnDefinition Width="340" MinWidth="260"/>
         </Grid.ColumnDefinitions>
 
-        <!-- DANH SÁCH MÓN -->
+        <!-- CỘT 1: DANH SÁCH MÓN -->
         <Grid Grid.Column="0" Margin="0,0,12,0">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
@@ -35,7 +46,7 @@
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
 
-            <!-- Tiêu đề và tìm kiếm -->
+            <!-- Tiêu đề và ô tìm kiếm -->
             <StackPanel Grid.Row="0" Margin="0,0,0,10">
                 <TextBlock Text="☕ Danh mục Menu"
                            FontSize="22"
@@ -60,45 +71,22 @@
                          TextChanged="SearchTextBox_TextChanged"/>
             </StackPanel>
 
-            <!-- Danh mục -->
+            <!-- Bộ lọc danh mục -->
             <ScrollViewer Grid.Row="1"
                           VerticalScrollBarVisibility="Disabled"
                           HorizontalScrollBarVisibility="Auto"
                           Margin="0,0,0,8">
                 <WrapPanel>
-                    <Button Content="Tất cả"
-                            Tag=""
-                            Style="{StaticResource CategoryButtonStyle}"
-                            Click="CategoryButton_Click"/>
-
-                    <Button Content="Cà phê"
-                            Tag="Cà phê"
-                            Style="{StaticResource CategoryButtonStyle}"
-                            Click="CategoryButton_Click"/>
-
-                    <Button Content="Trà sữa"
-                            Tag="Trà sữa"
-                            Style="{StaticResource CategoryButtonStyle}"
-                            Click="CategoryButton_Click"/>
-
-                    <Button Content="Trà trái cây"
-                            Tag="Trà trái cây"
-                            Style="{StaticResource CategoryButtonStyle}"
-                            Click="CategoryButton_Click"/>
-
-                    <Button Content="Đá xay"
-                            Tag="Đá xay"
-                            Style="{StaticResource CategoryButtonStyle}"
-                            Click="CategoryButton_Click"/>
-
-                    <Button Content="Đồ ăn vặt"
-                            Tag="Đồ ăn vặt"
-                            Style="{StaticResource CategoryButtonStyle}"
-                            Click="CategoryButton_Click"/>
+                    <Button Content="Tất cả" Tag="" Style="{StaticResource CategoryButtonStyle}" Click="CategoryButton_Click"/>
+                    <Button Content="Cà phê" Tag="Cà phê" Style="{StaticResource CategoryButtonStyle}" Click="CategoryButton_Click"/>
+                    <Button Content="Trà sữa" Tag="Trà sữa" Style="{StaticResource CategoryButtonStyle}" Click="CategoryButton_Click"/>
+                    <Button Content="Trà trái cây" Tag="Trà trái cây" Style="{StaticResource CategoryButtonStyle}" Click="CategoryButton_Click"/>
+                    <Button Content="Đá xay" Tag="Đá xay" Style="{StaticResource CategoryButtonStyle}" Click="CategoryButton_Click"/>
+                    <Button Content="Đồ ăn vặt" Tag="Đồ ăn vặt" Style="{StaticResource CategoryButtonStyle}" Click="CategoryButton_Click"/>
                 </WrapPanel>
             </ScrollViewer>
 
-            <!-- Danh sách thẻ món -->
+            <!-- Danh sách các thẻ món ăn -->
             <ScrollViewer Grid.Row="2"
                           VerticalScrollBarVisibility="Auto"
                           HorizontalScrollBarVisibility="Disabled"
@@ -113,8 +101,8 @@
 
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
-                            <Border Width="190"
-                                    MinHeight="175"
+                            <Border Width="195"
+                                    MinHeight="180"
                                     Background="White"
                                     CornerRadius="8"
                                     Margin="0,0,10,10"
@@ -123,11 +111,11 @@
                                     Padding="10">
 
                                 <StackPanel>
-                                    <Border Height="55"
+                                    <Border Height="50"
                                             Background="#EFEBE9"
                                             CornerRadius="6">
                                         <TextBlock Text="☕"
-                                                   FontSize="30"
+                                                   FontSize="28"
                                                    HorizontalAlignment="Center"
                                                    VerticalAlignment="Center"/>
                                     </Border>
@@ -136,38 +124,49 @@
                                                FontSize="13"
                                                FontWeight="Bold"
                                                Foreground="#3E2723"
-                                               Margin="0,8,0,2"
+                                               Margin="0,6,0,2"
                                                TextWrapping="Wrap"/>
 
                                     <TextBlock Text="{Binding CategoryName}"
                                                FontSize="10"
                                                Foreground="#795548"
-                                               Margin="0,0,0,5"
+                                               Margin="0,0,0,6"
                                                TextWrapping="Wrap"/>
 
+                                    <!-- Nút bấm chọn từng Size để thêm vào hóa đơn -->
                                     <ItemsControl ItemsSource="{Binding SizePrices}">
                                         <ItemsControl.ItemTemplate>
                                             <DataTemplate>
-                                                <Grid Margin="0,2">
-                                                    <Grid.ColumnDefinitions>
-                                                        <ColumnDefinition Width="*"/>
-                                                        <ColumnDefinition Width="Auto"/>
-                                                    </Grid.ColumnDefinitions>
+                                                <Button Style="{StaticResource SizeAddButtonStyle}"
+                                                        Click="AddToCartButton_Click"
+                                                        ToolTip="Click để thêm món này vào hóa đơn">
+                                                    <Grid>
+                                                        <Grid.ColumnDefinitions>
+                                                            <ColumnDefinition Width="*"/>
+                                                            <ColumnDefinition Width="Auto"/>
+                                                            <ColumnDefinition Width="Auto"/>
+                                                        </Grid.ColumnDefinitions>
 
-                                                    <TextBlock Grid.Column="0"
-                                                               Text="{Binding SizeName}"
-                                                               FontSize="11"
-                                                               Foreground="#5D4037"
-                                                               TextWrapping="Wrap"/>
+                                                        <TextBlock Grid.Column="0"
+                                                                   Text="{Binding SizeName}"
+                                                                   FontSize="11"
+                                                                   Foreground="#5D4037"
+                                                                   VerticalAlignment="Center"/>
 
-                                                    <TextBlock Grid.Column="1"
-                                                               Text="{Binding Price, StringFormat={}{0:N0} đ}"
-                                                               FontSize="11"
-                                                               FontWeight="SemiBold"
-                                                               Foreground="#C62828"
-                                                               HorizontalAlignment="Right"
-                                                               Margin="4,0,0,0"/>
-                                                </Grid>
+                                                        <TextBlock Grid.Column="1"
+                                                                   Text="{Binding Price, StringFormat={}{0:N0} đ}"
+                                                                   FontSize="11"
+                                                                   FontWeight="SemiBold"
+                                                                   Foreground="#C62828"
+                                                                   Margin="4,0,6,0"
+                                                                   VerticalAlignment="Center"/>
+
+                                                        <TextBlock Grid.Column="2"
+                                                                   Text="➕"
+                                                                   FontSize="10"
+                                                                   VerticalAlignment="Center"/>
+                                                    </Grid>
+                                                </Button>
                                             </DataTemplate>
                                         </ItemsControl.ItemTemplate>
                                     </ItemsControl>
@@ -179,7 +178,7 @@
             </ScrollViewer>
         </Grid>
 
-        <!-- HÓA ĐƠN -->
+        <!-- CỘT 2: HÓA ĐƠN BÊN PHẢI -->
         <Border Grid.Column="1"
                 Background="White"
                 CornerRadius="10"
@@ -217,23 +216,36 @@
 
                     <DataGrid.Columns>
                         <DataGridTextColumn Header="Tên món"
-                                            Binding="{Binding ProductName}"
+                                            Binding="{Binding DisplayName}"
                                             Width="*"
-                                            MinWidth="75"/>
+                                            MinWidth="80"/>
 
                         <DataGridTextColumn Header="SL"
                                             Binding="{Binding Quantity}"
-                                            Width="35"/>
+                                            Width="30"/>
 
                         <DataGridTextColumn Header="Tiền"
                                             Binding="{Binding TotalPrice, StringFormat={}{0:N0}}"
-                                            Width="75"/>
+                                            Width="65"/>
+
+                        <!-- Cột Nút xóa món -->
+                        <DataGridTemplateColumn Width="35">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <Button Content="❌"
+                                            Background="Transparent"
+                                            BorderThickness="0"
+                                            Cursor="Hand"
+                                            Click="RemoveFromCartButton_Click"
+                                            ToolTip="Xóa món này"/>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
                     </DataGrid.Columns>
                 </DataGrid>
 
                 <StackPanel Grid.Row="2" Margin="0,10,0,0">
-                    <Separator Background="#E0E0E0"
-                               Margin="0,0,0,10"/>
+                    <Separator Background="#E0E0E0" Margin="0,0,0,10"/>
 
                     <Grid Margin="0,0,0,10">
                         <Grid.ColumnDefinitions>
@@ -259,6 +271,7 @@
                     </Grid>
 
                     <Button Content="Thanh toán / In hóa đơn"
+                            Click="CheckoutButton_Click"
                             MinHeight="40"
                             Padding="6"
                             Background="#4E342E"

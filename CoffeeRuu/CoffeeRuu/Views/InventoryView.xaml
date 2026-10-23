@@ -17,6 +17,11 @@
                        NavigationUIVisibility="Hidden"/>
             </TabItem>
 
+            <TabItem Header="Nhập hàng">
+                <Frame x:Name="StockReceiptFrame"
+           NavigationUIVisibility="Hidden"/>
+            </TabItem>
+
         </TabControl>
     </Grid>
 </Page>

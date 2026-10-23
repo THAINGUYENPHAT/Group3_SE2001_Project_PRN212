@@ -17,6 +17,7 @@ namespace CoffeeRuu.ViewModels
         public ICommand InventoryCommand { get; }
         public ICommand ReportCommand { get; }
         public ICommand TableCommand { get; }
+        public ICommand EmployeeCommand { get; }
         public ICommand LogoutCommand { get; }
 
         public MainWindowViewModel(
@@ -49,6 +50,9 @@ namespace CoffeeRuu.ViewModels
 
             TableCommand = new RelayCommand(
                 () => _navigationService.Navigate("Table"));
+
+            EmployeeCommand = new RelayCommand(
+                () => _navigationService.Navigate("Employee"));
 
             LogoutCommand = new RelayCommand(
                 () => _windowService.Logout());
