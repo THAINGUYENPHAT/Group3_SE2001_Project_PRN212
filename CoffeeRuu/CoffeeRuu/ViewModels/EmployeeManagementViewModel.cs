@@ -419,10 +419,47 @@ namespace CoffeeRuu.ViewModels
             OnPropertyChanged(nameof(FilteredCount));
         }
 
+
         private void AddEmployee()
         {
             try
             {
+                // 1. Username
+                if (string.IsNullOrWhiteSpace(Username))
+                {
+                    throw new InvalidOperationException(
+                        "Vui lòng nhập tên đăng nhập.");
+                }
+
+                // 2. Password
+                if (string.IsNullOrWhiteSpace(Password))
+                {
+                    throw new InvalidOperationException(
+                        "Vui lòng nhập mật khẩu.");
+                }
+
+                if (Password.Length < 6)
+                {
+                    throw new InvalidOperationException(
+                        "Mật khẩu phải có ít nhất 6 ký tự.");
+                }
+
+                // 3. Full name
+                if (string.IsNullOrWhiteSpace(FullName))
+                {
+                    throw new InvalidOperationException(
+                        "Vui lòng nhập họ và tên.");
+                }
+
+                // 4. Phone
+                // Neu de trong thi Service se cho phep.
+                // Neu nhap sai dinh dang, Service se thong bao loi.
+
+                // 5. Email
+                // Neu de trong thi Service se cho phep.
+                // Neu nhap sai dinh dang, Service se thong bao loi.
+
+                // 6. Role
                 if (SelectedRole == null)
                 {
                     throw new InvalidOperationException(
@@ -459,6 +496,7 @@ namespace CoffeeRuu.ViewModels
                     MessageBoxImage.Warning);
             }
         }
+
 
         private void UpdateEmployee()
         {
