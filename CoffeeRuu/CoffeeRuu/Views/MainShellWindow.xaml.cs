@@ -17,7 +17,7 @@ namespace CoffeeRuu.Views
             _navigationService = new NavigationService(MainContent);
 
             _orderService = new OrderService(
-                new OrderRepository(App.CreateDbContextOptions()));
+                new OrderRepository(App.CreateDbContext));
 
             RegisterViews();
 

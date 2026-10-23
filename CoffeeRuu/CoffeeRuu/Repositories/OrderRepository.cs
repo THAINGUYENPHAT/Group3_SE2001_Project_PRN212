@@ -11,22 +11,25 @@ namespace CoffeeRuu.Repositories
 {
     public class OrderRepository
     {
-        private readonly DbContextOptions<CoffeeRuuDbContext> _options;
+        // Thay vì DbContextOptions, lưu hàm tạo Context
+        private readonly Func<CoffeeRuuDbContext> _contextFactory;
 
-        public OrderRepository(
-            DbContextOptions<CoffeeRuuDbContext> options)
+        // Constructor nhận vào hàm khởi tạo Context
+        public OrderRepository(Func<CoffeeRuuDbContext> contextFactory)
         {
-            _options = options;
+            _contextFactory = contextFactory ?? throw new ArgumentNullException(nameof(contextFactory));
         }
 
         public CoffeeRuuDbContext CreateContext()
         {
-            return new CoffeeRuuDbContext(_options);
+            return _contextFactory();
         }
 
         // ================================
-        // LẤY MENU
+        // GIỮ NGUYÊN TẤT CẢ CÁC HÀM BÊN DƯỚI
+        // (GetMenuAsync, GetTablesAsync, GetOrdersAsync, GetKdsAsync)
         // ================================
+
         public async Task<List<MenuChoice>> GetMenuAsync()
         {
             await using var db = CreateContext();
@@ -49,9 +52,6 @@ namespace CoffeeRuu.Repositories
                 .ToListAsync();
         }
 
-        // ================================
-        // LẤY DANH SÁCH BÀN
-        // ================================
         public async Task<List<TableChoice>> GetTablesAsync()
         {
             await using var db = CreateContext();
@@ -71,9 +71,6 @@ namespace CoffeeRuu.Repositories
                 .ToListAsync();
         }
 
-        // ================================
-        // LẤY DANH SÁCH ĐƠN
-        // ================================
         public async Task<List<OrderListRow>> GetOrdersAsync()
         {
             await using var db = CreateContext();
@@ -98,9 +95,6 @@ namespace CoffeeRuu.Repositories
                 .ToListAsync();
         }
 
-        // ================================
-        // LẤY MÓN CHO KDS
-        // ================================
         public async Task<List<KdsItemRow>> GetKdsAsync()
         {
             await using var db = CreateContext();
