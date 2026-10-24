@@ -1,4 +1,7 @@
 ﻿
+using CoffeeRuu.Models;
+using CoffeeRuu.Services;
+using CoffeeRuu.Views;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -7,9 +10,6 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using System.Windows;
-using CoffeeRuu.Models;
-using CoffeeRuu.Services;
-using CoffeeRuu.Views;
 
 namespace CoffeeRuu.ViewModels
 {
@@ -18,14 +18,19 @@ namespace CoffeeRuu.ViewModels
         private readonly MenuService _menuService;
         private readonly IMenuDialogService _dialogService;
 
+        // Lưu toàn bộ danh sách món lấy từ database.
+        // Các thao tác tìm kiếm và lọc sẽ thực hiện trên danh sách này.
         private List<Product> _allProducts = new List<Product>();
 
+        // Danh sách món đang hiển thị trên giao diện.
         public ObservableCollection<Product> Products { get; }
             = new ObservableCollection<Product>();
 
+        // Danh sách tên danh mục để hiển thị trong ComboBox.
         public ObservableCollection<string> Categories { get; }
             = new ObservableCollection<string>();
 
+        // Các lựa chọn sắp xếp danh sách món.
         public ObservableCollection<string> SortOptions { get; }
             = new ObservableCollection<string>
             {
@@ -34,6 +39,16 @@ namespace CoffeeRuu.ViewModels
                 "Giá cao đến thấp"
             };
 
+        // Các lựa chọn lọc theo trạng thái bán.
+        public ObservableCollection<string> AvailabilityOptions { get; }
+            = new ObservableCollection<string>
+            {
+                "Tất cả trạng thái",
+                "Đang bán",
+                "Ngừng bán"
+            };
+
+        // Từ khóa người dùng nhập để tìm kiếm món.
         private string _searchKeyword = "";
 
         public string SearchKeyword
@@ -49,6 +64,7 @@ namespace CoffeeRuu.ViewModels
             }
         }
 
+        // Danh mục đang được chọn để lọc.
         private string _selectedCategory = "Tất cả";
 
         public string SelectedCategory
@@ -60,11 +76,14 @@ namespace CoffeeRuu.ViewModels
                 {
                     _selectedCategory = value;
                     OnPropertyChanged();
+
+                    // Cập nhật danh sách khi đổi danh mục.
                     ApplyFilters();
                 }
             }
         }
 
+        // Kiểu sắp xếp đang được chọn.
         private string _selectedSort = "Mặc định";
 
         public string SelectedSort
@@ -76,11 +95,33 @@ namespace CoffeeRuu.ViewModels
                 {
                     _selectedSort = value;
                     OnPropertyChanged();
+
+                    // Sắp xếp lại khi người dùng đổi lựa chọn.
                     ApplyFilters();
                 }
             }
         }
 
+        // Trạng thái bán đang được chọn để lọc.
+        private string _selectedAvailability = "Tất cả trạng thái";
+
+        public string SelectedAvailability
+        {
+            get => _selectedAvailability;
+            set
+            {
+                if (_selectedAvailability != value)
+                {
+                    _selectedAvailability = value;
+                    OnPropertyChanged();
+
+                    // Lọc lại danh sách theo trạng thái bán.
+                    ApplyFilters();
+                }
+            }
+        }
+
+        // Món hiện đang được chọn trên DataGrid.
         private Product? _selectedProduct;
 
         public Product? SelectedProduct
@@ -93,17 +134,22 @@ namespace CoffeeRuu.ViewModels
                     _selectedProduct = value;
                     OnPropertyChanged();
 
+                    // Cập nhật trạng thái bật/tắt của các nút.
                     EditCommand?.RaiseCanExecuteChanged();
                     DeleteCommand?.RaiseCanExecuteChanged();
+                    ToggleAvailabilityCommand?.RaiseCanExecuteChanged();
                 }
             }
         }
 
+        // Các command được liên kết với nút trên giao diện.
         public AsyncRelayCommand AddCommand { get; }
         public AsyncRelayCommand EditCommand { get; }
         public AsyncRelayCommand DeleteCommand { get; }
         public AsyncRelayCommand SearchCommand { get; }
+        public AsyncRelayCommand ToggleAvailabilityCommand { get; }
 
+        // Khởi tạo ViewModel và các command.
         public MenuViewModel(
             MenuService menuService,
             IMenuDialogService dialogService)
@@ -111,22 +157,31 @@ namespace CoffeeRuu.ViewModels
             _menuService = menuService;
             _dialogService = dialogService;
 
+            // Mở hộp thoại thêm món.
             AddCommand = new AsyncRelayCommand(
                 AddProductCommandAsync);
 
+            // Chỉ sửa khi đã chọn một món.
             EditCommand = new AsyncRelayCommand(
                 EditProductAsync,
                 () => SelectedProduct != null);
 
+            // Chỉ xóa khi đã chọn một món.
             DeleteCommand = new AsyncRelayCommand(
                 DeleteProductAsync,
                 () => SelectedProduct != null);
 
+            // Thực hiện tìm kiếm theo từ khóa.
             SearchCommand = new AsyncRelayCommand(
                 SearchProductsAsync);
+
+            // Bật hoặc ngừng bán món đang chọn.
+            ToggleAvailabilityCommand = new AsyncRelayCommand(
+                ToggleAvailabilityAsync,
+                () => SelectedProduct != null);
         }
 
-        // Tải danh sách món và danh mục từ database
+        // Tải danh sách món từ database và lấy danh mục.
         public async Task LoadProductsAsync()
         {
             try
@@ -134,6 +189,12 @@ namespace CoffeeRuu.ViewModels
                 _allProducts =
                     await _menuService.GetAllProductsAsync();
 
+                // Sắp xếp dữ liệu gốc theo ID để có thứ tự ổn định.
+                _allProducts = _allProducts
+                    .OrderBy(p => p.ProductId)
+                    .ToList();
+
+                // Nạp lại danh mục.
                 Categories.Clear();
                 Categories.Add("Tất cả");
 
@@ -146,12 +207,15 @@ namespace CoffeeRuu.ViewModels
                     Categories.Add(category);
                 }
 
+                // Nếu danh mục đang chọn không còn tồn tại,
+                // chuyển về lựa chọn "Tất cả".
                 if (!Categories.Contains(SelectedCategory))
                 {
                     _selectedCategory = "Tất cả";
                     OnPropertyChanged(nameof(SelectedCategory));
                 }
 
+                // Hiển thị danh sách sau khi tải xong.
                 ApplyFilters();
             }
             catch (Exception ex)
@@ -163,21 +227,22 @@ namespace CoffeeRuu.ViewModels
             }
         }
 
-        // Xử lý tìm kiếm
+        // Thực hiện tìm kiếm khi người dùng nhấn nút Tìm món.
         private Task SearchProductsAsync()
         {
             ApplyFilters();
             return Task.CompletedTask;
         }
 
-        // Tìm kiếm, lọc danh mục và sắp xếp
+        // Kết hợp tìm kiếm, lọc danh mục, lọc trạng thái
+        // và sắp xếp danh sách món.
         private void ApplyFilters()
         {
             string keyword = (SearchKeyword ?? "").Trim();
 
             IEnumerable<Product> result = _allProducts;
 
-            // Tìm theo tên món, không phân biệt chữ hoa/thường
+            // 1. Tìm theo tên món, không phân biệt chữ hoa/thường.
             if (!string.IsNullOrWhiteSpace(keyword))
             {
                 result = result.Where(p =>
@@ -186,7 +251,7 @@ namespace CoffeeRuu.ViewModels
                         StringComparison.OrdinalIgnoreCase) >= 0);
             }
 
-            // Lọc theo danh mục
+            // 2. Lọc theo danh mục được chọn.
             if (SelectedCategory != "Tất cả")
             {
                 result = result.Where(p =>
@@ -194,16 +259,36 @@ namespace CoffeeRuu.ViewModels
                     p.Category.CategoryName == SelectedCategory);
             }
 
-            // Sắp xếp theo giá thấp nhất của size đang bán
+            // 3. Lọc theo trạng thái bán của món.
+            if (SelectedAvailability == "Đang bán")
+            {
+                result = result.Where(p => p.IsAvailable);
+            }
+            else if (SelectedAvailability == "Ngừng bán")
+            {
+                result = result.Where(p => !p.IsAvailable);
+            }
+
+            // 4. Sắp xếp danh sách.
             if (SelectedSort == "Giá thấp đến cao")
             {
-                result = result.OrderBy(GetLowestPrice);
+                result = result
+                    .OrderBy(GetLowestPrice)
+                    .ThenBy(p => p.ProductId);
             }
             else if (SelectedSort == "Giá cao đến thấp")
             {
-                result = result.OrderByDescending(GetLowestPrice);
+                result = result
+                    .OrderByDescending(GetLowestPrice)
+                    .ThenBy(p => p.ProductId);
+            }
+            else
+            {
+                // Mặc định luôn sắp xếp theo ID tăng dần.
+                result = result.OrderBy(p => p.ProductId);
             }
 
+            // Cập nhật danh sách hiển thị trên giao diện.
             Products.Clear();
 
             foreach (Product product in result.ToList())
@@ -211,10 +296,12 @@ namespace CoffeeRuu.ViewModels
                 Products.Add(product);
             }
 
+            // Xóa lựa chọn cũ nếu danh sách đã thay đổi.
             SelectedProduct = null;
         }
 
-        // Lấy giá thấp nhất trong các size đang bán
+        // Lấy giá thấp nhất trong các size đang được bán.
+        // Dùng để sắp xếp giá từ thấp đến cao hoặc ngược lại.
         private static decimal GetLowestPrice(Product product)
         {
             var prices = product.ProductSizes
@@ -227,18 +314,20 @@ namespace CoffeeRuu.ViewModels
                 : decimal.MaxValue;
         }
 
-        // Thêm món mới
+        // Thêm món mới thông qua hộp thoại.
         private async Task AddProductCommandAsync()
         {
-            Product? product =
-                _dialogService.ShowProductDialog();
+            Product? product = _dialogService.ShowProductDialog();
 
+            // Người dùng đóng hộp thoại hoặc nhấn Hủy.
             if (product == null)
                 return;
 
             try
             {
                 await _menuService.AddProductAsync(product);
+
+                // Tải lại danh sách sau khi thêm thành công.
                 await LoadProductsAsync();
 
                 _dialogService.ShowMessage(
@@ -255,37 +344,29 @@ namespace CoffeeRuu.ViewModels
             }
         }
 
-       
-// Sửa món được chọn
-private async Task EditProductAsync()
+        // Sửa thông tin món đang được chọn.
+        private async Task EditProductAsync()
         {
             if (SelectedProduct == null)
-            {
-                _dialogService.ShowMessage(
-                    "Vui lòng chọn món cần sửa.",
-                    "Thông báo",
-                    MessageBoxImage.Warning);
                 return;
-            }
 
-            // Lưu mã món đang chọn
+            // Giữ lại ID để đảm bảo cập nhật đúng món.
             int productId = SelectedProduct.ProductId;
 
-            // Mở hộp thoại sửa món
             Product? product =
                 _dialogService.ShowProductDialog(SelectedProduct);
 
-            // Người dùng bấm Hủy
+            // Người dùng nhấn Hủy.
             if (product == null)
                 return;
 
-            // Đảm bảo cập nhật đúng món đã chọn
             product.ProductId = productId;
 
             try
             {
                 await _menuService.UpdateProductAsync(product);
 
+                // Tải lại dữ liệu sau khi sửa.
                 await LoadProductsAsync();
 
                 _dialogService.ShowMessage(
@@ -302,8 +383,57 @@ private async Task EditProductAsync()
             }
         }
 
+        // Bật bán hoặc ngừng bán món đang được chọn.
+        // Thao tác này không xóa món khỏi database.
+        private async Task ToggleAvailabilityAsync()
+        {
+            if (SelectedProduct == null)
+                return;
 
-        // Xóa món được chọn
+            Product product = SelectedProduct;
+
+            // Lưu trạng thái cũ để phục hồi nếu lưu thất bại.
+            bool oldStatus = product.IsAvailable;
+
+            // Xác định trạng thái mới.
+            bool newStatus = !oldStatus;
+
+            try
+            {
+                product.IsAvailable = newStatus;
+
+                // Lưu trạng thái mới xuống database.
+                await _menuService.UpdateProductAsync(product);
+
+                // Tải lại để giao diện phản ánh dữ liệu đã lưu.
+                // Nếu đang lọc "Đang bán", món vừa ngừng bán
+                // sẽ tự biến mất khỏi danh sách đó.
+                await LoadProductsAsync();
+
+                _dialogService.ShowMessage(
+                    newStatus
+                        ? "Đã bật bán món uống."
+                        : "Đã ngừng bán món uống.",
+                    "Thông báo",
+                    MessageBoxImage.Information);
+            }
+            catch (Exception ex)
+            {
+                // Khôi phục trạng thái cũ trên đối tượng.
+                product.IsAvailable = oldStatus;
+
+                _dialogService.ShowMessage(
+                    "Không thể cập nhật trạng thái bán: "
+                    + ex.Message,
+                    "Lỗi",
+                    MessageBoxImage.Error);
+
+                // Tải lại dữ liệu để giao diện đồng bộ.
+                await LoadProductsAsync();
+            }
+        }
+
+        // Xóa món đang được chọn sau khi xác nhận.
         private async Task DeleteProductAsync()
         {
             if (SelectedProduct == null)
@@ -321,6 +451,7 @@ private async Task EditProductAsync()
 
                 SelectedProduct = null;
 
+                // Cập nhật danh sách sau khi xóa.
                 await LoadProductsAsync();
 
                 _dialogService.ShowMessage(
@@ -331,14 +462,15 @@ private async Task EditProductAsync()
             catch (Exception ex)
             {
                 _dialogService.ShowMessage(
-                    "Không thể xóa món uống. Có thể món đang được " +
-                    "sử dụng trong công thức hoặc đơn hàng.\n\n" +
-                    ex.Message,
+                    "Không thể xóa món uống. Có thể món đang được "
+                    + "sử dụng trong công thức hoặc đơn hàng.\n\n"
+                    + ex.Message,
                     "Lỗi xóa",
                     MessageBoxImage.Error);
             }
         }
 
+        // Thông báo cho giao diện biết thuộc tính đã thay đổi.
         public event PropertyChangedEventHandler? PropertyChanged;
 
         protected void OnPropertyChanged(
