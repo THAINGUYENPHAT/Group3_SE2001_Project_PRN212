@@ -105,5 +105,28 @@ namespace CoffeeRuu.Repositories
 
             return true;
         }
+
+        // 7. Lấy danh sách nguyên liệu tồn kho thấp hoặc đã hết
+        public async Task<List<LowStockAlertItem>> GetLowStockAsync()
+        {
+            using var context = _contextFactory();
+
+            return await context.Ingredients
+                .AsNoTracking()
+                .Where(i =>
+                    i.IsActive &&
+                    i.CurrentStock <= i.MinimumStock)
+                .OrderBy(i => i.CurrentStock == 0 ? 0 : 1)
+                .ThenBy(i => i.IngredientName)
+                .Select(i => new LowStockAlertItem
+                {
+                    IngredientId = i.IngredientId,
+                    IngredientName = i.IngredientName,
+                    Unit = i.Unit,
+                    CurrentStock = i.CurrentStock,
+                    MinimumStock = i.MinimumStock
+                })
+                .ToListAsync();
+        }
     }
 }
