@@ -23,6 +23,9 @@ namespace CoffeeRuu.Views
 
             // F6.2 - Nhập hàng
             InitializeStockReceipt();
+            
+            //F6.3
+            LowStockAlertFrame.Navigate(new LowStockAlertView());
         }
 
         private void InitializeStockReceipt()
@@ -42,6 +45,8 @@ namespace CoffeeRuu.Views
 
             StockReceiptFrame.Navigate(
                 new StockReceiptView(viewModel));
+
+
         }
     }
 }
