@@ -1,111 +1,198 @@
 ﻿<UserControl x:Class="CoffeeRuu.Views.HomeView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             Background="#F5F6FA"
-             Loaded="UserControl_Loaded">
+             Background="#F5F6FA">
 
-    <!-- Dùng ScrollViewer để có thể cuộn nếu nội dung dài -->
     <ScrollViewer VerticalScrollBarVisibility="Auto">
         <StackPanel Margin="30">
 
-            <!-- ================= PHẦN 1: TỔNG QUAN (Giữ lại từ thiết kế cũ) ================= -->
+            <!-- Header -->
             <TextBlock Text="Tổng quan"
-                       FontSize="30"
+                       FontSize="28"
                        FontWeight="Bold"
-                       Foreground="#3B2F2F"/>
+                       Foreground="#202938"/>
 
-            <TextBlock Text="Chào mừng đến với hệ thống quản lý CoffeeRuu!"
-                       FontSize="16"
-                       Margin="0,8,0,25"
-                       Foreground="#666666"/>
+            <TextBlock x:Name="GreetingText"
+                       FontSize="17"
+                       FontWeight="SemiBold"
+                       Foreground="#475569"
+                       Margin="0,12,0,5"/>
 
-            <!-- 4 thẻ chức năng -->
-            <UniformGrid Columns="2" Margin="0,0,0,30">
-                <Border Background="White" CornerRadius="10" Padding="20" Margin="5">
-                    <StackPanel>
-                        <TextBlock Text="☕ Sản phẩm" FontSize="18" Foreground="#777777"/>
-                        <TextBlock Text="Quản lý sản phẩm" FontSize="22" FontWeight="Bold" Margin="0,10,0,0"/>
+            <TextBlock Text="Chào mừng bạn quay trở lại với CoffeeRuu. Chúc bạn có một ngày làm việc hiệu quả!"
+                       FontSize="14"
+                       Foreground="#64748B"
+                       TextWrapping="Wrap"
+                       Margin="0,0,0,25"/>
+
+            <!-- Account Information -->
+            <Border Background="White"
+                    CornerRadius="12"
+                    Padding="24"
+                    Margin="0,0,0,20">
+
+                <StackPanel>
+                    <StackPanel Orientation="Horizontal" Margin="0,0,0,20">
+                        <Border Background="#E8EEFF"
+                                CornerRadius="10"
+                                Width="48"
+                                Height="48">
+                            <TextBlock Text="&#xE77B;"
+                                       FontFamily="Segoe MDL2 Assets"
+                                       FontSize="24"
+                                       Foreground="#4568C7"
+                                       HorizontalAlignment="Center"
+                                       VerticalAlignment="Center"/>
+                        </Border>
+
+                        <StackPanel Margin="14,0,0,0"
+                                    VerticalAlignment="Center">
+                            <TextBlock Text="Thông tin tài khoản"
+                                       FontSize="19"
+                                       FontWeight="Bold"
+                                       Foreground="#202938"/>
+
+                            <TextBlock Text="Thông tin nhân viên đang đăng nhập"
+                                       FontSize="13"
+                                       Foreground="#64748B"
+                                       Margin="0,4,0,0"/>
+                        </StackPanel>
                     </StackPanel>
-                </Border>
 
-                <Border Background="White" CornerRadius="10" Padding="20" Margin="5">
-                    <StackPanel>
-                        <TextBlock Text="🧾 Đơn hàng" FontSize="18" Foreground="#777777"/>
-                        <TextBlock Text="Quản lý đơn hàng" FontSize="22" FontWeight="Bold" Margin="0,10,0,0"/>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+
+                        <StackPanel Grid.Row="0"
+                                    Grid.Column="0"
+                                    Margin="0,0,15,20">
+                            <TextBlock Text="Họ và tên"
+                                       FontSize="13"
+                                       Foreground="#64748B"/>
+
+                            <TextBlock Text="{Binding FullName}"
+                                       FontSize="15"
+                                       FontWeight="SemiBold"
+                                       Foreground="#202938"
+                                       TextWrapping="Wrap"
+                                       Margin="0,6,0,0"/>
+                        </StackPanel>
+
+                        <StackPanel Grid.Row="0"
+                                    Grid.Column="1"
+                                    Margin="0,0,0,20">
+                            <TextBlock Text="Mã nhân viên"
+                                       FontSize="13"
+                                       Foreground="#64748B"/>
+
+                            <TextBlock Text="{Binding EmployeeId}"
+                                       FontSize="15"
+                                       FontWeight="SemiBold"
+                                       Foreground="#202938"
+                                       Margin="0,6,0,0"/>
+                        </StackPanel>
+
+                        <StackPanel Grid.Row="1"
+                                    Grid.Column="0"
+                                    Margin="0,0,15,0">
+                            <TextBlock Text="Tên đăng nhập"
+                                       FontSize="13"
+                                       Foreground="#64748B"/>
+
+                            <TextBlock Text="{Binding Username}"
+                                       FontSize="15"
+                                       FontWeight="SemiBold"
+                                       Foreground="#202938"
+                                       TextWrapping="Wrap"
+                                       Margin="0,6,0,0"/>
+                        </StackPanel>
+
+                        <StackPanel Grid.Row="1"
+                                    Grid.Column="1">
+                            <TextBlock Text="Vai trò"
+                                       FontSize="13"
+                                       Foreground="#64748B"/>
+
+                            <TextBlock Text="{Binding RoleName}"
+                                       FontSize="15"
+                                       FontWeight="SemiBold"
+                                       Foreground="#4568C7"
+                                       TextWrapping="Wrap"
+                                       Margin="0,6,0,0"/>
+                        </StackPanel>
+                    </Grid>
+                </StackPanel>
+            </Border>
+
+            <!-- About CoffeeRuu -->
+            <Border Background="White"
+                    CornerRadius="12"
+                    Padding="24"
+                    Margin="0,0,0,20">
+
+                <StackPanel>
+                    <StackPanel Orientation="Horizontal" Margin="0,0,0,14">
+                        <TextBlock Text="&#xE71D;"
+                                   FontFamily="Segoe MDL2 Assets"
+                                   FontSize="23"
+                                   Foreground="#A87548"
+                                   VerticalAlignment="Center"/>
+
+                        <TextBlock Text="Giới thiệu CoffeeRuu"
+                                   FontSize="19"
+                                   FontWeight="Bold"
+                                   Foreground="#202938"
+                                   Margin="12,0,0,0"
+                                   VerticalAlignment="Center"/>
                     </StackPanel>
-                </Border>
 
-                <Border Background="White" CornerRadius="10" Padding="20" Margin="5">
-                    <StackPanel>
-                        <TextBlock Text="📦 Kho hàng" FontSize="18" Foreground="#777777"/>
-                        <TextBlock Text="Quản lý nguyên liệu" FontSize="22" FontWeight="Bold" Margin="0,10,0,0"/>
+                    <TextBlock Text="CoffeeRuu là hệ thống quản lý quán cà phê, hỗ trợ quản lý sản phẩm, đơn hàng, bàn, kho nguyên liệu và tài khoản nhân viên. Hệ thống cung cấp các chức năng theo quyền hạn của từng vai trò, giúp các hoạt động trong quán được quản lý thuận tiện và nhất quán."
+                               FontSize="14"
+                               Foreground="#475569"
+                               TextWrapping="Wrap"
+                               LineHeight="23"/>
+                </StackPanel>
+            </Border>
+
+            <!-- Role-specific Information -->
+            <Border Background="White"
+                    CornerRadius="12"
+                    Padding="24">
+
+                <StackPanel>
+                    <StackPanel Orientation="Horizontal" Margin="0,0,0,14">
+                        <TextBlock Text="&#xE8D4;"
+                                   FontFamily="Segoe MDL2 Assets"
+                                   FontSize="23"
+                                   Foreground="#4568C7"
+                                   VerticalAlignment="Center"/>
+
+                        <TextBlock Text="Chức năng dành cho bạn"
+                                   FontSize="19"
+                                   FontWeight="Bold"
+                                   Foreground="#202938"
+                                   Margin="12,0,0,0"
+                                   VerticalAlignment="Center"/>
                     </StackPanel>
-                </Border>
 
-                <Border Background="White" CornerRadius="10" Padding="20" Margin="5">
-                    <StackPanel>
-                        <TextBlock Text="📊 Báo cáo" FontSize="18" Foreground="#777777"/>
-                        <TextBlock Text="Theo dõi doanh thu" FontSize="22" FontWeight="Bold" Margin="0,10,0,0"/>
-                        <TextBlock DataContext="" FontSize="22" FontWeight="Bold" Margin="0,10,0,0"/>
-                                               
-                    </StackPanel>
-                </Border>
-            </UniformGrid>
+                    <TextBlock x:Name="RoleTitleText"
+                               FontSize="16"
+                               FontWeight="SemiBold"
+                               Foreground="#334155"
+                               Margin="0,0,0,10"/>
 
-            <!-- ================= PHẦN 2: SƠ ĐỒ BÀN (Tự động đổi màu) ================= -->
-            <TextBlock Text="Tình trạng Sơ đồ Bàn"
-                       FontSize="22"
-                       FontWeight="Bold"
-                       Foreground="#3B2F2F"
-                       Margin="0,0,0,15"/>
-
-            <Border Background="White" CornerRadius="10" Padding="20">
-                <!-- ItemsControl tự động lấy 5 bàn từ Database và vẽ ra giao diện -->
-                <ItemsControl ItemsSource="{Binding Tables}">
-                    <ItemsControl.ItemsPanel>
-                        <ItemsPanelTemplate>
-                            <!-- Xếp 5 bàn thành 1 hàng ngang -->
-                            <UniformGrid Columns="5" Rows="1" VerticalAlignment="Top"/>
-                        </ItemsPanelTemplate>
-                    </ItemsControl.ItemsPanel>
-
-                    <ItemsControl.ItemTemplate>
-                        <DataTemplate>
-                            <Border Margin="10" Padding="15" CornerRadius="12" MinHeight="140">
-                                <Border.Style>
-                                    <Style TargetType="Border">
-                                        <!-- DataTrigger tự động đổi màu nền dựa vào TableStatus -->
-                                        <Style.Triggers>
-                                            <DataTrigger Binding="{Binding TableStatus}" Value="Available">
-                                                <Setter Property="Background" Value="#2ecc71"/>
-                                                <!-- Xanh lá: Trống -->
-                                            </DataTrigger>
-                                            <DataTrigger Binding="{Binding TableStatus}" Value="Occupied">
-                                                <Setter Property="Background" Value="#e74c3c"/>
-                                                <!-- Đỏ: Có khách -->
-                                            </DataTrigger>
-                                            <DataTrigger Binding="{Binding TableStatus}" Value="Reserved">
-                                                <Setter Property="Background" Value="#f39c12"/>
-                                                <!-- Vàng cam: Đặt trước -->
-                                            </DataTrigger>
-                                            <DataTrigger Binding="{Binding TableStatus}" Value="OutOfService">
-                                                <Setter Property="Background" Value="#95a5a6"/>
-                                                <!-- Xám: Bảo trì -->
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </Border.Style>
-
-                                <!-- Nội dung chữ bên trong từng ô Bàn -->
-                                <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
-                                    <TextBlock Text="{Binding TableName}" FontSize="24" FontWeight="Bold" Foreground="White" HorizontalAlignment="Center"/>
-                                    <TextBlock Text="{Binding TableStatus}" FontSize="14" FontWeight="SemiBold" Foreground="White" HorizontalAlignment="Center" Margin="0,10,0,0"/>
-                                    <TextBlock Text="{Binding Capacity, StringFormat='Số ghế: {0}'}" FontSize="13" Foreground="#E8E8E8" HorizontalAlignment="Center" Margin="0,5,0,0"/>
-                                </StackPanel>
-                            </Border>
-                        </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                </ItemsControl>
+                    <TextBlock x:Name="RoleDescriptionText"
+                               FontSize="14"
+                               Foreground="#475569"
+                               TextWrapping="Wrap"
+                               LineHeight="23"/>
+                </StackPanel>
             </Border>
 
         </StackPanel>

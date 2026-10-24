@@ -7,7 +7,8 @@
         MinHeight="500"
         MinWidth="800"
         WindowStartupLocation="CenterScreen"
-        Background="#F5F0E8">
+        Background="#F5F0E8"
+        KeyDown="Window_KeyDown">
 
     <Grid>
         <Grid.ColumnDefinitions>
