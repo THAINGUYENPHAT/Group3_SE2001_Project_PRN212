@@ -5,12 +5,14 @@
 
     <UserControl.Resources>
 
+        <!-- Màu sắc chủ đạo của giao diện CoffeeRuu -->
         <SolidColorBrush x:Key="Pink" Color="#FFD98EAA"/>
         <SolidColorBrush x:Key="DarkPink" Color="#FFB65F80"/>
         <SolidColorBrush x:Key="PalePink" Color="#FFFFEDF3"/>
         <SolidColorBrush x:Key="TextBrown" Color="#FF5B414A"/>
         <SolidColorBrush x:Key="Muted" Color="#FF9D828D"/>
 
+        <!-- Style nút bo góc -->
         <Style x:Key="RoundButton" TargetType="Button">
             <Setter Property="Height" Value="38"/>
             <Setter Property="Padding" Value="16,0"/>
@@ -32,19 +34,24 @@
                                 HorizontalAlignment="Center"
                                 VerticalAlignment="Center"/>
                         </Border>
+
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
                                 <Setter TargetName="ButtonBorder"
                                         Property="Background"
                                         Value="#FFFFDDE8"/>
                             </Trigger>
+
                             <Trigger Property="IsPressed" Value="True">
                                 <Setter TargetName="ButtonBorder"
-                                        Property="Opacity" Value="0.75"/>
+                                        Property="Opacity"
+                                        Value="0.75"/>
                             </Trigger>
+
                             <Trigger Property="IsEnabled" Value="False">
                                 <Setter TargetName="ButtonBorder"
-                                        Property="Opacity" Value="0.4"/>
+                                        Property="Opacity"
+                                        Value="0.4"/>
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -52,6 +59,7 @@
             </Setter>
         </Style>
 
+        <!-- Style nút hành động chính -->
         <Style x:Key="PrimaryButton"
                TargetType="Button"
                BasedOn="{StaticResource RoundButton}">
@@ -68,15 +76,24 @@
                                 HorizontalAlignment="Center"
                                 VerticalAlignment="Center"/>
                         </Border>
+
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
                                 <Setter TargetName="ButtonBorder"
                                         Property="Background"
                                         Value="#FFC87896"/>
                             </Trigger>
+
                             <Trigger Property="IsPressed" Value="True">
                                 <Setter TargetName="ButtonBorder"
-                                        Property="Opacity" Value="0.75"/>
+                                        Property="Opacity"
+                                        Value="0.75"/>
+                            </Trigger>
+
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter TargetName="ButtonBorder"
+                                        Property="Opacity"
+                                        Value="0.4"/>
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -84,6 +101,7 @@
             </Setter>
         </Style>
 
+        <!-- Style ô nhập tìm kiếm -->
         <Style x:Key="RoundInput" TargetType="TextBox">
             <Setter Property="Height" Value="38"/>
             <Setter Property="Padding" Value="12,0"/>
@@ -104,8 +122,10 @@
                             <ScrollViewer x:Name="PART_ContentHost"
                                           Margin="2,0"/>
                         </Border>
+
                         <ControlTemplate.Triggers>
-                            <Trigger Property="IsKeyboardFocused" Value="True">
+                            <Trigger Property="IsKeyboardFocused"
+                                     Value="True">
                                 <Setter TargetName="InputBorder"
                                         Property="BorderBrush"
                                         Value="#FFD98EAA"/>
@@ -116,6 +136,7 @@
             </Setter>
         </Style>
 
+        <!-- Style ComboBox bộ lọc -->
         <Style x:Key="RoundCombo" TargetType="ComboBox">
             <Setter Property="Height" Value="38"/>
             <Setter Property="Padding" Value="9,0"/>
@@ -127,6 +148,7 @@
             <Setter Property="FontSize" Value="13"/>
         </Style>
 
+        <!-- Style bảng thực đơn -->
         <Style x:Key="PinkGrid" TargetType="DataGrid">
             <Setter Property="Background" Value="White"/>
             <Setter Property="Foreground" Value="#FF5B414A"/>
@@ -140,6 +162,8 @@
             <Setter Property="SelectionMode" Value="Single"/>
             <Setter Property="SelectionUnit" Value="FullRow"/>
             <Setter Property="AlternationCount" Value="2"/>
+
+            <!-- Màu nền của từng dòng -->
             <Setter Property="RowStyle">
                 <Setter.Value>
                     <Style TargetType="DataGridRow">
@@ -147,21 +171,30 @@
                         <Setter Property="Foreground" Value="#FF5B414A"/>
                         <Setter Property="BorderThickness" Value="0"/>
                         <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+
                         <Style.Triggers>
                             <Trigger Property="AlternationIndex" Value="1">
-                                <Setter Property="Background" Value="#FFFFF8FA"/>
+                                <Setter Property="Background"
+                                        Value="#FFFFF8FA"/>
                             </Trigger>
+
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter Property="Background" Value="#FFFFEDF3"/>
+                                <Setter Property="Background"
+                                        Value="#FFFFEDF3"/>
                             </Trigger>
+
                             <Trigger Property="IsSelected" Value="True">
-                                <Setter Property="Background" Value="#FFFFDDE8"/>
-                                <Setter Property="Foreground" Value="#FF793D57"/>
+                                <Setter Property="Background"
+                                        Value="#FFFFDDE8"/>
+                                <Setter Property="Foreground"
+                                        Value="#FF793D57"/>
                             </Trigger>
                         </Style.Triggers>
                     </Style>
                 </Setter.Value>
             </Setter>
+
+            <!-- Màu tiêu đề cột -->
             <Setter Property="ColumnHeaderStyle">
                 <Setter.Value>
                     <Style TargetType="DataGridColumnHeader">
@@ -176,6 +209,8 @@
                     </Style>
                 </Setter.Value>
             </Setter>
+
+            <!-- Căn chỉnh nội dung các ô -->
             <Setter Property="CellStyle">
                 <Setter.Value>
                     <Style TargetType="DataGridCell">
@@ -198,12 +233,13 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <!-- Tiêu đề -->
+        <!-- PHẦN 1: TIÊU ĐỀ -->
         <Border Grid.Row="0"
                 Background="#FFFFEDF3"
                 CornerRadius="20"
                 Padding="24,20"
                 Margin="0,0,0,18">
+
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
@@ -222,10 +258,11 @@
                                FontWeight="Bold"
                                Foreground="#FF5B414A"/>
 
-                    <TextBlock Text="Một chút ngọt ngào trong từng món uống."
-                               FontSize="13"
-                               Foreground="#FF9D828D"
-                               Margin="0,7,0,0"/>
+                    <TextBlock
+                        Text="Một chút ngọt ngào trong từng món uống."
+                        FontSize="13"
+                        Foreground="#FF9D828D"
+                        Margin="0,7,0,0"/>
                 </StackPanel>
 
                 <Border Grid.Column="1"
@@ -242,12 +279,13 @@
             </Grid>
         </Border>
 
-        <!-- Thanh tìm kiếm và bộ lọc -->
+        <!-- PHẦN 2: TÌM KIẾM, LỌC VÀ CÁC NÚT CHỨC NĂNG -->
         <Border Grid.Row="1"
                 Background="White"
                 CornerRadius="18"
                 Padding="16"
                 Margin="0,0,0,16">
+
             <StackPanel>
                 <TextBlock Text="TÌM KIẾM &amp; PHÂN LOẠI"
                            FontSize="11"
@@ -256,18 +294,22 @@
                            Margin="2,0,0,12"/>
 
                 <WrapPanel>
+
+                    <!-- Nhập từ khóa tìm kiếm -->
                     <TextBox Style="{StaticResource RoundInput}"
                              Width="200"
                              Margin="0,0,9,8"
                              Text="{Binding SearchKeyword,
-                                    UpdateSourceTrigger=PropertyChanged}"
+                                 UpdateSourceTrigger=PropertyChanged}"
                              ToolTip="Nhập tên món uống"/>
 
+                    <!-- Tìm kiếm món -->
                     <Button Style="{StaticResource PrimaryButton}"
                             Content="⌕  Tìm món"
                             Command="{Binding SearchCommand}"
                             Margin="0,0,9,8"/>
 
+                    <!-- Lọc theo danh mục -->
                     <ComboBox Style="{StaticResource RoundCombo}"
                               Width="155"
                               Margin="0,0,9,8"
@@ -275,6 +317,15 @@
                               SelectedItem="{Binding SelectedCategory}"
                               ToolTip="Lọc theo danh mục"/>
 
+                    <!-- Lọc theo trạng thái đang bán/ngừng bán -->
+                    <ComboBox Style="{StaticResource RoundCombo}"
+                              Width="165"
+                              Margin="0,0,9,8"
+                              ItemsSource="{Binding AvailabilityOptions}"
+                              SelectedItem="{Binding SelectedAvailability}"
+                              ToolTip="Lọc theo trạng thái bán"/>
+
+                    <!-- Sắp xếp theo giá -->
                     <ComboBox Style="{StaticResource RoundCombo}"
                               Width="175"
                               Margin="0,0,9,8"
@@ -282,38 +333,49 @@
                               SelectedItem="{Binding SelectedSort}"
                               ToolTip="Sắp xếp theo giá"/>
 
+                    <!-- Thêm món mới -->
                     <Button Style="{StaticResource PrimaryButton}"
                             Content="+  Thêm món"
                             Command="{Binding AddCommand}"
                             Margin="0,0,9,8"/>
 
+                    <!-- Sửa món đang chọn -->
                     <Button Style="{StaticResource RoundButton}"
-        Content="✎  Sửa"
-        Command="{Binding EditCommand}"
-        IsEnabled="True"
-        Margin="0,0,9,8"/>
+                            Content="✎  Sửa"
+                            Command="{Binding EditCommand}"
+                            Margin="0,0,9,8"/>
 
+                    <!-- Xóa món đang chọn -->
                     <Button Style="{StaticResource RoundButton}"
-        Content="⌫  Xóa"
-        Command="{Binding DeleteCommand}"
-        IsEnabled="True"
-        Margin="0,0,0,8"/>
+                            Content="⌫  Xóa"
+                            Command="{Binding DeleteCommand}"
+                            Margin="0,0,9,8"/>
+
+                    <!-- Bật hoặc ngừng bán món đang chọn -->
+                    <Button Style="{StaticResource RoundButton}"
+                            Content="⇄  Bật / Ngừng bán"
+                            Command="{Binding ToggleAvailabilityCommand}"
+                            Margin="0,0,0,8"
+                            ToolTip="Chọn một món trong bảng trước khi thao tác"/>
+
                 </WrapPanel>
             </StackPanel>
         </Border>
 
-        <!-- Bảng thực đơn -->
+        <!-- PHẦN 3: BẢNG DANH SÁCH MÓN -->
         <Border Grid.Row="2"
                 Background="White"
                 CornerRadius="18"
                 Padding="10"
                 ClipToBounds="True">
+
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
 
+                <!-- Tiêu đề bảng -->
                 <DockPanel Margin="12,8,12,14">
                     <StackPanel>
                         <TextBlock Text="Danh sách món uống"
@@ -335,6 +397,7 @@
                                FontSize="12"/>
                 </DockPanel>
 
+                <!-- Bảng dữ liệu món uống -->
                 <DataGrid Grid.Row="1"
                           Style="{StaticResource PinkGrid}"
                           ItemsSource="{Binding Products}"
@@ -343,36 +406,70 @@
                           AutoGenerateColumns="False">
 
                     <DataGrid.Columns>
+
+                        <!-- Mã món -->
                         <DataGridTextColumn Header="MÃ"
                                             Binding="{Binding ProductId}"
                                             Width="55"/>
 
+                        <!-- Tên món -->
                         <DataGridTextColumn Header="TÊN MÓN"
                                             Binding="{Binding ProductName}"
                                             Width="2*"/>
 
+                        <!-- Danh mục -->
                         <DataGridTextColumn Header="DANH MỤC"
                                             Binding="{Binding Category.CategoryName}"
                                             Width="1.3*"/>
 
+                        <!-- Giá size S -->
                         <DataGridTextColumn Header="SIZE S"
                                             Binding="{Binding PriceS,
                                                 StringFormat={}{0:N0} đ}"
                                             Width="95"/>
 
+                        <!-- Giá size M -->
                         <DataGridTextColumn Header="SIZE M"
                                             Binding="{Binding PriceM,
                                                 StringFormat={}{0:N0} đ}"
                                             Width="95"/>
 
+                        <!-- Giá size L -->
                         <DataGridTextColumn Header="SIZE L"
                                             Binding="{Binding PriceL,
                                                 StringFormat={}{0:N0} đ}"
                                             Width="95"/>
 
-                        <DataGridCheckBoxColumn Header="ĐANG BÁN"
-                                                Binding="{Binding IsAvailable}"
-                                                Width="85"/>
+                        <!-- Hiển thị trạng thái dạng chữ, không dùng checkbox -->
+                        <DataGridTemplateColumn Header="TRẠNG THÁI"
+                                                Width="115">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock FontWeight="SemiBold">
+                                        <TextBlock.Style>
+                                            <Style TargetType="TextBlock">
+                                                <Setter Property="Text"
+                                                        Value="Đang bán"/>
+                                                <Setter Property="Foreground"
+                                                        Value="#FF39805B"/>
+
+                                                <Style.Triggers>
+                                                    <DataTrigger
+                                                        Binding="{Binding IsAvailable}"
+                                                        Value="False">
+                                                        <Setter Property="Text"
+                                                                Value="Ngừng bán"/>
+                                                        <Setter Property="Foreground"
+                                                                Value="#FFB65F80"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </TextBlock.Style>
+                                    </TextBlock>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+
                     </DataGrid.Columns>
                 </DataGrid>
             </Grid>

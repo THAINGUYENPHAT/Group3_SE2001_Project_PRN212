@@ -24,7 +24,7 @@ namespace CoffeeRuu.Repositories
                 .AsNoTracking()
                 .Include(p => p.Category)
                 .Include(p => p.ProductSizes)
-                .Where(p => p.IsAvailable)
+                
                 .OrderBy(p => p.ProductName)
                 .ToListAsync();
         }
@@ -84,21 +84,36 @@ namespace CoffeeRuu.Repositories
         // Cập nhật sản phẩm
         public async Task UpdateProductAsync(Product product)
         {
-            _context.Products.Update(product);
+            var existingProduct = await _context.Products
+                .FirstOrDefaultAsync(p => p.ProductId == product.ProductId);
+
+            if (existingProduct == null)
+                return;
+
+            // Chỉ cập nhật các thuộc tính của Product
+            existingProduct.ProductName = product.ProductName;
+            existingProduct.CategoryId = product.CategoryId;
+            existingProduct.Description = product.Description;
+            existingProduct.ImageUrl = product.ImageUrl;
+            existingProduct.IsAvailable = product.IsAvailable;
+
+            // Không thay thế ProductSizes ở đây.
+            // Các size hiện có được giữ nguyên.
+
             await _context.SaveChangesAsync();
         }
-
         // Xóa sản phẩm khỏi database
         public async Task DeleteProductAsync(int productId)
         {
             var product = await _context.Products
-                .Include(p => p.ProductSizes)
                 .FirstOrDefaultAsync(p => p.ProductId == productId);
 
             if (product == null)
                 return;
 
-            _context.Products.Remove(product);
+            // Không xóa dữ liệu có thể liên quan đến công thức/order.
+            product.IsAvailable = false;
+
             await _context.SaveChangesAsync();
         }
     }
