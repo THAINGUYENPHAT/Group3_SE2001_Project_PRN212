@@ -285,6 +285,30 @@ namespace CoffeeRuu.Services
                     $"Không thể chuyển từ " +
                     $"{item.PreparationStatus} sang {nextStatus}.");
 
+            // F6.2 - Trừ kho khi bắt đầu pha chế
+            if (nextStatus == "Preparing")
+            {
+                var deductionRepository =
+                    new InventoryDeductionRepository(
+                        _repository.CreateContext);
+
+                var deductionService =
+                    new InventoryDeductionService(
+                        deductionRepository,
+                        ToppingQuantityScope.PerDrink);
+
+                bool deducted = await deductionService
+                    .DeductStockForOrderItemAsync(
+                        db,
+                        orderItemId,
+                        employeeId);
+
+                if (!deducted)
+                    throw new InvalidOperationException(
+                        "Món này đã được trừ kho trước đó.");
+            }
+
+
             item.PreparationStatus = nextStatus;
 
             // Tính lại trạng thái tổng của đơn
@@ -301,6 +325,7 @@ namespace CoffeeRuu.Services
                 newOrderStatus,
                 employeeId,
                 "Cập nhật tiến độ pha chế");
+
 
             await db.SaveChangesAsync();
             await transaction.CommitAsync();
