@@ -12,6 +12,9 @@ x86/
 *.user
 *.suo
 *.cache
+*.userosscache
+*.sln.docstates
+
 
 # Test results
 [Tt]est[Rr]esult*/
@@ -21,6 +24,11 @@ x86/
 *.nupkg
 .nuget/
 
+## Visual Studio layout/cache
+DocumentLayout.json
+DocumentLayout.backup.json
+*.cache
+*.dtbcache.v2
 # Environment and secrets
 .env
 appsettings.Local.json
