@@ -201,6 +201,65 @@
                                Margin="0,0,0,10"
                                TextWrapping="Wrap"/>
 
+
+
+                <!-- CHỌN LOẠI ĐƠN HÀNG -->
+                <StackPanel Margin="0,30,0,15">
+
+                    <TextBlock Text="Loại đơn hàng"
+               FontWeight="SemiBold"
+               Margin="0,0,0,8"/>
+
+                    <ComboBox x:Name="OrderTypeComboBox"
+              Height="35"
+              SelectedIndex="0">
+
+                        <ComboBoxItem Content="Dùng tại quán"
+                      Tag="DineIn"/>
+
+                        <ComboBoxItem Content="Mang đi"
+                      Tag="Takeaway"/>
+
+                    </ComboBox>
+
+                    <!-- CHỈ HIỆN KHI DÙNG TẠI QUÁN -->
+                    <StackPanel x:Name="TablePanel"
+                Margin="0,12,0,0">
+
+                        <StackPanel.Style>
+                            <Style TargetType="StackPanel">
+
+                                <Setter Property="Visibility"
+                        Value="Collapsed"/>
+
+                                <Style.Triggers>
+                                    <DataTrigger
+                        Binding="{Binding SelectedItem.Tag,
+                                  ElementName=OrderTypeComboBox}"
+                        Value="DineIn">
+
+                                        <Setter Property="Visibility"
+                                Value="Visible"/>
+
+                                    </DataTrigger>
+                                </Style.Triggers>
+
+                            </Style>
+                        </StackPanel.Style>
+
+                        <TextBlock Text="Chọn bàn"
+                   FontWeight="SemiBold"
+                   Margin="0,0,0,8"/>
+
+                        <ComboBox x:Name="TableComboBox"
+                  Height="35"
+                  DisplayMemberPath="Display"
+                  SelectedValuePath="TableId"/>
+
+                    </StackPanel>
+
+                </StackPanel>
+
                 <DataGrid Grid.Row="1"
                               x:Name="InvoiceDataGrid"
                               AutoGenerateColumns="False"
