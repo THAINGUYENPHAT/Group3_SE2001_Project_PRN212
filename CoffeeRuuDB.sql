@@ -642,3 +642,753 @@ FROM dbo.Employees AS e
 INNER JOIN dbo.Roles AS r ON r.RoleId = e.RoleId
 ORDER BY e.EmployeeId;
 GO
+
+/* 13. Seed categories, products and product sizes.
+   This section runs after the reset, so the same menu is restored every time.
+   Drinks have S/M/L sizes. Snacks have one size only. */
+
+SET NOCOUNT ON;
+
+/* 13.1. Seed categories */
+INSERT INTO dbo.Categories (CategoryName, Description, IsActive)
+VALUES
+    (N'Cà phê', N'Cà phê truyền thống và hiện đại', 1),
+    (N'Trà sữa', N'Các loại trà sữa và topping', 1),
+    (N'Trà trái cây', N'Trà trái cây tươi mát', 1),
+    (N'Đá xay', N'Đồ uống xay lạnh', 1),
+    (N'Đồ ăn vặt', N'Bánh ngọt và đồ ăn nhẹ', 1);
+GO
+
+/* 13.2. Define the initial menu */
+DECLARE @NewProducts TABLE
+(
+    CategoryName NVARCHAR(100),
+    ProductName NVARCHAR(150),
+    Description NVARCHAR(500),
+    PriceS DECIMAL(12,2),
+    PriceM DECIMAL(12,2),
+    PriceL DECIMAL(12,2)
+);
+
+INSERT INTO @NewProducts
+    (CategoryName, ProductName, Description, PriceS, PriceM, PriceL)
+VALUES
+-- COFFEE
+(N'Cà phê', N'Bạc xỉu', N'Cà phê sữa nhiều sữa, vị dịu nhẹ', 28000, 33000, 38000),
+(N'Cà phê', N'Cà phê đen đá', N'Cà phê phin đậm đà dùng với đá', 22000, 27000, 32000),
+(N'Cà phê', N'Cà phê muối', N'Cà phê kết hợp kem muối béo mặn', 32000, 37000, 42000),
+(N'Cà phê', N'Cà phê cốt dừa', N'Cà phê kết hợp cốt dừa thơm béo', 35000, 40000, 45000),
+(N'Cà phê', N'Americano', N'Espresso pha loãng, hương vị thanh', 30000, 35000, 40000),
+(N'Cà phê', N'Latte', N'Espresso kết hợp sữa tươi', 35000, 40000, 45000),
+(N'Cà phê', N'Cappuccino', N'Espresso, sữa nóng và bọt sữa', 35000, 40000, 45000),
+(N'Cà phê', N'Mocha', N'Cà phê kết hợp chocolate và sữa', 38000, 43000, 48000),
+
+-- MILK TEA
+(N'Trà sữa', N'Trà sữa truyền thống', N'Trà đen và sữa, vị trà đậm', 28000, 33000, 38000),
+(N'Trà sữa', N'Trà sữa trân châu đường đen', N'Sữa tươi, đường đen và trân châu', 32000, 37000, 42000),
+(N'Trà sữa', N'Trà sữa matcha', N'Matcha thơm nhẹ kết hợp sữa', 33000, 38000, 43000),
+(N'Trà sữa', N'Trà sữa chocolate', N'Trà sữa vị chocolate ngọt dịu', 32000, 37000, 42000),
+(N'Trà sữa', N'Trà sữa khoai môn', N'Trà sữa khoai môn thơm béo', 32000, 37000, 42000),
+(N'Trà sữa', N'Trà sữa ô long', N'Ô long thơm kết hợp sữa', 30000, 35000, 40000),
+
+-- FRUIT TEA
+(N'Trà trái cây', N'Trà đào cam sả', N'Trà đào, cam tươi và sả thơm', 30000, 35000, 40000),
+(N'Trà trái cây', N'Trà vải', N'Trà thanh mát cùng quả vải', 30000, 35000, 40000),
+(N'Trà trái cây', N'Trà chanh mật ong', N'Trà chanh chua ngọt với mật ong', 25000, 30000, 35000),
+(N'Trà trái cây', N'Trà dâu', N'Trà trái cây vị dâu', 30000, 35000, 40000),
+(N'Trà trái cây', N'Trà tắc xí muội', N'Tắc chua ngọt cùng xí muội', 22000, 27000, 32000),
+(N'Trà trái cây', N'Trà ổi hồng', N'Trà trái cây vị ổi hồng', 30000, 35000, 40000),
+
+-- FRAPPE
+(N'Đá xay', N'Matcha đá xay', N'Matcha xay cùng sữa và đá', 38000, 43000, 48000),
+(N'Đá xay', N'Chocolate đá xay', N'Chocolate xay lạnh đậm đà', 38000, 43000, 48000),
+(N'Đá xay', N'Cookies đá xay', N'Bánh quy chocolate xay cùng sữa', 40000, 45000, 50000),
+(N'Đá xay', N'Cà phê đá xay', N'Cà phê xay lạnh với sữa', 38000, 43000, 48000),
+
+-- SNACKS: ONE SIZE ONLY
+(N'Đồ ăn vặt', N'Bánh croissant', N'Bánh sừng bò nhiều lớp bơ', 25000, NULL, NULL),
+(N'Đồ ăn vặt', N'Bánh tiramisu', N'Bánh kem vị cà phê và cacao', 35000, NULL, NULL),
+(N'Đồ ăn vặt', N'Bánh brownie chocolate', N'Bánh chocolate mềm ẩm', 30000, NULL, NULL),
+(N'Đồ ăn vặt', N'Khoai tây chiên', N'Khoai tây chiên giòn', 30000, NULL, NULL),
+(N'Đồ ăn vặt', N'Xúc xích chiên', N'Xúc xích chiên nóng', 20000, NULL, NULL),
+(N'Đồ ăn vặt', N'Bánh mì que', N'Bánh mì que giòn nhân pate', 18000, NULL, NULL);
+
+/* 13.3. Insert products */
+INSERT INTO dbo.Products
+    (CategoryId, ProductName, Description, IsAvailable)
+SELECT
+    C.CategoryId,
+    N.ProductName,
+    N.Description,
+    1
+FROM @NewProducts AS N
+INNER JOIN dbo.Categories AS C
+    ON C.CategoryName = N.CategoryName;
+
+/* 13.4. Insert product sizes and prices */
+INSERT INTO dbo.ProductSizes
+    (ProductId, SizeName, Price, IsAvailable)
+SELECT
+    P.ProductId,
+    S.SizeName,
+    S.Price,
+    1
+FROM @NewProducts AS N
+INNER JOIN dbo.Products AS P
+    ON P.ProductName = N.ProductName
+CROSS APPLY
+(
+    VALUES
+        (N'Nhỏ (S)', N.PriceS),
+        (N'Lớn (M)', N.PriceM),
+        (N'Rất lớn (L)', N.PriceL)
+) AS S(SizeName, Price)
+WHERE S.Price IS NOT NULL;
+GO
+
+
+/*
+    CoffeeRuu - Demo Seed Data
+    Append this section after the existing menu seed script.
+    Requires the existing Roles, Employees, CafeTables, Categories,
+    Products and ProductSizes data.
+*/
+
+SET NOCOUNT ON;
+SET XACT_ABORT ON;
+
+BEGIN TRY
+    BEGIN TRANSACTION;
+
+    /* =========================================================
+       1. TOPPINGS
+       ========================================================= */
+
+    INSERT INTO dbo.Toppings
+        (ToppingName, ExtraPrice, IsAvailable)
+    VALUES
+        (N'Trân châu đen', 7000, 1),
+        (N'Trân châu trắng', 8000, 1),
+        (N'Thạch trái cây', 7000, 1),
+        (N'Pudding trứng', 8000, 1),
+        (N'Kem cheese', 10000, 1),
+        (N'Kem muối', 10000, 1),
+        (N'Thạch cà phê', 7000, 1),
+        (N'Đào miếng', 8000, 1);
+
+
+    /* =========================================================
+       2. INGREDIENTS
+       CurrentStock represents the current stock after receiving
+       the demo stock receipts below.
+       ========================================================= */
+
+    INSERT INTO dbo.Ingredients
+        (IngredientName, Unit, CurrentStock, MinimumStock, IsActive)
+    VALUES
+        (N'Hạt cà phê', N'kg', 20, 5, 1),
+        (N'Sữa tươi', N'lít', 40, 10, 1),
+        (N'Sữa đặc', N'kg', 15, 4, 1),
+        (N'Đường', N'kg', 20, 5, 1),
+        (N'Trà đen', N'kg', 8, 2, 1),
+        (N'Trà ô long', N'kg', 6, 2, 1),
+        (N'Bột matcha', N'kg', 4, 1, 1),
+        (N'Bột chocolate', N'kg', 5, 1, 1),
+        (N'Trân châu khô', N'kg', 10, 3, 1),
+        (N'Bột pudding', N'kg', 5, 1, 1),
+        (N'Kem cheese', N'kg', 4, 1, 1),
+        (N'Syrup đào', N'lít', 8, 2, 1),
+        (N'Cam tươi', N'kg', 10, 3, 1),
+        (N'Chanh tươi', N'kg', 8, 2, 1),
+        (N'Khoai tây', N'kg', 15, 4, 1),
+        (N'Bột mì', N'kg', 10, 3, 1),
+        (N'Bánh quy chocolate', N'kg', 5, 1, 1),
+        (N'Bột khoai môn', N'kg', 4, 1, 1),
+        (N'Vải đóng hộp', N'kg', 6, 2, 1),
+        (N'Xúc xích', N'cây', 50, 10, 1);
+
+
+    /* =========================================================
+       3. SUPPLIERS
+       ========================================================= */
+
+    INSERT INTO dbo.Suppliers
+        (SupplierName, Phone, Email, Address, IsActive)
+    VALUES
+        (N'Công ty Cà phê Tây Nguyên',
+         N'0901000001', N'coffee@supplier.local',
+         N'Buôn Ma Thuột, Đắk Lắk', 1),
+
+        (N'Nhà phân phối Nguyên liệu Pha chế',
+         N'0901000002', N'ingredients@supplier.local',
+         N'Ninh Kiều, Cần Thơ', 1),
+
+        (N'Nông sản Miền Tây',
+         N'0901000003', N'agri@supplier.local',
+         N'Ô Môn, Cần Thơ', 1),
+
+        (N'Nhà cung cấp Bánh và Đồ ăn vặt',
+         N'0901000004', N'snacks@supplier.local',
+         N'Cái Răng, Cần Thơ', 1);
+
+
+    /* =========================================================
+       4. PRODUCT RECIPES
+       Each recipe uses one product size and one ingredient.
+       ========================================================= */
+
+    INSERT INTO dbo.ProductRecipes
+        (ProductSizeId, IngredientId, QuantityUsed)
+    SELECT
+        ps.ProductSizeId, i.IngredientId, r.QuantityUsed
+    FROM
+    (
+        VALUES
+        (N'Bạc xỉu', N'Nhỏ (S)', N'Hạt cà phê', 0.020),
+        (N'Bạc xỉu', N'Nhỏ (S)', N'Sữa tươi', 0.150),
+        (N'Bạc xỉu', N'Nhỏ (S)', N'Sữa đặc', 0.030),
+
+        (N'Cà phê đen đá', N'Nhỏ (S)', N'Hạt cà phê', 0.025),
+        (N'Cà phê muối', N'Nhỏ (S)', N'Hạt cà phê', 0.025),
+        (N'Cà phê muối', N'Nhỏ (S)', N'Kem cheese', 0.030),
+
+        (N'Latte', N'Nhỏ (S)', N'Hạt cà phê', 0.020),
+        (N'Latte', N'Nhỏ (S)', N'Sữa tươi', 0.180),
+
+        (N'Trà sữa truyền thống', N'Nhỏ (S)', N'Trà đen', 0.010),
+        (N'Trà sữa truyền thống', N'Nhỏ (S)', N'Sữa tươi', 0.100),
+        (N'Trà sữa truyền thống', N'Nhỏ (S)', N'Đường', 0.020),
+
+        (N'Trà sữa trân châu đường đen', N'Nhỏ (S)', N'Trà đen', 0.010),
+        (N'Trà sữa trân châu đường đen', N'Nhỏ (S)', N'Sữa tươi', 0.100),
+        (N'Trà sữa trân châu đường đen', N'Nhỏ (S)', N'Trân châu khô', 0.040),
+
+        (N'Trà sữa matcha', N'Nhỏ (S)', N'Bột matcha', 0.008),
+        (N'Trà sữa matcha', N'Nhỏ (S)', N'Sữa tươi', 0.150),
+
+        (N'Matcha đá xay', N'Nhỏ (S)', N'Bột matcha', 0.010),
+        (N'Matcha đá xay', N'Nhỏ (S)', N'Sữa tươi', 0.150),
+
+        (N'Chocolate đá xay', N'Nhỏ (S)', N'Bột chocolate', 0.025),
+        (N'Chocolate đá xay', N'Nhỏ (S)', N'Sữa tươi', 0.150),
+
+        (N'Trà đào cam sả', N'Nhỏ (S)', N'Trà đen', 0.008),
+        (N'Trà đào cam sả', N'Nhỏ (S)', N'Syrup đào', 0.030),
+        (N'Trà đào cam sả', N'Nhỏ (S)', N'Cam tươi', 0.050),
+
+        (N'Trà chanh mật ong', N'Nhỏ (S)', N'Trà đen', 0.008),
+        (N'Trà chanh mật ong', N'Nhỏ (S)', N'Chanh tươi', 0.030),
+
+        (N'Khoai tây chiên', N'Nhỏ (S)', N'Khoai tây', 0.200),
+        (N'Bánh croissant', N'Nhỏ (S)', N'Bột mì', 0.100)
+    ) AS r(ProductName, SizeName, IngredientName, QuantityUsed)
+    INNER JOIN dbo.Products p
+        ON p.ProductName = r.ProductName
+    INNER JOIN dbo.ProductSizes ps
+        ON ps.ProductId = p.ProductId
+        AND ps.SizeName = r.SizeName
+    INNER JOIN dbo.Ingredients i
+        ON i.IngredientName = r.IngredientName;
+
+
+    /* =========================================================
+       5. TOPPING RECIPES
+       ========================================================= */
+
+    INSERT INTO dbo.ToppingRecipes
+        (ToppingId, IngredientId, QuantityUsed)
+    SELECT t.ToppingId, i.IngredientId, r.QuantityUsed
+    FROM
+    (
+        VALUES
+        (N'Trân châu đen', N'Trân châu khô', 0.030),
+        (N'Trân châu trắng', N'Trân châu khô', 0.030),
+        (N'Pudding trứng', N'Bột pudding', 0.040),
+        (N'Kem cheese', N'Kem cheese', 0.030),
+        (N'Kem muối', N'Sữa tươi', 0.030),
+        (N'Thạch cà phê', N'Hạt cà phê', 0.005),
+        (N'Đào miếng', N'Syrup đào', 0.030),
+        (N'Thạch trái cây', N'Đường', 0.015)
+    ) AS r(ToppingName, IngredientName, QuantityUsed)
+    INNER JOIN dbo.Toppings t
+        ON t.ToppingName = r.ToppingName
+    INNER JOIN dbo.Ingredients i
+        ON i.IngredientName = r.IngredientName;
+
+
+    /* =========================================================
+       6. STOCK RECEIPTS AND DETAILS
+       ========================================================= */
+
+    DECLARE @WarehouseId INT =
+    (
+        SELECT TOP (1) EmployeeId
+        FROM dbo.Employees
+        WHERE Username = N'warehouse'
+    );
+
+    IF @WarehouseId IS NULL
+        SELECT @WarehouseId = EmployeeId
+        FROM dbo.Employees e
+        INNER JOIN dbo.Roles r ON r.RoleId = e.RoleId
+        WHERE r.RoleName = N'Warehouse Manager';
+
+    IF @WarehouseId IS NULL
+        SELECT @WarehouseId = EmployeeId
+        FROM dbo.Employees
+        WHERE Username = N'admin';
+
+    INSERT INTO dbo.StockReceipts
+        (SupplierId, ReceivedBy, ReceiptDate, Note, TotalCost)
+    SELECT
+        s.SupplierId, @WarehouseId, DATEADD(DAY, -7, SYSDATETIME()),
+        N'Phiếu nhập nguyên liệu demo - đợt 1', 0
+    FROM dbo.Suppliers s
+    WHERE s.SupplierName = N'Công ty Cà phê Tây Nguyên';
+
+    DECLARE @Receipt1 INT = CONVERT(INT, SCOPE_IDENTITY());
+
+    INSERT INTO dbo.StockReceiptDetails
+        (StockReceiptId, IngredientId, Quantity, UnitCost)
+    SELECT
+        @Receipt1, i.IngredientId, v.Quantity, v.UnitCost
+    FROM
+    (
+        VALUES
+        (N'Hạt cà phê', 10.000, 180000.00),
+        (N'Trà đen', 4.000, 120000.00),
+        (N'Trà ô long', 3.000, 150000.00)
+    ) AS v(IngredientName, Quantity, UnitCost)
+    INNER JOIN dbo.Ingredients i
+        ON i.IngredientName = v.IngredientName;
+
+    UPDATE dbo.StockReceipts
+    SET TotalCost =
+    (
+        SELECT SUM(Quantity * UnitCost)
+        FROM dbo.StockReceiptDetails
+        WHERE StockReceiptId = @Receipt1
+    )
+    WHERE StockReceiptId = @Receipt1;
+
+
+    INSERT INTO dbo.StockReceipts
+        (SupplierId, ReceivedBy, ReceiptDate, Note, TotalCost)
+    SELECT
+        s.SupplierId, @WarehouseId, DATEADD(DAY, -3, SYSDATETIME()),
+        N'Phiếu nhập sữa và nguyên liệu pha chế - đợt 2', 0
+    FROM dbo.Suppliers s
+    WHERE s.SupplierName = N'Nhà phân phối Nguyên liệu Pha chế';
+
+    DECLARE @Receipt2 INT = CONVERT(INT, SCOPE_IDENTITY());
+
+    INSERT INTO dbo.StockReceiptDetails
+        (StockReceiptId, IngredientId, Quantity, UnitCost)
+    SELECT
+        @Receipt2, i.IngredientId, v.Quantity, v.UnitCost
+    FROM
+    (
+        VALUES
+        (N'Sữa tươi', 20.000, 32000.00),
+        (N'Sữa đặc', 8.000, 65000.00),
+        (N'Trân châu khô', 5.000, 45000.00),
+        (N'Bột matcha', 2.000, 280000.00),
+        (N'Bột chocolate', 2.000, 160000.00)
+    ) AS v(IngredientName, Quantity, UnitCost)
+    INNER JOIN dbo.Ingredients i
+        ON i.IngredientName = v.IngredientName;
+
+    UPDATE dbo.StockReceipts
+    SET TotalCost =
+    (
+        SELECT SUM(Quantity * UnitCost)
+        FROM dbo.StockReceiptDetails
+        WHERE StockReceiptId = @Receipt2
+    )
+    WHERE StockReceiptId = @Receipt2;
+
+
+    INSERT INTO dbo.StockReceipts
+        (SupplierId, ReceivedBy, ReceiptDate, Note, TotalCost)
+    SELECT
+        s.SupplierId, @WarehouseId, DATEADD(DAY, -1, SYSDATETIME()),
+        N'Phiếu nhập nông sản và đồ ăn vặt - đợt 3', 0
+    FROM dbo.Suppliers s
+    WHERE s.SupplierName = N'Nông sản Miền Tây';
+
+    DECLARE @Receipt3 INT = CONVERT(INT, SCOPE_IDENTITY());
+
+    INSERT INTO dbo.StockReceiptDetails
+        (StockReceiptId, IngredientId, Quantity, UnitCost)
+    SELECT
+        @Receipt3, i.IngredientId, v.Quantity, v.UnitCost
+    FROM
+    (
+        VALUES
+        (N'Cam tươi', 5.000, 30000.00),
+        (N'Chanh tươi', 4.000, 25000.00),
+        (N'Khoai tây', 10.000, 22000.00),
+        (N'Xúc xích', 30.000, 9000.00)
+    ) AS v(IngredientName, Quantity, UnitCost)
+    INNER JOIN dbo.Ingredients i
+        ON i.IngredientName = v.IngredientName;
+
+    UPDATE dbo.StockReceipts
+    SET TotalCost =
+    (
+        SELECT SUM(Quantity * UnitCost)
+        FROM dbo.StockReceiptDetails
+        WHERE StockReceiptId = @Receipt3
+    )
+    WHERE StockReceiptId = @Receipt3;
+
+
+    /* =========================================================
+       7. INVENTORY TRANSACTIONS
+       These records are sample history, not stock adjustments.
+       ========================================================= */
+
+    INSERT INTO dbo.InventoryTransactions
+        (IngredientId, EmployeeId, TransactionType,
+         QuantityChange, ReferenceType, ReferenceId, CreatedAt, Note)
+    SELECT
+        i.IngredientId, @WarehouseId, N'StockIn',
+        d.Quantity, N'StockReceipt', d.StockReceiptId,
+        sr.ReceiptDate, sr.Note
+    FROM dbo.StockReceiptDetails d
+    INNER JOIN dbo.StockReceipts sr
+        ON sr.StockReceiptId = d.StockReceiptId
+    INNER JOIN dbo.Ingredients i
+        ON i.IngredientId = d.IngredientId
+    WHERE d.StockReceiptId IN (@Receipt1, @Receipt2, @Receipt3);
+
+    INSERT INTO dbo.InventoryTransactions
+        (IngredientId, EmployeeId, TransactionType,
+         QuantityChange, ReferenceType, ReferenceId, CreatedAt, Note)
+    SELECT
+        i.IngredientId, @WarehouseId, N'Adjustment',
+        -2.000, N'DemoAdjustment', NULL,
+        DATEADD(HOUR, -5, SYSDATETIME()),
+        N'Ví dụ điều chỉnh tồn kho khi kiểm kê'
+    FROM dbo.Ingredients i
+    WHERE i.IngredientName = N'Sữa tươi';
+
+
+    /* =========================================================
+       8. TABLE RESERVATIONS
+       ========================================================= */
+
+    DECLARE @CashierId INT =
+    (
+        SELECT TOP (1) EmployeeId
+        FROM dbo.Employees
+        WHERE Username = N'cashier'
+    );
+
+    IF @CashierId IS NULL
+        SELECT @CashierId = EmployeeId
+        FROM dbo.Employees
+        WHERE Username = N'admin';
+
+    INSERT INTO dbo.TableReservations
+        (TableId, CreatedBy, CustomerName, CustomerPhone,
+         GuestCount, ReservationAt, ReservationStatus, Note)
+    SELECT
+        t.TableId, @CashierId, v.CustomerName, v.CustomerPhone,
+        v.GuestCount, v.ReservationAt, v.ReservationStatus, v.Note
+    FROM
+    (
+        VALUES
+        (N'T01', N'Nguyễn Minh Anh', N'0912000001', 2,
+         DATEADD(HOUR, 2, SYSDATETIME()), N'Booked', N'Khách đặt bàn trước'),
+
+        (N'T02', N'Trần Hoàng Nam', N'0912000002', 2,
+         DATEADD(HOUR, 4, SYSDATETIME()), N'Booked', N'Khách hẹn gặp bạn'),
+
+        (N'T03', N'Lê Thảo Vy', N'0912000003', 4,
+         DATEADD(DAY, -1, SYSDATETIME()), N'Completed', N'Đã phục vụ xong'),
+
+        (N'T04', N'Phạm Quốc Bảo', N'0912000004', 3,
+         DATEADD(DAY, 1, SYSDATETIME()), N'Cancelled', N'Khách đã hủy đặt bàn')
+    ) AS v(TableName, CustomerName, CustomerPhone,
+           GuestCount, ReservationAt, ReservationStatus, Note)
+    INNER JOIN dbo.CafeTables t
+        ON t.TableName = v.TableName;
+
+    /* =========================================================
+       9. VOUCHERS
+       ========================================================= */
+
+    INSERT INTO dbo.Vouchers
+        (VoucherCode, Description, DiscountType, DiscountValue,
+         MinimumOrder, MaximumDiscount, StartAt, EndAt,
+         UsageLimit, IsActive)
+    VALUES
+        (N'WELCOME10', N'Giảm 10% cho đơn hàng đủ điều kiện',
+         N'Percent', 10, 50000, 20000,
+         DATEADD(DAY, -30, SYSDATETIME()),
+         DATEADD(DAY, 30, SYSDATETIME()), 100, 1),
+
+        (N'COFFEE15000', N'Giảm 15.000 đồng cho đơn hàng từ 100.000 đồng',
+         N'Amount', 15000, 100000, NULL,
+         DATEADD(DAY, -10, SYSDATETIME()),
+         DATEADD(DAY, 20, SYSDATETIME()), 50, 1),
+
+        (N'EXPIRED5', N'Voucher demo đã hết hạn',
+         N'Percent', 5, 0, 10000,
+         DATEADD(DAY, -60, SYSDATETIME()),
+         DATEADD(DAY, -30, SYSDATETIME()), 100, 1),
+
+        (N'INACTIVE20', N'Voucher demo đã ngừng sử dụng',
+         N'Percent', 20, 50000, 30000,
+         DATEADD(DAY, -5, SYSDATETIME()),
+         DATEADD(DAY, 30, SYSDATETIME()), 20, 0);
+
+
+    /* =========================================================
+       10. DEMO ORDERS
+       ========================================================= */
+
+    INSERT INTO dbo.Orders
+        (OrderCode, TableId, CreatedBy, OrderType, OrderStatus,
+         Subtotal, DiscountAmount, TotalAmount, Note,
+         CreatedAt, CompletedAt)
+    SELECT
+        v.OrderCode, t.TableId, e.EmployeeId, v.OrderType,
+        v.OrderStatus, v.Subtotal, v.DiscountAmount, v.TotalAmount,
+        v.Note, v.CreatedAt, v.CompletedAt
+    FROM
+    (
+        VALUES
+        (N'CR-DEMO-001', N'T01', N'cashier', N'DineIn', N'Completed',
+         68000.00, 6800.00, 61200.00, N'Đơn demo đã thanh toán',
+         DATEADD(HOUR, -5, SYSDATETIME()),
+         DATEADD(HOUR, -4, SYSDATETIME())),
+
+        (N'CR-DEMO-002', N'T02', N'cashier', N'DineIn', N'Preparing',
+         81000.00, 0.00, 81000.00, N'Đơn demo đang pha chế',
+         DATEADD(MINUTE, -20, SYSDATETIME()), NULL),
+
+        (N'CR-DEMO-003', NULL, N'cashier', N'Takeaway', N'New',
+         50000.00, 0.00, 50000.00, N'Đơn mang đi mới tạo',
+         DATEADD(MINUTE, -5, SYSDATETIME()), NULL),
+
+        (N'CR-DEMO-004', NULL, N'cashier', N'Takeaway', N'Cancelled',
+         30000.00, 0.00, 30000.00, N'Đơn demo đã hủy',
+         DATEADD(DAY, -1, SYSDATETIME()), NULL)
+    ) AS v(OrderCode, TableName, Username, OrderType, OrderStatus,
+           Subtotal, DiscountAmount, TotalAmount, Note, CreatedAt, CompletedAt)
+    INNER JOIN dbo.Employees e ON e.Username = v.Username
+    LEFT JOIN dbo.CafeTables t ON t.TableName = v.TableName;
+
+
+    /* =========================================================
+       11. ORDER ITEMS
+       ========================================================= */
+
+    INSERT INTO dbo.OrderItems
+        (OrderId, ProductSizeId, ProductNameSnapshot,
+         SizeNameSnapshot, UnitPrice, Quantity, LineTotal,
+         PreparationStatus, Note)
+    SELECT
+        o.OrderId, ps.ProductSizeId, p.ProductName,
+        ps.SizeName, ps.Price, v.Quantity,
+        ps.Price * v.Quantity, v.PreparationStatus, v.Note
+    FROM
+    (
+        VALUES
+        (N'CR-DEMO-001', N'Bạc xỉu', N'Nhỏ (S)', 1, N'Served', N'Ít đá'),
+        (N'CR-DEMO-001', N'Trà đào cam sả', N'Nhỏ (S)', 1, N'Served', N''),
+        (N'CR-DEMO-001', N'Bánh croissant', N'Nhỏ (S)', 1, N'Served', N''),
+
+        (N'CR-DEMO-002', N'Latte', N'Lớn (M)', 1, N'Preparing', N''),
+        (N'CR-DEMO-002', N'Trà sữa truyền thống', N'Lớn (M)', 1, N'Queued', N'50% đường'),
+
+        (N'CR-DEMO-003', N'Cà phê đen đá', N'Nhỏ (S)', 1, N'Queued', N'Ít đá'),
+        (N'CR-DEMO-003', N'Bánh mì que', N'Nhỏ (S)', 1, N'Queued', N'')
+    ) AS v(OrderCode, ProductName, SizeName, Quantity, PreparationStatus, Note)
+    INNER JOIN dbo.Orders o ON o.OrderCode = v.OrderCode
+    INNER JOIN dbo.Products p ON p.ProductName = v.ProductName
+    INNER JOIN dbo.ProductSizes ps
+        ON ps.ProductId = p.ProductId AND ps.SizeName = v.SizeName;
+
+
+    /* =========================================================
+       12. ORDER ITEM TOPPINGS
+       ========================================================= */
+
+    INSERT INTO dbo.OrderItemToppings
+        (OrderItemId, ToppingId, ToppingNameSnapshot, ExtraPrice, Quantity)
+    SELECT
+        oi.OrderItemId, t.ToppingId, t.ToppingName, t.ExtraPrice, 1
+    FROM dbo.OrderItems oi
+    INNER JOIN dbo.Orders o ON o.OrderId = oi.OrderId
+    INNER JOIN dbo.Toppings t
+        ON t.ToppingName = N'Trân châu đen'
+    WHERE o.OrderCode = N'CR-DEMO-002'
+      AND oi.ProductNameSnapshot = N'Trà sữa truyền thống';
+
+    INSERT INTO dbo.OrderItemToppings
+        (OrderItemId, ToppingId, ToppingNameSnapshot, ExtraPrice, Quantity)
+    SELECT
+        oi.OrderItemId, t.ToppingId, t.ToppingName, t.ExtraPrice, 1
+    FROM dbo.OrderItems oi
+    INNER JOIN dbo.Orders o ON o.OrderId = oi.OrderId
+    INNER JOIN dbo.Toppings t
+        ON t.ToppingName = N'Kem cheese'
+    WHERE o.OrderCode = N'CR-DEMO-002'
+      AND oi.ProductNameSnapshot = N'Latte';
+
+
+    /* =========================================================
+       13. ORDER VOUCHERS
+       ========================================================= */
+
+    INSERT INTO dbo.OrderVouchers (OrderId, VoucherId, DiscountApplied)
+    SELECT o.OrderId, v.VoucherId, 6800.00
+    FROM dbo.Orders o
+    CROSS JOIN dbo.Vouchers v
+    WHERE o.OrderCode = N'CR-DEMO-001'
+      AND v.VoucherCode = N'WELCOME10';
+
+
+    /* =========================================================
+       14. PAYMENTS
+       ========================================================= */
+
+    INSERT INTO dbo.Payments
+        (OrderId, ProcessedBy, PaymentMethod, PaymentStatus,
+         Amount, TransactionRef, PaidAt, CreatedAt, Note)
+    SELECT
+        o.OrderId, e.EmployeeId, v.PaymentMethod, v.PaymentStatus,
+        v.Amount, v.TransactionRef, v.PaidAt, v.CreatedAt, v.Note
+    FROM
+    (
+        VALUES
+        (N'CR-DEMO-001', N'Cashier', N'Cash', N'Success',
+         61200.00, N'PAY-DEMO-001',
+         DATEADD(HOUR, -4, SYSDATETIME()),
+         DATEADD(HOUR, -4, SYSDATETIME()), N'Thanh toán tiền mặt'),
+
+        (N'CR-DEMO-002', N'Cashier', N'BankQR', N'Pending',
+         81000.00, N'PAY-DEMO-002', NULL,
+         DATEADD(MINUTE, -10, SYSDATETIME()), N'Chờ xác nhận thanh toán QR'),
+
+        (N'CR-DEMO-004', N'Cashier', N'Cash', N'Failed',
+         30000.00, N'PAY-DEMO-004', NULL,
+         DATEADD(DAY, -1, SYSDATETIME()), N'Thanh toán thất bại')
+    ) AS v(OrderCode, RoleName, PaymentMethod, PaymentStatus,
+           Amount, TransactionRef, PaidAt, CreatedAt, Note)
+    INNER JOIN dbo.Orders o ON o.OrderCode = v.OrderCode
+    INNER JOIN dbo.Roles r ON r.RoleName = v.RoleName
+    INNER JOIN dbo.Employees e ON e.RoleId = r.RoleId
+        AND e.Username = N'cashier';
+
+
+    /* =========================================================
+       15. ORDER STATUS HISTORY
+       ========================================================= */
+
+    INSERT INTO dbo.OrderStatusHistory
+        (OrderId, ChangedBy, OldStatus, NewStatus, ChangedAt, Note)
+    SELECT
+        o.OrderId, e.EmployeeId, h.OldStatus, h.NewStatus,
+        h.ChangedAt, h.Note
+    FROM
+    (
+        VALUES
+        (N'CR-DEMO-001', N'New', N'Preparing',
+         DATEADD(HOUR, -5, SYSDATETIME()), N'Bắt đầu pha chế'),
+
+        (N'CR-DEMO-001', N'Preparing', N'Ready',
+         DATEADD(HOUR, -4, SYSDATETIME()), N'Hoàn thành pha chế'),
+
+        (N'CR-DEMO-001', N'Ready', N'Completed',
+         DATEADD(HOUR, -4, SYSDATETIME()), N'Đã giao món cho khách'),
+
+        (N'CR-DEMO-002', N'New', N'Preparing',
+         DATEADD(MINUTE, -15, SYSDATETIME()), N'Barista nhận đơn')
+    ) AS h(OrderCode, OldStatus, NewStatus, ChangedAt, Note)
+    INNER JOIN dbo.Orders o ON o.OrderCode = h.OrderCode
+    LEFT JOIN dbo.Employees e ON e.Username = N'barista';
+
+
+    /* =========================================================
+       16. AUDIT LOGS
+       ========================================================= */
+
+    INSERT INTO dbo.AuditLogs
+        (EmployeeId, Action, EntityName, EntityId, Details, CreatedAt)
+    SELECT
+        e.EmployeeId, v.Action, v.EntityName, v.EntityId,
+        v.Details, v.CreatedAt
+    FROM
+    (
+        VALUES
+        (N'admin', N'Login', N'Employees', N'1',
+         N'Admin đăng nhập hệ thống thành công',
+         DATEADD(HOUR, -8, SYSDATETIME())),
+
+        (N'admin', N'Create', N'Products', NULL,
+         N'Tạo dữ liệu menu demo',
+         DATEADD(HOUR, -7, SYSDATETIME())),
+
+        (N'warehouse', N'Create', N'StockReceipts', NULL,
+         N'Tạo các phiếu nhập hàng demo',
+         DATEADD(HOUR, -3, SYSDATETIME())),
+
+        (N'cashier', N'Create', N'Orders', N'CR-DEMO-001',
+         N'Tạo đơn hàng tại bàn T01',
+         DATEADD(HOUR, -5, SYSDATETIME())),
+
+        (N'cashier', N'Payment', N'Payments', N'PAY-DEMO-001',
+         N'Thanh toán đơn CR-DEMO-001 thành công',
+         DATEADD(HOUR, -4, SYSDATETIME())),
+
+        (N'barista', N'UpdateStatus', N'OrderItems', NULL,
+         N'Cập nhật trạng thái pha chế',
+         DATEADD(MINUTE, -15, SYSDATETIME()))
+    ) AS v(Username, Action, EntityName, EntityId, Details, CreatedAt)
+    INNER JOIN dbo.Employees e ON e.Username = v.Username;
+
+    COMMIT TRANSACTION;
+
+    PRINT N'Demo seed data inserted successfully.';
+END TRY
+BEGIN CATCH
+    IF @@TRANCOUNT > 0
+        ROLLBACK TRANSACTION;
+
+    THROW;
+END CATCH;
+
+
+/* =========================================================
+   17. VERIFY DEMO DATA
+   ========================================================= */
+
+SELECT N'Roles' AS TableName, COUNT_BIG(*) AS TotalRows FROM dbo.Roles
+UNION ALL SELECT N'Employees', COUNT_BIG(*) FROM dbo.Employees
+UNION ALL SELECT N'Categories', COUNT_BIG(*) FROM dbo.Categories
+UNION ALL SELECT N'Products', COUNT_BIG(*) FROM dbo.Products
+UNION ALL SELECT N'ProductSizes', COUNT_BIG(*) FROM dbo.ProductSizes
+UNION ALL SELECT N'Toppings', COUNT_BIG(*) FROM dbo.Toppings
+UNION ALL SELECT N'Ingredients', COUNT_BIG(*) FROM dbo.Ingredients
+UNION ALL SELECT N'ProductRecipes', COUNT_BIG(*) FROM dbo.ProductRecipes
+UNION ALL SELECT N'ToppingRecipes', COUNT_BIG(*) FROM dbo.ToppingRecipes
+UNION ALL SELECT N'Suppliers', COUNT_BIG(*) FROM dbo.Suppliers
+UNION ALL SELECT N'StockReceipts', COUNT_BIG(*) FROM dbo.StockReceipts
+UNION ALL SELECT N'StockReceiptDetails', COUNT_BIG(*) FROM dbo.StockReceiptDetails
+UNION ALL SELECT N'InventoryTransactions', COUNT_BIG(*) FROM dbo.InventoryTransactions
+UNION ALL SELECT N'CafeTables', COUNT_BIG(*) FROM dbo.CafeTables
+UNION ALL SELECT N'TableReservations', COUNT_BIG(*) FROM dbo.TableReservations
+UNION ALL SELECT N'Orders', COUNT_BIG(*) FROM dbo.Orders
+UNION ALL SELECT N'OrderItems', COUNT_BIG(*) FROM dbo.OrderItems
+UNION ALL SELECT N'OrderItemToppings', COUNT_BIG(*) FROM dbo.OrderItemToppings
+UNION ALL SELECT N'Vouchers', COUNT_BIG(*) FROM dbo.Vouchers
+UNION ALL SELECT N'OrderVouchers', COUNT_BIG(*) FROM dbo.OrderVouchers
+UNION ALL SELECT N'Payments', COUNT_BIG(*) FROM dbo.Payments
+UNION ALL SELECT N'OrderStatusHistory', COUNT_BIG(*) FROM dbo.OrderStatusHistory
+UNION ALL SELECT N'AuditLogs', COUNT_BIG(*) FROM dbo.AuditLogs
+ORDER BY TableName;
+GO
