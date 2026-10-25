@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              Background="#F5F6FA">
 
+    <!-- ScrollViewer bọc toàn bộ trang, cho phép lăn chuột khi nội dung dài -->
     <ScrollViewer VerticalScrollBarVisibility="Auto">
         <StackPanel Margin="30">
 
@@ -163,7 +164,8 @@
             <!-- Role-specific Information -->
             <Border Background="White"
                     CornerRadius="12"
-                    Padding="24">
+                    Padding="24"
+                    Margin="0,0,0,20">
 
                 <StackPanel>
                     <StackPanel Orientation="Horizontal" Margin="0,0,0,14">
