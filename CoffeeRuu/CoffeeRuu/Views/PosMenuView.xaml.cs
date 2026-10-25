@@ -1,6 +1,7 @@
 ﻿using CoffeeRuu.Models;
 using CoffeeRuu.Services;
 using CoffeeRuu.ViewModels;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -9,6 +10,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
@@ -91,6 +93,7 @@ namespace CoffeeRuu.Views
                 }
 
                 ApplyFilters();
+                await LoadTablesAsync();
             }
             catch (Exception ex)
             {
@@ -99,6 +102,36 @@ namespace CoffeeRuu.Views
                     "Lỗi tải menu",
                     MessageBoxButton.OK,
                     MessageBoxImage.Error);
+            }
+        }
+
+        //lấy danh sách bàn
+        private async Task LoadTablesAsync()
+        {
+            await using var db = App.CreateDbContext();
+
+            // Lấy danh sách bàn từ database
+            var tables = await db.CafeTables
+                .AsNoTracking()
+                .Where(t =>
+                    t.IsActive &&
+                    (t.TableStatus == "Available" ||
+                     t.TableStatus == "Occupied"))
+                .OrderBy(t => t.TableId)
+                .Select(t => new
+                {
+                    TableId = t.TableId,
+                    Display = t.TableName
+                })
+                .ToListAsync();
+
+            // Hiển thị danh sách bàn trên ComboBox
+            if (FindName("TableComboBox") is ComboBox comboBox)
+            {
+                comboBox.ItemsSource = tables;
+
+                if (tables.Count > 0)
+                    comboBox.SelectedIndex = 0;
             }
         }
 
@@ -279,7 +312,14 @@ namespace CoffeeRuu.Views
                 // 6. Xóa giỏ hàng sau khi hoàn tất
                 CartItems.Clear();
                 UpdateTotalAmount();
+
+                //chuyển sang KDS
+                if (Window.GetWindow(this) is MainShellWindow mainWindow)
+                {
+                    mainWindow.OpenKds();
+                }
             }
+                 
             catch (Exception ex)
             {
                 MessageBox.Show($"Lỗi trong quá trình thanh toán: {ex.Message}", "Lỗi Thanh Toán", MessageBoxButton.OK, MessageBoxImage.Error);

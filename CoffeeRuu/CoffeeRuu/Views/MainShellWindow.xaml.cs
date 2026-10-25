@@ -72,5 +72,11 @@ namespace CoffeeRuu.Views
                 "Employee",
                 () => new EmployeeManagementView());
         }
+
+            //chuyển sang kds sau khi in bill
+            public void OpenKds() 
+            {
+            _navigationService.Navigate("KDS");
+            }
+        }
     }
-}
