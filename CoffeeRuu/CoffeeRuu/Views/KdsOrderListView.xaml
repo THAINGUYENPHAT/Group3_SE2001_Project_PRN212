@@ -1,0 +1,316 @@
+﻿<Page x:Class="CoffeeRuu.Views.KdsOrderListView"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+      mc:Ignorable="d"
+      Background="#F5F6FA"
+      Loaded="Page_Loaded"
+      Title="KdsOrderListView">
+
+    <Page.Resources>
+
+        <!-- NÚT CHÍNH -->
+        <Style x:Key="PrimaryButtonStyle"
+               TargetType="Button">
+            <Setter Property="Background" Value="#433431"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="Padding" Value="15,9"/>
+            <Setter Property="MinWidth" Value="100"/>
+            <Setter Property="Height" Value="38"/>
+            <Setter Property="Margin" Value="0,0,10,8"/>
+            <Setter Property="Cursor" Value="Hand"/>
+        </Style>
+
+        <!-- NÚT PHỤ -->
+        <Style x:Key="SecondaryButtonStyle"
+               TargetType="Button"
+               BasedOn="{StaticResource PrimaryButtonStyle}">
+            <Setter Property="Background" Value="#EAEAEA"/>
+            <Setter Property="Foreground" Value="#333333"/>
+        </Style>
+
+        <!-- NÚT XÓA -->
+        <Style x:Key="DeleteButtonStyle"
+               TargetType="Button"
+               BasedOn="{StaticResource PrimaryButtonStyle}">
+            <Setter Property="Background" Value="#B91C1C"/>
+        </Style>
+
+        <!-- DANH SÁCH MÓN -->
+        <Style TargetType="ListViewItem">
+            <Setter Property="Padding" Value="8,7"/>
+            <Setter Property="HorizontalContentAlignment"
+                    Value="Stretch"/>
+
+            <Style.Triggers>
+
+                <DataTrigger Binding="{Binding PreparationStatus}"
+                             Value="Queued">
+                    <Setter Property="Background" Value="#FFF9EE"/>
+                </DataTrigger>
+
+                <DataTrigger Binding="{Binding PreparationStatus}"
+                             Value="Preparing">
+                    <Setter Property="Background" Value="#EDF4FC"/>
+                </DataTrigger>
+
+                <DataTrigger Binding="{Binding PreparationStatus}"
+                             Value="Ready">
+                    <Setter Property="Background" Value="#EAF7ED"/>
+                </DataTrigger>
+
+            </Style.Triggers>
+        </Style>
+
+    </Page.Resources>
+
+    <Grid Margin="24">
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- ========================= -->
+        <!-- 1. TIÊU ĐỀ -->
+        <!-- ========================= -->
+
+        <StackPanel Grid.Row="0"
+                    Margin="0,0,0,20">
+
+            <TextBlock Text="KDS - Pha chế"
+                       FontSize="26"
+                       FontWeight="Bold"
+                       Foreground="#433431"/>
+
+            <TextBlock
+                Text="Quản lý đơn hàng và cập nhật trạng thái pha chế."
+                FontSize="14"
+                Foreground="Gray"
+                Margin="0,5,0,0"/>
+
+        </StackPanel>
+
+        <!-- ========================= -->
+        <!-- 2. THANH CÔNG CỤ -->
+        <!-- ========================= -->
+
+        <Border Grid.Row="1"
+                Background="White"
+                CornerRadius="10"
+                Padding="18"
+                Margin="0,0,0,18">
+
+            <StackPanel>
+
+                <!-- NHÂN VIÊN -->
+                <StackPanel Orientation="Horizontal"
+                            Margin="0,0,0,12">
+
+                    <Button Content="Nhập EmployeeID"
+                            Click="EnterEmployeeId_Click"
+                            Style="{StaticResource PrimaryButtonStyle}"
+                            Background="#2563EB"/>
+
+                    <TextBlock VerticalAlignment="Center"
+                               FontWeight="SemiBold"
+                               Foreground="#433431"
+                               Margin="8,0,0,8">
+
+                        <Run Text="Mã NV: "/>
+
+                        <Run Text="{Binding EmployeeIdText,
+                                    Mode=OneWay}"/>
+
+                    </TextBlock>
+
+                </StackPanel>
+
+                <!-- CÁC NÚT XỬ LÝ -->
+                <WrapPanel>
+
+                    <Button Content="Làm mới"
+                            Command="{Binding RefreshCommand}"
+                            Style="{StaticResource SecondaryButtonStyle}"/>
+
+                    <Button Content="Bắt đầu pha"
+                            Command="{Binding StartCommand}"
+                            Style="{StaticResource PrimaryButtonStyle}"/>
+
+                    <Button Content="Pha xong"
+                            Command="{Binding ReadyCommand}"
+                            Style="{StaticResource PrimaryButtonStyle}"/>
+
+                    <Button Content="Xóa món"
+                            Command="{Binding DeleteCommand}"
+                            Style="{StaticResource DeleteButtonStyle}"/>
+
+                </WrapPanel>
+
+            </StackPanel>
+        </Border>
+
+        <!-- ========================= -->
+        <!-- 3. DANH SÁCH ĐƠN -->
+        <!-- ========================= -->
+
+        <Border Grid.Row="2"
+                Background="White"
+                CornerRadius="10"
+                Padding="18">
+
+            <DockPanel LastChildFill="True">
+
+                <TextBlock DockPanel.Dock="Top"
+                           Text="Danh sách đơn cần pha chế"
+                           FontSize="18"
+                           FontWeight="SemiBold"
+                           Foreground="#433431"
+                           Margin="0,0,0,18"/>
+
+                <ListView ItemsSource="{Binding Items}"
+                          SelectedItem="{Binding SelectedItem,
+                                         Mode=TwoWay}"
+                          BorderThickness="0"
+                          Background="White"
+                          ScrollViewer.HorizontalScrollBarVisibility="Auto"
+                          ScrollViewer.VerticalScrollBarVisibility="Auto">
+
+                    <!-- NHÓM THEO MÃ ĐƠN -->
+                    <ListView.GroupStyle>
+
+                        <GroupStyle>
+                            <GroupStyle.ContainerStyle>
+
+                                <Style TargetType="{x:Type GroupItem}">
+
+                                    <Setter Property="Template">
+                                        <Setter.Value>
+
+                                            <ControlTemplate TargetType="{x:Type GroupItem}">
+
+                                                <Expander
+                                                    IsExpanded="False"
+                                                    HorizontalAlignment="Stretch"
+                                                    Background="#F8F6F4"
+                                                    BorderBrush="#DDD9D7"
+                                                    BorderThickness="1"
+                                                    Margin="0,0,0,12"
+                                                    Padding="8">
+
+                                                    <!-- HEADER ĐƠN -->
+                                                    <Expander.Header>
+
+                                                        <StackPanel
+                                                            Orientation="Horizontal"
+                                                            Margin="8,6">
+
+                                                            <TextBlock
+                                                                Text="Mã đơn: "
+                                                                FontWeight="Bold"
+                                                                Foreground="#433431"/>
+
+                                                            <TextBlock
+                                                                Text="{Binding Name}"
+                                                                FontWeight="Bold"
+                                                                Foreground="#433431"/>
+
+                                                            <TextBlock
+                                                                Text=" | Số dòng món: "
+                                                                Foreground="Gray"
+                                                                Margin="14,0,0,0"/>
+
+                                                            <TextBlock
+                                                                Text="{Binding ItemCount}"
+                                                                Foreground="Gray"/>
+
+                                                        </StackPanel>
+
+                                                    </Expander.Header>
+
+                                                    <!-- DANH SÁCH MÓN -->
+                                                    <ItemsPresenter/>
+
+                                                </Expander>
+
+                                            </ControlTemplate>
+
+                                        </Setter.Value>
+                                    </Setter>
+
+                                </Style>
+
+                            </GroupStyle.ContainerStyle>
+                        </GroupStyle>
+
+                    </ListView.GroupStyle>
+
+                    <!-- CÁC CỘT -->
+                    <ListView.View>
+
+                        <GridView>
+
+                            <GridViewColumn
+                                Header="Tên món"
+                                DisplayMemberBinding="{Binding ProductName}"
+                                Width="190"/>
+
+                            <GridViewColumn
+                                Header="Size"
+                                DisplayMemberBinding="{Binding SizeName}"
+                                Width="100"/>
+
+                            <GridViewColumn
+                                Header="Số lượng"
+                                DisplayMemberBinding="{Binding Quantity}"
+                                Width="85"/>
+
+                            <GridViewColumn
+                                Header="Trạng thái"
+                                DisplayMemberBinding="{Binding PreparationStatus}"
+                                Width="110"/>
+
+                            <GridViewColumn
+                                Header="Ghi chú"
+                                Width="190">
+
+                                <GridViewColumn.CellTemplate>
+
+                                    <DataTemplate>
+
+                                        <TextBlock
+                                            Text="{Binding Note}"
+                                            TextWrapping="Wrap"
+                                            VerticalAlignment="Center"/>
+
+                                    </DataTemplate>
+
+                                </GridViewColumn.CellTemplate>
+
+                            </GridViewColumn>
+
+                        </GridView>
+
+                    </ListView.View>
+
+                </ListView>
+
+            </DockPanel>
+        </Border>
+
+        <!-- ========================= -->
+        <!-- 4. THÔNG BÁO -->
+        <!-- ========================= -->
+
+        <TextBlock Grid.Row="3"
+                   Text="{Binding Message}"
+                   Foreground="#A34F36"
+                   TextWrapping="Wrap"
+                   FontSize="13"
+                   Margin="0,15,0,0"/>
+
+    </Grid>
+</Page>

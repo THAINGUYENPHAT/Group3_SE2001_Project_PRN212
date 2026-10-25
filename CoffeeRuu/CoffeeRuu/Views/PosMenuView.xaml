@@ -271,7 +271,8 @@
                               FontSize="11"
                               MinColumnWidth="25"
                               HorizontalScrollBarVisibility="Auto"
-                              VerticalScrollBarVisibility="Auto">
+                              VerticalScrollBarVisibility="Auto"
+                              ScrollViewer.HorizontalScrollBarVisibility="Auto">
 
                     <DataGrid.Columns>
                         <DataGridTextColumn Header="Tên món"
@@ -286,6 +287,10 @@
                         <DataGridTextColumn Header="Tiền"
                                                 Binding="{Binding TotalPrice, StringFormat={}{0:N0}}"
                                                 Width="65"/>
+                        <DataGridTextColumn
+                                            Header="Ghi chú"
+                                                Binding="{Binding Note}"
+                                                Width="130"/>
 
                         <!-- Cột Nút xóa món -->
                         <DataGridTemplateColumn Width="35">
