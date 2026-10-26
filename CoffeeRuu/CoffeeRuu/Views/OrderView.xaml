@@ -5,24 +5,122 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
       xmlns:local="clr-namespace:CoffeeRuu.Views"
       mc:Ignorable="d"
-      d:DesignHeight="450" d:DesignWidth="800"
-      Background="White"
+      d:DesignHeight="450"
+      d:DesignWidth="800"
+      Background="#F5F5F0"
       Loaded="Page_Loaded"
       Title="Order Processing">
-    <Grid>
-        <TabControl Margin="12"
-                    FontSize="14">
 
-            <TabItem Header="Tạo đơn hàng">
-                <Frame x:Name="OrderCreateFrame"
-                       NavigationUIVisibility="Hidden"/>
-            </TabItem>
+    <Page.Resources>
+        <Style x:Key="OrderTabControlStyle"
+               TargetType="{x:Type TabControl}">
+            <Setter Property="Background"
+                    Value="Transparent"/>
+            <Setter Property="BorderThickness"
+                    Value="0"/>
+            <Setter Property="FontSize"
+                    Value="14"/>
+            <Setter Property="Padding"
+                    Value="0"/>
+        </Style>
 
-            <TabItem Header="Danh sách đơn hàng">
-                <Frame x:Name="OrderListFrame"
-                       NavigationUIVisibility="Hidden"/>
-            </TabItem>
+        <Style TargetType="{x:Type TabItem}">
+            <Setter Property="Foreground"
+                    Value="#6D5A53"/>
+            <Setter Property="Background"
+                    Value="#E9DFD9"/>
+            <Setter Property="Padding"
+                    Value="22,12"/>
+            <Setter Property="Margin"
+                    Value="0,0,8,0"/>
+            <Setter Property="FontWeight"
+                    Value="SemiBold"/>
+            <Setter Property="BorderThickness"
+                    Value="0"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type TabItem}">
+                        <Border x:Name="TabBorder"
+                                Background="{TemplateBinding Background}"
+                                CornerRadius="8,8,0,0"
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter ContentSource="Header"
+                                              HorizontalAlignment="Center"
+                                              VerticalAlignment="Center"/>
+                        </Border>
 
-        </TabControl>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsSelected"
+                                     Value="True">
+                                <Setter TargetName="TabBorder"
+                                        Property="Background"
+                                        Value="#4E342E"/>
+                                <Setter Property="Foreground"
+                                        Value="White"/>
+                            </Trigger>
+
+                            <Trigger Property="IsMouseOver"
+                                     Value="True">
+                                <Setter TargetName="TabBorder"
+                                        Property="Opacity"
+                                        Value="0.88"/>
+                            </Trigger>
+
+                            <Trigger Property="IsEnabled"
+                                     Value="False">
+                                <Setter Property="Opacity"
+                                        Value="0.5"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Page.Resources>
+
+    <Grid Margin="24">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- Page Header -->
+        <StackPanel Grid.Row="0"
+                    Margin="0,0,0,20">
+            <TextBlock Text="Quản lý đơn hàng"
+                       FontSize="26"
+                       FontWeight="Bold"
+                       Foreground="#3B2A27"/>
+
+            <TextBlock Text="Tạo đơn hàng mới và theo dõi các đơn hàng của quán"
+                       FontSize="13"
+                       Foreground="#82716A"
+                       Margin="0,6,0,0"/>
+        </StackPanel>
+
+        <!-- Order Content -->
+        <Border Grid.Row="1"
+                Background="White"
+                CornerRadius="12"
+                Padding="16"
+                BorderBrush="#DED8D3"
+                BorderThickness="1">
+
+            <TabControl Style="{StaticResource OrderTabControlStyle}">
+
+                <TabItem Header="Tạo đơn hàng">
+                    <Frame x:Name="OrderCreateFrame"
+                           NavigationUIVisibility="Hidden"
+                           Background="White"/>
+                </TabItem>
+
+                <TabItem Header="Danh sách đơn hàng">
+                    <Frame x:Name="OrderListFrame"
+                           NavigationUIVisibility="Hidden"
+                           Background="White"/>
+                </TabItem>
+
+            </TabControl>
+        </Border>
     </Grid>
 </Page>
