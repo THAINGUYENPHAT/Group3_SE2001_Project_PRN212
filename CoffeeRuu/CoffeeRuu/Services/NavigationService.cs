@@ -10,6 +10,8 @@ namespace CoffeeRuu.Services
         private readonly Frame _frame;
         private readonly Dictionary<string, Func<object>> _views = new();
 
+        public event Action<string>? Navigated;
+
         public NavigationService(Frame frame)
         {
             _frame = frame;
@@ -41,10 +43,12 @@ namespace CoffeeRuu.Services
             if (_frame.Content != null &&
                 _frame.Content.GetType() == view.GetType())
             {
+                Navigated?.Invoke(name);
                 return;
             }
 
             _frame.Navigate(view);
+            Navigated?.Invoke(name);
         }
     }
 }

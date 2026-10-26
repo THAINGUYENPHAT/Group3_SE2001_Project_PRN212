@@ -1,11 +1,12 @@
 ﻿
+using System.Windows;
 using CoffeeRuu.Repositories;
 using CoffeeRuu.Services;
 using CoffeeRuu.ViewModels;
 
 namespace CoffeeRuu.Views
 {
-    public partial class MainShellWindow
+    public partial class MainShellWindow : Window
     {
         private readonly NavigationService _navigationService;
         private readonly OrderService _orderService;
@@ -73,10 +74,10 @@ namespace CoffeeRuu.Views
                 () => new EmployeeManagementView());
         }
 
-            //chuyển sang kds sau khi in bill
-            public void OpenKds() 
-            {
+        // Chuyển sang KDS sau khi in bill.
+        public void OpenKds()
+        {
             _navigationService.Navigate("KDS");
-            }
         }
     }
+}

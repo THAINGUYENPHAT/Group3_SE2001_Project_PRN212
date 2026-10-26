@@ -1,18 +1,92 @@
-﻿<Page x:Class="CoffeeRuu.Views.ProductManagementView"
+﻿
+<Page x:Class="CoffeeRuu.Views.ProductManagementView"
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:views="clr-namespace:CoffeeRuu.Views"
-      Background="#F7F5F0">
+      Background="#F5F5F0">
+
+    <Page.Resources>
+        <Style TargetType="{x:Type TabItem}">
+            <Setter Property="Foreground" Value="#6D5A53"/>
+            <Setter Property="Background" Value="#E9DFD9"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Padding" Value="18,12"/>
+            <Setter Property="Margin" Value="0,0,8,0"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type TabItem}">
+                        <Border x:Name="TabBorder"
+                                Background="{TemplateBinding Background}"
+                                CornerRadius="7,7,0,0"
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter ContentSource="Header"
+                                              HorizontalAlignment="Center"
+                                              VerticalAlignment="Center"/>
+                        </Border>
+
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter TargetName="TabBorder"
+                                        Property="Background"
+                                        Value="#4E342E"/>
+                                <Setter Property="Foreground" Value="White"/>
+                            </Trigger>
+
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="TabBorder"
+                                        Property="Opacity"
+                                        Value="0.88"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Page.Resources>
 
     <Grid Margin="20">
-        <TabControl SelectionChanged="TabControl_SelectionChanged">
-            <TabItem Header="☕ Quản lý thực đơn">
-                <views:MenuView/>
-            </TabItem>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
 
-            <TabItem Header="🧾 Quản lý công thức">
+        <!-- Tiêu đề trang -->
+        <StackPanel Grid.Row="0" Margin="0,0,0,16">
+            <TextBlock Text="Quản lý sản phẩm"
+                       FontSize="25"
+                       FontWeight="Bold"
+                       Foreground="#3B2A27"/>
 
-            </TabItem>
-        </TabControl>
+            <TextBlock Text="Quản lý thực đơn và công thức pha chế"
+                       FontSize="12"
+                       Foreground="#82716A"
+                       Margin="0,5,0,0"/>
+        </StackPanel>
+
+        <!-- Nội dung quản lý -->
+        <Border Grid.Row="1"
+                Background="White"
+                BorderBrush="#DED8D3"
+                BorderThickness="1"
+                CornerRadius="10"
+                Padding="14">
+
+            <TabControl SelectionChanged="TabControl_SelectionChanged"
+                        Background="Transparent"
+                        BorderThickness="0"
+                        FontSize="13">
+
+                <TabItem Header="☕ Quản lý thực đơn">
+                    <views:MenuView/>
+                </TabItem>
+
+                <TabItem Header="🧾 Quản lý công thức">
+                    <!-- Giữ nguyên tab hiện tại, chưa thêm nội dung -->
+                </TabItem>
+
+            </TabControl>
+        </Border>
     </Grid>
 </Page>

@@ -1,17 +1,113 @@
 <Page x:Class="CoffeeRuu.Views.ReportView"
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-      Background="#F5F6FA">
-    <ScrollViewer VerticalScrollBarVisibility="Auto">
-        <StackPanel Margin="24">
-            <TextBlock Text="Báo cáo &amp; Thống kê"
-                       FontSize="28" FontWeight="Bold"
-                       Foreground="#3B2F2F"/>
-            <TextBlock Text="Doanh thu và sản phẩm bán chạy theo khoảng thời gian"
-                       FontSize="14" Foreground="#777777"
-                       Margin="0,6,0,20"/>
+      Background="#F5F5F0">
 
-            <Border Background="White" CornerRadius="10" Padding="16" Margin="0,0,0,16">
+    <Page.Resources>
+        <Style x:Key="ReportButtonStyle" TargetType="Button">
+            <Setter Property="Padding" Value="16,9"/>
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="ButtonBorder"
+                                Background="{TemplateBinding Background}"
+                                CornerRadius="6"
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center"
+                                              VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="ButtonBorder"
+                                        Property="Opacity"
+                                        Value="0.85"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="ButtonBorder"
+                                        Property="Opacity"
+                                        Value="0.7"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter TargetName="ButtonBorder"
+                                        Property="Opacity"
+                                        Value="0.5"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="ReportDataGridStyle" TargetType="DataGrid">
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="Foreground" Value="#3B2A27"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="RowBackground" Value="White"/>
+            <Setter Property="AlternatingRowBackground" Value="#FAF8F5"/>
+            <Setter Property="GridLinesVisibility" Value="Horizontal"/>
+            <Setter Property="HorizontalGridLinesBrush" Value="#EEE7E2"/>
+            <Setter Property="VerticalGridLinesBrush" Value="#EEE7E2"/>
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="RowHeight" Value="38"/>
+            <Setter Property="ColumnHeaderHeight" Value="40"/>
+            <Setter Property="CanUserResizeRows" Value="False"/>
+            <Setter Property="CanUserReorderColumns" Value="False"/>
+            <Setter Property="SelectionMode" Value="Single"/>
+            <Setter Property="SelectionUnit" Value="FullRow"/>
+        </Style>
+
+        <Style x:Key="ReportColumnHeaderStyle"
+               TargetType="DataGridColumnHeader">
+            <Setter Property="Background" Value="#E9DFD9"/>
+            <Setter Property="Foreground" Value="#4E342E"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="Padding" Value="10,8"/>
+            <Setter Property="BorderThickness" Value="0,0,0,1"/>
+            <Setter Property="BorderBrush" Value="#DED8D3"/>
+            <Setter Property="HorizontalContentAlignment" Value="Left"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+        </Style>
+
+        <Style x:Key="ReportDatePickerStyle" TargetType="DatePicker">
+            <Setter Property="Height" Value="36"/>
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="Foreground" Value="#3B2A27"/>
+        </Style>
+    </Page.Resources>
+
+    <ScrollViewer VerticalScrollBarVisibility="Auto"
+                  HorizontalScrollBarVisibility="Disabled">
+        <StackPanel Margin="24">
+
+            <!-- Tiêu đề -->
+            <StackPanel Margin="0,0,0,20">
+                <TextBlock Text="Báo cáo &amp; Thống kê"
+                           FontSize="26"
+                           FontWeight="Bold"
+                           Foreground="#3B2A27"/>
+
+                <TextBlock Text="Doanh thu và sản phẩm bán chạy theo khoảng thời gian"
+                           FontSize="13"
+                           Foreground="#82716A"
+                           Margin="0,6,0,0"
+                           TextWrapping="Wrap"/>
+            </StackPanel>
+
+            <!-- Bộ lọc thời gian -->
+            <Border Background="White"
+                    CornerRadius="10"
+                    BorderBrush="#DED8D3"
+                    BorderThickness="1"
+                    Padding="16"
+                    Margin="0,0,0,18">
+
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto"/>
@@ -22,63 +118,222 @@
                         <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
-                    <TextBlock Grid.Column="0" Text="Từ ngày" VerticalAlignment="Center" Margin="0,0,8,0"/>
-                    <DatePicker x:Name="StartDatePicker" Grid.Column="1" Height="32" VerticalContentAlignment="Center"/>
-                    <TextBlock Grid.Column="2" Text="Đến ngày" VerticalAlignment="Center" Margin="16,0,8,0"/>
-                    <DatePicker x:Name="EndDatePicker" Grid.Column="3" Height="32" VerticalContentAlignment="Center"/>
-                    <Button Grid.Column="5" Content="Lọc báo cáo" Click="RefreshButton_Click"
-                            Padding="16,7" Margin="8,0,8,0" Background="#3B2F2F" Foreground="White"/>
-                    <Button Grid.Column="6" Content="Xuất Excel" Click="ExportButton_Click"
-                            Padding="16,7" Background="#2E7D32" Foreground="White"/>
+
+                    <TextBlock Grid.Column="0"
+                               Text="Từ ngày"
+                               Foreground="#4E342E"
+                               FontSize="12"
+                               FontWeight="SemiBold"
+                               VerticalAlignment="Center"
+                               Margin="0,0,8,0"/>
+
+                    <DatePicker x:Name="StartDatePicker"
+                                Grid.Column="1"
+                                Style="{StaticResource ReportDatePickerStyle}"
+                                VerticalContentAlignment="Center"/>
+
+                    <TextBlock Grid.Column="2"
+                               Text="Đến ngày"
+                               Foreground="#4E342E"
+                               FontSize="12"
+                               FontWeight="SemiBold"
+                               VerticalAlignment="Center"
+                               Margin="16,0,8,0"/>
+
+                    <DatePicker x:Name="EndDatePicker"
+                                Grid.Column="3"
+                                Style="{StaticResource ReportDatePickerStyle}"
+                                VerticalContentAlignment="Center"/>
+
+                    <Button Grid.Column="5"
+                            Content="Lọc báo cáo"
+                            Click="RefreshButton_Click"
+                            Style="{StaticResource ReportButtonStyle}"
+                            Background="#4E342E"
+                            Foreground="White"
+                            Margin="8,0"/>
+
+                    <Button Grid.Column="6"
+                            Content="Xuất Excel"
+                            Click="ExportButton_Click"
+                            Style="{StaticResource ReportButtonStyle}"
+                            Background="#477653"
+                            Foreground="White"/>
                 </Grid>
             </Border>
 
-            <UniformGrid Columns="3" Margin="0,0,0,16">
-                <Border Background="White" CornerRadius="10" Padding="18" Margin="0,0,8,0">
+            <!-- Thẻ thống kê -->
+            <UniformGrid Columns="3" Margin="0,0,0,18">
+
+                <Border Background="White"
+                        CornerRadius="10"
+                        BorderBrush="#DED8D3"
+                        BorderThickness="1"
+                        Padding="18"
+                        Margin="0,0,8,0">
                     <StackPanel>
-                        <TextBlock Text="TỔNG DOANH THU" Foreground="#777777" FontSize="12" FontWeight="SemiBold"/>
-                        <TextBlock x:Name="RevenueText" Text="0 ₫" FontSize="24" FontWeight="Bold" Foreground="#2E7D32" Margin="0,8,0,0"/>
+                        <TextBlock Text="TỔNG DOANH THU"
+                                   Foreground="#82716A"
+                                   FontSize="11"
+                                   FontWeight="SemiBold"/>
+
+                        <TextBlock x:Name="RevenueText"
+                                   Text="0 ₫"
+                                   FontSize="24"
+                                   FontWeight="Bold"
+                                   Foreground="#477653"
+                                   Margin="0,10,0,0"
+                                   TextWrapping="Wrap"/>
                     </StackPanel>
                 </Border>
-                <Border Background="White" CornerRadius="10" Padding="18" Margin="4,0">
+
+                <Border Background="White"
+                        CornerRadius="10"
+                        BorderBrush="#DED8D3"
+                        BorderThickness="1"
+                        Padding="18"
+                        Margin="4,0">
                     <StackPanel>
-                        <TextBlock Text="ĐƠN HỢP LỆ" Foreground="#777777" FontSize="12" FontWeight="SemiBold"/>
-                        <TextBlock x:Name="OrderCountText" Text="0" FontSize="24" FontWeight="Bold" Foreground="#3B2F2F" Margin="0,8,0,0"/>
+                        <TextBlock Text="ĐƠN HỢP LỆ"
+                                   Foreground="#82716A"
+                                   FontSize="11"
+                                   FontWeight="SemiBold"/>
+
+                        <TextBlock x:Name="OrderCountText"
+                                   Text="0"
+                                   FontSize="24"
+                                   FontWeight="Bold"
+                                   Foreground="#4E342E"
+                                   Margin="0,10,0,0"/>
                     </StackPanel>
                 </Border>
-                <Border Background="White" CornerRadius="10" Padding="18" Margin="8,0,0,0">
+
+                <Border Background="White"
+                        CornerRadius="10"
+                        BorderBrush="#DED8D3"
+                        BorderThickness="1"
+                        Padding="18"
+                        Margin="8,0,0,0">
                     <StackPanel>
-                        <TextBlock Text="GIÁ TRỊ TRUNG BÌNH / ĐƠN" Foreground="#777777" FontSize="12" FontWeight="SemiBold"/>
-                        <TextBlock x:Name="AverageOrderText" Text="0 ₫" FontSize="24" FontWeight="Bold" Foreground="#3B2F2F" Margin="0,8,0,0"/>
+                        <TextBlock Text="GIÁ TRỊ TRUNG BÌNH / ĐƠN"
+                                   Foreground="#82716A"
+                                   FontSize="11"
+                                   FontWeight="SemiBold"
+                                   TextWrapping="Wrap"/>
+
+                        <TextBlock x:Name="AverageOrderText"
+                                   Text="0 ₫"
+                                   FontSize="24"
+                                   FontWeight="Bold"
+                                   Foreground="#4E342E"
+                                   Margin="0,10,0,0"
+                                   TextWrapping="Wrap"/>
                     </StackPanel>
                 </Border>
+
             </UniformGrid>
 
-            <TextBlock Text="Doanh thu theo ngày" FontSize="19" FontWeight="Bold" Foreground="#3B2F2F" Margin="0,4,0,10"/>
-            <DataGrid x:Name="DailyRevenueGrid" AutoGenerateColumns="False" IsReadOnly="True"
-                      CanUserAddRows="False" HeadersVisibility="Column" MinHeight="120"
-                      Background="White" BorderThickness="0" Margin="0,0,0,20">
-                <DataGrid.Columns>
-                    <DataGridTextColumn Header="Ngày" Binding="{Binding DateLabel}" Width="*"/>
-                    <DataGridTextColumn Header="Số đơn" Binding="{Binding OrderCount}" Width="*"/>
-                    <DataGridTextColumn Header="Doanh thu" Binding="{Binding Revenue, StringFormat={}{0:N0} ₫}" Width="2*"/>
-                </DataGrid.Columns>
-            </DataGrid>
+            <!-- Bảng doanh thu theo ngày -->
+            <StackPanel Margin="0,0,0,20">
+                <TextBlock Text="Doanh thu theo ngày"
+                           FontSize="18"
+                           FontWeight="Bold"
+                           Foreground="#3B2A27"
+                           Margin="0,0,0,10"/>
 
-            <TextBlock Text="Sản phẩm bán chạy" FontSize="19" FontWeight="Bold" Foreground="#3B2F2F" Margin="0,4,0,10"/>
-            <TextBlock Text="Xếp hạng theo tổng số lượng bán (gộp mọi size) trong các đơn đã thanh toán và hoàn thành; hòa thì xếp theo doanh thu món. Doanh thu món là tiền hàng trước giảm giá voucher."
-                       FontSize="12" Foreground="#777777" Margin="0,0,0,8"/>
-            <DataGrid x:Name="BestSellingGrid" AutoGenerateColumns="False" IsReadOnly="True"
-                      CanUserAddRows="False" HeadersVisibility="Column" MinHeight="160"
-                      Background="White" BorderThickness="0" Margin="0,0,0,16">
-                <DataGrid.Columns>
-                    <DataGridTextColumn Header="Hạng" Binding="{Binding Rank}" Width="70"/>
-                    <DataGridTextColumn Header="Sản phẩm" Binding="{Binding ProductName}" Width="2*"/>
-                    <DataGridTextColumn Header="Số lượng bán" Binding="{Binding QuantitySold}" Width="*"/>
-                    <DataGridTextColumn Header="Doanh thu" Binding="{Binding Revenue, StringFormat={}{0:N0} ₫}" Width="2*"/>
-                </DataGrid.Columns>
-            </DataGrid>
-            <TextBlock x:Name="StatusText" Foreground="#777777" FontSize="12" TextWrapping="Wrap"/>
+                <Border Background="White"
+                        CornerRadius="9"
+                        BorderBrush="#DED8D3"
+                        BorderThickness="1"
+                        Padding="1">
+
+                    <DataGrid x:Name="DailyRevenueGrid"
+                              Style="{StaticResource ReportDataGridStyle}"
+                              ColumnHeaderStyle="{StaticResource ReportColumnHeaderStyle}"
+                              AutoGenerateColumns="False"
+                              IsReadOnly="True"
+                              CanUserAddRows="False"
+                              HeadersVisibility="Column"
+                              MinHeight="120">
+
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Ngày"
+                                                Binding="{Binding DateLabel}"
+                                                Width="*"/>
+
+                            <DataGridTextColumn Header="Số đơn"
+                                                Binding="{Binding OrderCount}"
+                                                Width="*"/>
+
+                            <DataGridTextColumn Header="Doanh thu"
+                                                Binding="{Binding Revenue, StringFormat={}{0:N0} ₫}"
+                                                Width="2*"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </Border>
+            </StackPanel>
+
+            <!-- Bảng sản phẩm bán chạy -->
+            <StackPanel Margin="0,0,0,16">
+                <TextBlock Text="Sản phẩm bán chạy"
+                           FontSize="18"
+                           FontWeight="Bold"
+                           Foreground="#3B2A27"
+                           Margin="0,0,0,8"/>
+
+                <TextBlock Text="Xếp hạng theo tổng số lượng bán (gộp mọi size) trong các đơn đã thanh toán và hoàn thành; hòa thì xếp theo doanh thu món. Doanh thu món là tiền hàng trước giảm giá voucher."
+                           FontSize="12"
+                           Foreground="#82716A"
+                           TextWrapping="Wrap"
+                           Margin="0,0,0,10"/>
+
+                <Border Background="White"
+                        CornerRadius="9"
+                        BorderBrush="#DED8D3"
+                        BorderThickness="1"
+                        Padding="1">
+
+                    <DataGrid x:Name="BestSellingGrid"
+                              Style="{StaticResource ReportDataGridStyle}"
+                              ColumnHeaderStyle="{StaticResource ReportColumnHeaderStyle}"
+                              AutoGenerateColumns="False"
+                              IsReadOnly="True"
+                              CanUserAddRows="False"
+                              HeadersVisibility="Column"
+                              MinHeight="160">
+
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Hạng"
+                                                Binding="{Binding Rank}"
+                                                Width="70"/>
+
+                            <DataGridTextColumn Header="Sản phẩm"
+                                                Binding="{Binding ProductName}"
+                                                Width="2*"/>
+
+                            <DataGridTextColumn Header="Số lượng bán"
+                                                Binding="{Binding QuantitySold}"
+                                                Width="*"/>
+
+                            <DataGridTextColumn Header="Doanh thu"
+                                                Binding="{Binding Revenue, StringFormat={}{0:N0} ₫}"
+                                                Width="2*"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </Border>
+            </StackPanel>
+
+            <!-- Trạng thái -->
+            <Border Background="#EEE7E2"
+                    CornerRadius="7"
+                    Padding="12"
+                    Margin="0,0,0,8">
+                <TextBlock x:Name="StatusText"
+                           Foreground="#6D5A53"
+                           FontSize="12"
+                           TextWrapping="Wrap"/>
+            </Border>
+
         </StackPanel>
     </ScrollViewer>
 </Page>
