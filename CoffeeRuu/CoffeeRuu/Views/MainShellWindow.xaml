@@ -23,12 +23,25 @@
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
 
-                <TextBlock Grid.Row="0"
-                           Text="CoffeeRuu"
-                           FontSize="26"
-                           FontWeight="Bold"
-                           Foreground="White"
-                           Margin="0,10,0,30"/>
+                <StackPanel Grid.Row="0">
+                    <TextBlock Text="CoffeeRuu"
+                               FontSize="26"
+                               FontWeight="Bold"
+                               Foreground="White"
+                               Margin="0,10,0,5"/>
+
+                    <TextBlock Text="{Binding CurrentUserName}"
+                               FontSize="13"
+                               Foreground="#E8DCDC"
+                               TextWrapping="Wrap"
+                               Margin="0,0,0,4"/>
+
+                    <TextBlock Text="{Binding CurrentRoleName}"
+                               FontSize="12"
+                               Foreground="#D6BFAF"
+                               TextWrapping="Wrap"
+                               Margin="0,0,0,20"/>
+                </StackPanel>
 
                 <ScrollViewer Grid.Row="1"
                               VerticalScrollBarVisibility="Auto">
@@ -36,47 +49,56 @@
                         <Button Content="🏠  Trang chủ"
                                 Height="42"
                                 Margin="0,0,0,10"
-                                Command="{Binding NavigateHomeCommand}"/>
+                                Command="{Binding NavigateHomeCommand}"
+                                Visibility="{Binding HomeVisibility}"/>
 
                         <Button Content="📃 Menu"
                                 Height="42"
                                 Margin="0,0,0,10"
-                                Command="{Binding NavigateMenuCommand}"/>
+                                Command="{Binding NavigateMenuCommand}"
+                                Visibility="{Binding MenuVisibility}"/>
 
                         <Button Content="☕ Sản phẩm"
                                 Height="42"
                                 Margin="0,0,0,10"
-                                Command="{Binding NavigateProductCommand}"/>
+                                Command="{Binding NavigateProductCommand}"
+                                Visibility="{Binding ProductVisibility}"/>
 
                         <Button Content="🧾 Đơn hàng"
                                 Height="42"
                                 Margin="0,0,0,10"
-                                Command="{Binding NavigateOrdersCommand}"/>
+                                Command="{Binding NavigateOrdersCommand}"
+                                Visibility="{Binding OrdersVisibility}"/>
 
                         <Button Content="📺 KDS - Pha chế"
                                 Height="42"
                                 Margin="0,0,0,10"
-                                Command="{Binding NavigateKdsCommand}"/>
+                                Command="{Binding NavigateKdsCommand}"
+                                Visibility="{Binding KdsVisibility}"/>
 
                         <Button Content="📦  Kho hàng"
                                 Height="42"
                                 Margin="0,0,0,10"
-                                Command="{Binding InventoryCommand}"/>
+                                Command="{Binding InventoryCommand}"
+                                Visibility="{Binding InventoryVisibility}"/>
 
                         <Button Content="📊  Báo cáo"
                                 Height="42"
                                 Margin="0,0,0,10"
-                                Command="{Binding ReportCommand}"/>
+                                Command="{Binding ReportCommand}"
+                                Visibility="{Binding ReportVisibility}"/>
 
                         <Button Content="🪑  Quản lý Bàn"
                                 Height="42"
                                 Margin="0,0,0,10"
-                                Command="{Binding TableCommand}"/>
+                                Command="{Binding TableCommand}"
+                                Visibility="{Binding TableVisibility}"/>
 
                         <Button Content="👥  Nhân viên"
                                 Height="42"
                                 Margin="0,0,0,10"
-                                Command="{Binding EmployeeCommand}"/>
+                                Command="{Binding EmployeeCommand}"
+                                Visibility="{Binding EmployeeVisibility}"/>
                     </StackPanel>
                 </ScrollViewer>
 
