@@ -78,7 +78,7 @@ namespace CoffeeRuu.Repositories
             bool hasOrders = await context.Orders.AnyAsync(o => o.TableId == id);
             if (hasOrders)
             {
-                throw new InvalidOperationException("Không thể xóa bàn này vì đã có lịch sử đơn hàng. Hãy đổi trạng thái thành 'OutOfService'.");
+                throw new InvalidOperationException("Không thể xóa bàn này vì đã có lịch sử đơn hàng. Hãy đổi trạng thái thành 'Đang bảo trì'.");
             }
 
             context.CafeTables.Remove(table);

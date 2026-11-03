@@ -15,9 +15,10 @@ namespace CoffeeRuu.ViewModels
 
         public ObservableCollection<CafeTable> Tables { get; } = new();
 
+        // Chỉ hiển thị 3 trạng thái tiếng Việt theo yêu cầu
         public ObservableCollection<string> StatusList { get; } = new()
         {
-            "Available", "Occupied", "Reserved", "OutOfService"
+            "Đang có sẵn", "Đã đặt", "Đang bảo trì"
         };
 
         private CafeTable? _selectedTable;
@@ -35,14 +36,13 @@ namespace CoffeeRuu.ViewModels
                 {
                     TableNameInput = value.TableName;
                     CapacityInput = value.Capacity.ToString();
-                    StatusInput = value.TableStatus;
+                    // Chuyển DB status thành Tiếng Việt để hiển thị
+                    StatusInput = MapStatusToVietnamese(value.TableStatus);
                 }
                 else
                 {
-                    TableNameInput = GetNextTableName();
-                    CapacityInput = "4";
-                    StatusInput = "Available";
-                    StatusMessage = "";
+                    // Tinh gọn, chỉ gọi ClearInputs 1 lần
+                    ClearInputs(false);
                 }
 
                 UpdateCommands();
@@ -63,7 +63,7 @@ namespace CoffeeRuu.ViewModels
             set { _capacityInput = value; OnPropertyChanged(); }
         }
 
-        private string _statusInput = "Available";
+        private string _statusInput = "Đang có sẵn";
         public string StatusInput
         {
             get => _statusInput;
@@ -87,22 +87,20 @@ namespace CoffeeRuu.ViewModels
         {
             _tableService = tableService;
 
-            // Nút Thêm chỉ sáng lên khi KHÔNG CÓ bàn nào được chọn (đang ở chế độ tạo mới)
             AddCommand = new RelayCommand(async () => await AddTableAsync(), () => SelectedTable == null);
-
-            // Nút Cập nhật chỉ sáng lên khi CÓ bàn được chọn
             UpdateCommand = new RelayCommand(async () => await UpdateTableAsync(), () => SelectedTable != null);
-
-            // ĐÃ THÊM: Nút Xóa chỉ sáng lên khi CÓ bàn được chọn
             DeleteCommand = new RelayCommand(async () => await DeleteTableAsync(), () => SelectedTable != null);
 
-            ClearCommand = new RelayCommand(ClearInputs);
+            // Lệnh làm mới chỉ reset UI, không tải lại danh sách bàn (giảm tải DB)
+            ClearCommand = new RelayCommand(() => ClearInputs(true));
+
             LoadCommand = new RelayCommand(async () => await LoadTablesAsync());
 
             _ = LoadTablesAsync();
         }
 
-        // --- Hàm tự động tính Tên bàn tiếp theo (Định dạng TXX) ---
+        // --- Helper Methods ---
+
         private string GetNextTableName()
         {
             if (Tables == null || Tables.Count == 0) return "T01";
@@ -111,16 +109,42 @@ namespace CoffeeRuu.ViewModels
             foreach (var table in Tables)
             {
                 string numbers = new string(table.TableName.Where(char.IsDigit).ToArray());
-                if (int.TryParse(numbers, out int num))
+                if (int.TryParse(numbers, out int num) && num > maxNumber)
                 {
-                    if (num > maxNumber) maxNumber = num;
+                    maxNumber = num;
                 }
             }
-
             return $"T{(maxNumber + 1):D2}";
         }
 
-        // --- Hàm xử lý Thêm bàn ---
+        // Map Tiếng Anh từ DB sang Tiếng Việt
+        private string MapStatusToVietnamese(string dbStatus)
+        {
+            return dbStatus switch
+            {
+                "Available" => "Đang có sẵn",
+                "Reserved" => "Đã đặt",
+                "OutOfService" => "Đang bảo trì",
+                // Mặc định, mapping Occupied về Đã đặt cho khớp với yêu cầu 3 trạng thái của bạn, hoặc bạn có thể tự chỉnh
+                "Occupied" => "Đã đặt",
+                _ => "Đang có sẵn"
+            };
+        }
+
+        // Map Tiếng Việt sang Tiếng Anh lưu vào DB
+        private string MapStatusToDatabase(string viStatus)
+        {
+            return viStatus switch
+            {
+                "Đang có sẵn" => "Available",
+                "Đã đặt" => "Reserved",
+                "Đang bảo trì" => "OutOfService",
+                _ => "Available"
+            };
+        }
+
+        // --- Commands ---
+
         private async Task AddTableAsync()
         {
             try
@@ -128,13 +152,14 @@ namespace CoffeeRuu.ViewModels
                 if (!int.TryParse(CapacityInput, out int capacity))
                     throw new ArgumentException("Sức chứa phải là số nguyên.");
 
-                string newTableName = GetNextTableName(); // Tính lại tên cho chắc chắn trước khi lưu
+                string newTableName = GetNextTableName();
+                // Map trạng thái tiếng Việt sang tiếng Anh trước khi lưu DB
+                string dbStatus = MapStatusToDatabase(StatusInput);
 
-                await _tableService.AddTableAsync(newTableName, capacity, StatusInput);
+                await _tableService.AddTableAsync(newTableName, capacity, dbStatus);
 
                 await LoadTablesAsync();
                 StatusMessage = $"Thêm {newTableName} thành công!";
-                ClearInputs(); // Reset form sau khi thêm
             }
             catch (Exception ex) { StatusMessage = ex.Message; }
         }
@@ -145,12 +170,14 @@ namespace CoffeeRuu.ViewModels
             Tables.Clear();
             foreach (var item in items)
             {
+                // Cập nhật lại trạng thái bằng Tiếng Việt trực tiếp trên Model để DataGrid hiển thị đẹp
+                item.TableStatus = MapStatusToVietnamese(item.TableStatus);
                 Tables.Add(item);
             }
 
             if (SelectedTable == null)
             {
-                TableNameInput = GetNextTableName();
+                ClearInputs(false);
             }
         }
 
@@ -162,8 +189,11 @@ namespace CoffeeRuu.ViewModels
                 if (!int.TryParse(CapacityInput, out int capacity))
                     throw new ArgumentException("Sức chứa phải là số nguyên.");
 
+                // Map trạng thái tiếng Việt sang tiếng Anh
+                string dbStatus = MapStatusToDatabase(StatusInput);
+
                 await _tableService.UpdateTableAsync(SelectedTable.TableId, TableNameInput, capacity);
-                await _tableService.ChangeTableStatusAsync(SelectedTable.TableId, StatusInput);
+                await _tableService.ChangeTableStatusAsync(SelectedTable.TableId, dbStatus);
 
                 await LoadTablesAsync();
                 StatusMessage = "Cập nhật bàn thành công!";
@@ -171,7 +201,6 @@ namespace CoffeeRuu.ViewModels
             catch (Exception ex) { StatusMessage = ex.Message; }
         }
 
-        // ĐÃ THÊM: Hàm xử lý Xóa bàn
         private async Task DeleteTableAsync()
         {
             try
@@ -179,23 +208,27 @@ namespace CoffeeRuu.ViewModels
                 if (SelectedTable == null) return;
 
                 await _tableService.DeleteTableAsync(SelectedTable.TableId);
-
                 await LoadTablesAsync();
-                ClearInputs(); // Reset form sau khi xóa
                 StatusMessage = "Xóa bàn thành công!";
             }
             catch (Exception ex) { StatusMessage = ex.Message; }
         }
 
-        private void ClearInputs()
+        private void ClearInputs(bool isFromCommand)
         {
-            _selectedTable = null;
-            OnPropertyChanged(nameof(SelectedTable));
+            // Tránh vòng lặp khi Set SelectedTable = null sẽ gọi lại ClearInputs
+            if (isFromCommand && _selectedTable != null)
+            {
+                _selectedTable = null;
+                OnPropertyChanged(nameof(SelectedTable));
+            }
 
-            TableNameInput = GetNextTableName(); // Đặt sẵn tên bàn tiếp theo
+            TableNameInput = GetNextTableName();
             CapacityInput = "4";
-            StatusInput = "Available";
-            StatusMessage = "";
+            StatusInput = "Đang có sẵn";
+
+            // Xóa message lỗi nếu người dùng nhấn nút làm mới
+            if (isFromCommand) StatusMessage = "";
 
             UpdateCommands();
         }
@@ -204,9 +237,7 @@ namespace CoffeeRuu.ViewModels
         {
             AddCommand?.RaiseCanExecuteChanged();
             UpdateCommand?.RaiseCanExecuteChanged();
-
             DeleteCommand?.RaiseCanExecuteChanged();
-
             ClearCommand?.RaiseCanExecuteChanged();
         }
 

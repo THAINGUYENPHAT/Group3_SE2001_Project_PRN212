@@ -25,5 +25,20 @@ namespace CoffeeRuu
                 viewModel.Password = PasswordInput.Password;
             }
         }
+        private void Window_KeyDown(
+            object sender,
+            System.Windows.Input.KeyEventArgs e)
+        {
+            if (e.Key == System.Windows.Input.Key.Enter)
+            {
+                if (DataContext is CoffeeRuu.ViewModels.LoginViewModel viewModel
+                    && viewModel.LoginCommand.CanExecute(null))
+                {
+                    viewModel.LoginCommand.Execute(null);
+                }
+
+                e.Handled = true;
+            }
+        }
     }
 }

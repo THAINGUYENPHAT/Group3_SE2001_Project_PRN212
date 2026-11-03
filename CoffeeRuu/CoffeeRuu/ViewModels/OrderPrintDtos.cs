@@ -21,6 +21,7 @@ namespace CoffeeRuu.Models
         public string SizeName { get; set; } = string.Empty;
         public decimal Price { get; set; }
         public int Quantity { get; set; }
+        public string Note { get; set; } = "";
         public decimal TotalPrice => Price * Quantity;
     }
 }

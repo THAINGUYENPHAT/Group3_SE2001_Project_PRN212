@@ -4,264 +4,380 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
       mc:Ignorable="d"
-      Background="#F5F6FA">
+      Background="#F5F5F0">
 
     <Page.Resources>
+        <SolidColorBrush x:Key="CoffeeBrown" Color="#4E342E"/>
+        <SolidColorBrush x:Key="CoffeeDark" Color="#3B2A27"/>
+        <SolidColorBrush x:Key="CoffeeLight" Color="#E9DFD9"/>
+        <SolidColorBrush x:Key="BorderColor" Color="#DED8D3"/>
+        <SolidColorBrush x:Key="TextColor" Color="#3B2F2F"/>
+        <SolidColorBrush x:Key="MutedText" Color="#817773"/>
 
-        <!-- Button chính -->
-        <Style x:Key="PrimaryButtonStyle"
-               TargetType="Button">
-            <Setter Property="Background" Value="#433431"/>
+        <!-- Nut dung chung -->
+        <Style x:Key="CoffeeButton" TargetType="{x:Type Button}">
+            <Setter Property="Height" Value="36"/>
+            <Setter Property="Padding" Value="14,0"/>
+            <Setter Property="Background" Value="{StaticResource CoffeeBrown}"/>
             <Setter Property="Foreground" Value="White"/>
-            <Setter Property="Padding" Value="15,9"/>
-            <Setter Property="MinWidth" Value="100"/>
-            <Setter Property="Margin" Value="0,0,10,0"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
             <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Margin" Value="0,0,8,0"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Border x:Name="ButtonBorder"
+                                Background="{TemplateBinding Background}"
+                                CornerRadius="6"
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center"
+                                              VerticalAlignment="Center"
+                                              RecognizesAccessKey="True"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="ButtonBorder"
+                                        Property="Opacity" Value="0.85"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter TargetName="ButtonBorder"
+                                        Property="Opacity" Value="0.45"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
         </Style>
 
-        <!-- Button phụ -->
-        <Style x:Key="SecondaryButtonStyle"
-               TargetType="Button">
-            <Setter Property="Background" Value="#EAEAEA"/>
-            <Setter Property="Foreground" Value="#333333"/>
-            <Setter Property="Padding" Value="15,9"/>
-            <Setter Property="MinWidth" Value="100"/>
-            <Setter Property="Margin" Value="0,0,10,0"/>
-            <Setter Property="Cursor" Value="Hand"/>
+        <!-- O nhap lieu -->
+        <Style x:Key="CoffeeTextBox" TargetType="{x:Type TextBox}">
+            <Setter Property="Height" Value="36"/>
+            <Setter Property="Padding" Value="10,6"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="Foreground" Value="{StaticResource TextColor}"/>
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="BorderBrush" Value="{StaticResource BorderColor}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type TextBox}">
+                        <Border x:Name="InputBorder"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="5">
+                            <ScrollViewer x:Name="PART_ContentHost"
+                                          Margin="{TemplateBinding Padding}"
+                                          VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsKeyboardFocused" Value="True">
+                                <Setter TargetName="InputBorder"
+                                        Property="BorderBrush" Value="#8D6E63"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter TargetName="InputBorder"
+                                        Property="Opacity" Value="0.6"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
         </Style>
 
-        <!-- TextBox -->
-        <Style x:Key="InputStyle"
-               TargetType="TextBox">
-            <Setter Property="Height" Value="34"/>
-            <Setter Property="Padding" Value="8,5"/>
-            <Setter Property="VerticalContentAlignment"
-                    Value="Center"/>
+        <!-- Tieu de cot -->
+        <Style x:Key="CoffeeColumnHeader"
+               TargetType="{x:Type DataGridColumnHeader}">
+            <Setter Property="Background" Value="#E9DFD9"/>
+            <Setter Property="Foreground" Value="{StaticResource CoffeeBrown}"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="Padding" Value="8,10"/>
+            <Setter Property="BorderThickness" Value="0,0,0,1"/>
+            <Setter Property="BorderBrush" Value="#D7C9C1"/>
+            <Setter Property="HorizontalContentAlignment" Value="Left"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
         </Style>
 
+        <!-- Dong du lieu -->
+        <Style x:Key="CoffeeDataGridRow" TargetType="{x:Type DataGridRow}">
+            <Setter Property="MinHeight" Value="42"/>
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="Foreground" Value="{StaticResource TextColor}"/>
+            <Setter Property="BorderThickness" Value="0,0,0,1"/>
+            <Setter Property="BorderBrush" Value="#EEE9E5"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#F8F2EE"/>
+                </Trigger>
+                <Trigger Property="IsSelected" Value="True">
+                    <Setter Property="Background" Value="#EDE0D8"/>
+                    <Setter Property="Foreground" Value="{StaticResource CoffeeDark}"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <!-- Nhãn trạng thái -->
+        <Style x:Key="IngredientStatusText"
+               TargetType="{x:Type TextBlock}">
+            <Setter Property="Text" Value="Ngừng sử dụng"/>
+            <Setter Property="Foreground" Value="#A64F46"/>
+            <Setter Property="FontSize" Value="11"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="HorizontalAlignment" Value="Center"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding IsActive}" Value="True">
+                    <Setter Property="Text" Value="Đang dùng"/>
+                    <Setter Property="Foreground" Value="#426C4E"/>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
     </Page.Resources>
 
-    <ScrollViewer VerticalScrollBarVisibility="Auto">
-        <StackPanel Margin="28,24,28,30">
+    <ScrollViewer VerticalScrollBarVisibility="Auto"
+                  HorizontalScrollBarVisibility="Disabled">
+        <StackPanel Margin="28">
 
-            <!-- Tiêu đề -->
-            <TextBlock Text="Quản lý nguyên liệu"
-                       FontSize="26"
-                       FontWeight="Bold"
-                       Foreground="#433431"/>
+            <!-- Tieu de -->
+            <StackPanel Margin="0,0,0,20">
+                <TextBlock Text="☕  Quản lý nguyên liệu"
+                           FontSize="27"
+                           FontWeight="Bold"
+                           Foreground="{StaticResource CoffeeDark}"/>
 
-            <TextBlock
-                Text="Quản lý danh sách và thông tin nguyên liệu trong kho."
-                FontSize="14"
-                Foreground="Gray"
-                Margin="0,5,0,22"/>
+                <TextBlock Text="Quản lý danh sách và thông tin nguyên liệu trong kho."
+                           FontSize="13"
+                           Foreground="{StaticResource MutedText}"
+                           Margin="2,6,0,0"
+                           TextWrapping="Wrap"/>
+            </StackPanel>
 
-            <!-- Danh sách nguyên liệu -->
+            <!-- Danh sach nguyen lieu -->
             <Border Background="White"
+                    BorderBrush="{StaticResource BorderColor}"
+                    BorderThickness="1"
                     CornerRadius="10"
-                    Padding="18">
+                    Padding="16">
 
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
 
-                    <!-- Tìm kiếm và làm mới -->
-                    <Grid Grid.Row="0"
-                          Margin="0,0,0,15">
+                    <!-- Tieu de danh sach -->
+                    <DockPanel Grid.Row="0" Margin="0,0,0,14">
+                        <Button Content="↻ Làm mới"
+                                Command="{Binding LoadCommand}"
+                                Style="{StaticResource CoffeeButton}"
+                                Background="#E9DFD9"
+                                Foreground="{StaticResource CoffeeBrown}"
+                                Margin="0"
+                                DockPanel.Dock="Right"/>
 
+                        <TextBlock Text="Danh sách nguyên liệu"
+                                   FontSize="17"
+                                   FontWeight="Bold"
+                                   Foreground="{StaticResource CoffeeDark}"
+                                   VerticalAlignment="Center"/>
+                    </DockPanel>
+
+                    <!-- Tim kiem -->
+                    <Grid Grid.Row="1" Margin="0,0,0,12">
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="12"/>
+                            <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
 
-                        <StackPanel Grid.Column="0"
-                                    Orientation="Horizontal"
-                                    VerticalAlignment="Center">
+                        <TextBlock Grid.Column="0"
+                                   Text="Tìm kiếm"
+                                   FontSize="12"
+                                   FontWeight="SemiBold"
+                                   Foreground="{StaticResource TextColor}"
+                                   VerticalAlignment="Center"/>
 
-                            <TextBlock Text="Tìm kiếm:"
-                                       VerticalAlignment="Center"
-                                       Margin="0,0,10,0"/>
-
-                            <TextBox Width="250"
-                                     Style="{StaticResource InputStyle}"
-                                     Text="{Binding SearchText,
-                                     UpdateSourceTrigger=PropertyChanged}"/>
-                        </StackPanel>
-
-                        <Button Grid.Column="1"
-                                Content="Làm mới"
-                                Command="{Binding LoadCommand}"
-                                Style="{StaticResource SecondaryButtonStyle}"/>
+                        <TextBox Grid.Column="2"
+                                 Style="{StaticResource CoffeeTextBox}"
+                                 Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"
+                                 ToolTip="Tìm kiếm nguyên liệu"/>
                     </Grid>
 
-                    <!-- Bảng nguyên liệu -->
-                    <DataGrid Grid.Row="1"
-                              Height="285"
+                    <!-- Bang nguyen lieu -->
+                    <DataGrid Grid.Row="2"
+                              MinHeight="180"
+                              MaxHeight="350"
                               ItemsSource="{Binding IngredientsView}"
-                              SelectedItem="{Binding SelectedIngredient,
-                                             Mode=TwoWay}"
+                              SelectedItem="{Binding SelectedIngredient, Mode=TwoWay}"
                               AutoGenerateColumns="False"
                               CanUserAddRows="False"
                               CanUserDeleteRows="False"
+                              CanUserResizeRows="False"
                               IsReadOnly="True"
                               SelectionMode="Single"
                               SelectionUnit="FullRow"
                               HeadersVisibility="Column"
-                              GridLinesVisibility="Horizontal"
-                              RowHeight="38"
-                              ColumnHeaderHeight="38">
+                              GridLinesVisibility="None"
+                              RowHeaderWidth="0"
+                              BorderThickness="0"
+                              Background="White"
+                              Foreground="{StaticResource TextColor}"
+                              FontSize="12"
+                              ColumnHeaderHeight="40"
+                              ColumnHeaderStyle="{StaticResource CoffeeColumnHeader}"
+                              RowStyle="{StaticResource CoffeeDataGridRow}"
+                              VerticalScrollBarVisibility="Auto">
 
                         <DataGrid.Columns>
-
-                            <DataGridTextColumn Header="ID"
+                            <DataGridTextColumn Header="Mã"
                                                 Binding="{Binding IngredientId}"
                                                 Width="55"/>
 
                             <DataGridTextColumn Header="Tên nguyên liệu"
                                                 Binding="{Binding IngredientName}"
-                                                Width="*"/>
+                                                Width="2*"/>
 
                             <DataGridTextColumn Header="Đơn vị"
                                                 Binding="{Binding Unit}"
-                                                Width="75"/>
+                                                Width="80"/>
 
                             <DataGridTextColumn Header="Tồn kho"
-                                                Binding="{Binding CurrentStock,
-                                                StringFormat=N3}"
+                                                Binding="{Binding CurrentStock, StringFormat=N3}"
                                                 Width="100"/>
 
                             <DataGridTextColumn Header="Tối thiểu"
-                                                Binding="{Binding MinimumStock,
-                                                StringFormat=N3}"
+                                                Binding="{Binding MinimumStock, StringFormat=N3}"
                                                 Width="100"/>
 
-                            <!-- Trạng thái -->
                             <DataGridTemplateColumn Header="Trạng thái"
-                                                    Width="115">
+                                                    Width="120">
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
-                                        <TextBlock VerticalAlignment="Center">
-                                            <TextBlock.Style>
-                                                <Style TargetType="TextBlock">
-                                                    <Setter Property="Text"
-                                                            Value="Ngừng sử dụng"/>
-                                                    <Setter Property="Foreground"
-                                                            Value="#B45309"/>
-
+                                        <Border CornerRadius="5"
+                                                Padding="8,5"
+                                                HorizontalAlignment="Center"
+                                                VerticalAlignment="Center">
+                                            <Border.Style>
+                                                <Style TargetType="{x:Type Border}">
+                                                    <Setter Property="Background" Value="#F5E5E2"/>
                                                     <Style.Triggers>
-                                                        <DataTrigger Binding="{Binding IsActive}"
-                                                                     Value="True">
-                                                            <Setter Property="Text"
-                                                                    Value="Đang dùng"/>
-                                                            <Setter Property="Foreground"
-                                                                    Value="#15803D"/>
+                                                        <DataTrigger Binding="{Binding IsActive}" Value="True">
+                                                            <Setter Property="Background" Value="#E4EEE5"/>
                                                         </DataTrigger>
                                                     </Style.Triggers>
                                                 </Style>
-                                            </TextBlock.Style>
-                                        </TextBlock>
+                                            </Border.Style>
+                                            <TextBlock Style="{StaticResource IngredientStatusText}"/>
+                                        </Border>
                                     </DataTemplate>
                                 </DataGridTemplateColumn.CellTemplate>
                             </DataGridTemplateColumn>
-
                         </DataGrid.Columns>
                     </DataGrid>
                 </Grid>
             </Border>
 
-            <!-- Form nhập liệu -->
+            <!-- Form nhap lieu -->
             <Border Background="White"
+                    BorderBrush="{StaticResource BorderColor}"
+                    BorderThickness="1"
                     CornerRadius="10"
                     Padding="18"
                     Margin="0,18,0,0">
 
                 <StackPanel>
-
                     <TextBlock Text="Thông tin nguyên liệu"
-                               FontSize="18"
-                               FontWeight="SemiBold"
-                               Foreground="#433431"/>
+                               FontSize="17"
+                               FontWeight="Bold"
+                               Foreground="{StaticResource CoffeeDark}"/>
 
-                    <TextBlock
-                        Text="Chọn một nguyên liệu trong danh sách để chỉnh sửa."
-                        Foreground="Gray"
-                        Margin="0,5,0,15"/>
+                    <TextBlock Text="Chọn một nguyên liệu trong danh sách để chỉnh sửa."
+                               FontSize="12"
+                               Foreground="{StaticResource MutedText}"
+                               TextWrapping="Wrap"
+                               Margin="0,5,0,18"/>
 
-                    <!-- Các trường nhập liệu -->
+                    <!-- Cac truong nhap lieu -->
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="2*"/>
+                            <ColumnDefinition Width="16"/>
                             <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="16"/>
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
 
-                        <!-- Tên nguyên liệu -->
-                        <StackPanel Grid.Column="0"
-                                    Margin="0,0,12,0">
-
+                        <StackPanel Grid.Column="0">
                             <TextBlock Text="Tên nguyên liệu"
+                                       FontSize="12"
+                                       FontWeight="SemiBold"
+                                       Foreground="{StaticResource TextColor}"
                                        Margin="0,0,0,6"/>
 
-                            <TextBox Style="{StaticResource InputStyle}"
-                                     Text="{Binding IngredientNameInput,
-                                     UpdateSourceTrigger=PropertyChanged}"/>
+                            <TextBox Style="{StaticResource CoffeeTextBox}"
+                                     Text="{Binding IngredientNameInput, UpdateSourceTrigger=PropertyChanged}"/>
                         </StackPanel>
 
-                        <!-- Đơn vị -->
-                        <StackPanel Grid.Column="1"
-                                    Margin="0,0,12,0">
-
-                            <TextBlock Text="Đơn vị tính"
-                                       Margin="0,0,0,6"/>
-
-                            <TextBox Style="{StaticResource InputStyle}"
-                                     IsEnabled="{Binding CanEditUnit}"
-                                     Text="{Binding UnitInput,
-                                     UpdateSourceTrigger=PropertyChanged}"/>
-                        </StackPanel>
-
-                        <!-- Tồn kho tối thiểu -->
                         <StackPanel Grid.Column="2">
-
-                            <TextBlock Text="Tồn kho tối thiểu"
+                            <TextBlock Text="Đơn vị tính"
+                                       FontSize="12"
+                                       FontWeight="SemiBold"
+                                       Foreground="{StaticResource TextColor}"
                                        Margin="0,0,0,6"/>
 
-                            <TextBox Style="{StaticResource InputStyle}"
-                                     Text="{Binding MinimumStockText,
-                                     UpdateSourceTrigger=PropertyChanged}"/>
+                            <TextBox Style="{StaticResource CoffeeTextBox}"
+                                     IsEnabled="{Binding CanEditUnit}"
+                                     Text="{Binding UnitInput, UpdateSourceTrigger=PropertyChanged}"/>
+                        </StackPanel>
+
+                        <StackPanel Grid.Column="4">
+                            <TextBlock Text="Tồn kho tối thiểu"
+                                       FontSize="12"
+                                       FontWeight="SemiBold"
+                                       Foreground="{StaticResource TextColor}"
+                                       Margin="0,0,0,6"/>
+
+                            <TextBox Style="{StaticResource CoffeeTextBox}"
+                                     Text="{Binding MinimumStockText, UpdateSourceTrigger=PropertyChanged}"/>
                         </StackPanel>
                     </Grid>
 
-                    <!-- Các nút -->
-                    <StackPanel Orientation="Horizontal"
-                                Margin="0,22,0,0">
-
-                        <Button Content="Thêm mới"
+                    <!-- Cac nut thao tac -->
+                    <WrapPanel Margin="0,20,0,0">
+                        <Button Content="＋ Thêm mới"
                                 Command="{Binding AddCommand}"
-                                Style="{StaticResource PrimaryButtonStyle}"/>
+                                Style="{StaticResource CoffeeButton}"/>
 
-                        <Button Content="Cập nhật"
+                        <Button Content="Lưu cập nhật"
                                 Command="{Binding UpdateCommand}"
-                                Style="{StaticResource SecondaryButtonStyle}"/>
+                                Style="{StaticResource CoffeeButton}"
+                                Background="#E9DFD9"
+                                Foreground="{StaticResource CoffeeBrown}"/>
 
                         <Button Content="{Binding ToggleButtonText}"
                                 Command="{Binding ToggleActiveCommand}"
-                                Style="{StaticResource SecondaryButtonStyle}"/>
+                                Style="{StaticResource CoffeeButton}"
+                                Background="#80665B"/>
 
                         <Button Content="Làm trống"
                                 Command="{Binding ClearCommand}"
-                                Style="{StaticResource SecondaryButtonStyle}"/>
+                                Style="{StaticResource CoffeeButton}"
+                                Background="#F5F0EC"
+                                Foreground="{StaticResource CoffeeBrown}"
+                                Margin="0"/>
+                    </WrapPanel>
 
-                    </StackPanel>
-
-                    <!-- Thông báo trạng thái -->
+                    <!-- Thong bao -->
                     <TextBlock Text="{Binding StatusMessage}"
-                               Foreground="#666666"
+                               Foreground="{StaticResource CoffeeBrown}"
+                               FontSize="12"
                                TextWrapping="Wrap"
-                               Margin="0,15,0,0"/>
-
+                               Margin="0,14,0,0"/>
                 </StackPanel>
             </Border>
 

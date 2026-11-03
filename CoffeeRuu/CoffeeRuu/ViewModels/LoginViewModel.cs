@@ -85,12 +85,42 @@ namespace CoffeeRuu.ViewModels
                     return;
                 }
 
-                // Dang nhap thanh cong: mo giao dien chinh
+
+                var role = db.Roles.FirstOrDefault(
+                    r => r.RoleId == employee.RoleId);
+
+                if (role == null)
+                {
+                    MessageBox.Show(
+                        "Không tìm thấy vai trò của tài khoản.",
+                        "Lỗi đăng nhập",
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Error);
+
+                    return;
+                }
+
+                UserSession.Start(
+                    employee.EmployeeId,
+                    employee.RoleId,
+                    employee.Username,
+                    employee.FullName,
+                    role.RoleName);
+
                 var home = new MainShellWindow();
 
                 Application.Current.MainWindow = home;
-
                 home.Show();
+
+                foreach (Window window in Application.Current.Windows)
+                {
+                    if (window is MainWindow)
+                    {
+                        window.Close();
+                        break;
+                    }
+                }
+
 
                 // Dong cua so dang nhap
                 foreach (Window window in Application.Current.Windows)

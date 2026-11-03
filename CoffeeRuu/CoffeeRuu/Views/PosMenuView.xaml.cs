@@ -136,6 +136,96 @@ namespace CoffeeRuu.Views
         }
 
         #region Xử lý Giỏ hàng & Thanh toán
+        //ghi chú đơn hàng
+        private string? ShowItemNoteDialog(
+            string productName,
+            string sizeName)
+        {
+            var dialog = new Window
+            {
+                Title = "Ghi chú món",
+                Width = 420,
+                Height = 280,
+                WindowStartupLocation =
+                    WindowStartupLocation.CenterOwner,
+                Owner = Window.GetWindow(this),
+                ResizeMode = ResizeMode.NoResize,
+                Background = Brushes.White
+            };
+
+            var panel = new StackPanel
+            {
+                Margin = new Thickness(20)
+            };
+
+            panel.Children.Add(new TextBlock
+            {
+                Text = $"{productName} - {sizeName}",
+                FontSize = 18,
+                FontWeight = FontWeights.Bold,
+                Margin = new Thickness(0, 0, 0, 15)
+            });
+
+            panel.Children.Add(new TextBlock
+            {
+                Text = "Ghi chú (có thể bỏ trống):",
+                Margin = new Thickness(0, 0, 0, 8)
+            });
+
+            var noteBox = new TextBox
+            {
+                Height = 80,
+                AcceptsReturn = true,
+                TextWrapping = TextWrapping.Wrap,
+                MaxLength = 300,
+                VerticalScrollBarVisibility =
+                    ScrollBarVisibility.Auto
+            };
+
+            panel.Children.Add(noteBox);
+
+            var buttons = new StackPanel
+            {
+                Orientation = Orientation.Horizontal,
+                HorizontalAlignment = HorizontalAlignment.Right,
+                Margin = new Thickness(0, 15, 0, 0)
+            };
+
+            var cancelButton = new Button
+            {
+                Content = "Hủy",
+                Width = 90,
+                Padding = new Thickness(10, 6, 10, 6),
+                Margin = new Thickness(0, 0, 10, 0)
+            };
+
+            var addButton = new Button
+            {
+                Content = "Thêm món",
+                Width = 100,
+                Padding = new Thickness(10, 6, 10, 6),
+                Background = Brushes.SaddleBrown,
+                Foreground = Brushes.White
+            };
+
+            cancelButton.Click += (s, e) =>
+                dialog.DialogResult = false;
+
+            addButton.Click += (s, e) =>
+                dialog.DialogResult = true;
+
+            buttons.Children.Add(cancelButton);
+            buttons.Children.Add(addButton);
+
+            panel.Children.Add(buttons);
+            dialog.Content = panel;
+
+            bool? result = dialog.ShowDialog();
+
+            return result == true
+                ? noteBox.Text.Trim()
+                : null;
+        }
 
         // Thêm món vào hóa đơn khi click nút chọn Size
         private void AddToCartButton_Click(object sender, RoutedEventArgs e)
@@ -145,9 +235,19 @@ namespace CoffeeRuu.Views
                 var parentCard = FindParent<Border>(button);
                 if (parentCard?.DataContext is PosMenuCardItem product)
                 {
+                    // 1. Mở cửa sổ nhập ghi chú
+                    string? note = ShowItemNoteDialog(
+                        product.ProductName,
+                        sizePrice.SizeName);
+
+                    // Bấm Hủy thì không thêm món
+                    if (note == null)
+                        return;
+
                     var existingItem = CartItems.FirstOrDefault(x =>
                         x.ProductId == product.ProductId &&
-                        x.ProductSizeId == sizePrice.ProductSizeId);
+                        x.ProductSizeId == sizePrice.ProductSizeId &&
+                        x.Note == note);
 
                     if (existingItem != null)
                     {
@@ -162,7 +262,8 @@ namespace CoffeeRuu.Views
                             ProductName = product.ProductName,
                             SizeName = sizePrice.SizeName,
                             Price = sizePrice.Price,
-                            Quantity = 1
+                            Quantity = 1,
+                            Note = note
                         });
                     }
 
@@ -194,6 +295,45 @@ namespace CoffeeRuu.Views
             if (CartItems.Count == 0)
             {
                 MessageBox.Show("Vui lòng chọn ít nhất 1 món để thanh toán!", "Thông báo", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
+
+            // LẤY LOẠI ĐƠN HÀNG
+            var orderTypeBox =
+                FindName("OrderTypeComboBox") as ComboBox;
+
+            if (orderTypeBox?.SelectedItem
+                is not ComboBoxItem selectedType)
+            {
+                MessageBox.Show("Vui lòng chọn loại đơn hàng.");
+                return;
+            }
+
+            string orderType =
+                selectedType.Tag?.ToString() ?? "";
+
+            // Lấy bàn khi dùng tại quán
+                 int? tableId = null;
+
+            if (orderType == "DineIn")
+            {
+                var tableBox =
+                    FindName("TableComboBox") as ComboBox;
+
+                if (tableBox?.SelectedValue
+                    is not int selectedTableId)
+                {
+                    MessageBox.Show(
+                        "Vui lòng chọn bàn trước khi thanh toán.");
+                    return;
+                }
+
+                tableId = selectedTableId;
+            }
+            else if (orderType != "Takeaway")
+            {
+                MessageBox.Show("Loại đơn hàng không hợp lệ.");
                 return;
             }
 
@@ -275,16 +415,19 @@ namespace CoffeeRuu.Views
                     ProductName = x.ProductName,
                     SizeName = x.SizeName,
                     UnitPrice = x.Price,
-                    Quantity = x.Quantity
+                    Quantity = x.Quantity,
+                    Note = x.Note
                 }).ToList();
+
 
                 Order savedOrder = await _orderService.CreateOrderAsync(
                     cart: cartLines,
-                    orderType: "Takeaway",
-                    tableId: null,
+                    orderType: orderType,
+                    tableId: tableId,
                     employeeId: CurrentEmployeeId,
                     note: ""
                 );
+
 
                 // 5. Gọi dịch vụ In Hóa Đơn
                 var orderDto = new OrderDto
@@ -301,7 +444,9 @@ namespace CoffeeRuu.Views
                         ProductName = x.ProductName,
                         SizeName = x.SizeName,
                         Quantity = x.Quantity,
-                        Price = x.Price
+                        Price = x.Price,
+                        Note = x.Note
+
                     }).ToList()
                 };
 
@@ -440,6 +585,7 @@ namespace CoffeeRuu.Views
         public string SizeName { get; set; } = "";
         public string DisplayName => string.IsNullOrEmpty(SizeName) ? ProductName : $"{ProductName} ({SizeName})";
         public decimal Price { get; set; }
+        public string Note { get; set; } = "";
 
         public int Quantity
         {
