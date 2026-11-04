@@ -1,23 +1,18 @@
 <Page x:Class="CoffeeRuu.Views.KdsView"
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-      xmlns:local="clr-namespace:CoffeeRuu.Views"
-      mc:Ignorable="d"
-      d:DesignHeight="450" d:DesignWidth="800"
-      Background="White"
+      Background="#F5F5F0"
       Loaded="Page_Loaded"
-      Title="Kds - pha che">
-    <Grid>
-        <TabControl Margin="12"
-                    FontSize="14">
+      Title="KDS - Pha chế">
 
-            <TabItem Header="Đơn pha chế">
-                <Frame x:Name="KdsOrdersFrame"
-                       NavigationUIVisibility="Hidden"/>
-            </TabItem>
+    <Grid Margin="0">
 
-        </TabControl>
+        <Frame x:Name="KdsOrdersFrame"
+               NavigationUIVisibility="Hidden"
+               HorizontalAlignment="Stretch"
+               VerticalAlignment="Stretch"
+               Margin="0"/>
+
     </Grid>
+
 </Page>
