@@ -6,6 +6,7 @@ using CoffeeRuu.Models;
 using CoffeeRuu.Repositories;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
+using System.Text.RegularExpressions;
 
 namespace CoffeeRuu.Services
 {
@@ -133,6 +134,31 @@ namespace CoffeeRuu.Services
                 throw new ArgumentException(
                     "Tên nguyên liệu không được vượt quá 120 ký tự.");
 
+            string cleanName = name.Trim();
+
+            // Tên phải chứa ít nhất một chữ cái
+            if (!Regex.IsMatch(cleanName, @"\p{L}"))
+            {
+                throw new ArgumentException(
+                    "Tên nguyên liệu phải chứa ít nhất một chữ cái.");
+            }
+
+            // Không cho ký tự ngoài danh sách quy định
+            if (!Regex.IsMatch(
+                cleanName,
+                @"^[\p{L}\p{M}0-9 .()/+%-]+$"))
+            {
+                throw new ArgumentException(
+                    "Tên nguyên liệu chứa ký tự không hợp lệ.");
+            }
+
+            // Ký tự đầu tiên phải là chữ hoặc số
+            if (!char.IsLetterOrDigit(cleanName[0]))
+            {
+                throw new ArgumentException(
+                    "Tên nguyên liệu không được bắt đầu bằng ký tự đặc biệt.");
+            }
+
             if (string.IsNullOrWhiteSpace(unit))
                 throw new ArgumentException(
                     "Đơn vị tính không được để trống.");
@@ -140,6 +166,28 @@ namespace CoffeeRuu.Services
             if (unit.Trim().Length > 30)
                 throw new ArgumentException(
                     "Đơn vị tính không được vượt quá 30 ký tự.");
+
+
+            string cleanUnit = unit.Trim();
+
+            // Cho phép chữ cái, chữ số, khoảng trắng
+            // và các ký hiệu đơn vị đo thông dụng.
+            if (!Regex.IsMatch(
+                cleanUnit,
+                @"^[\p{L}\p{M}0-9\s./%°²³-]+$"))
+            {
+                throw new ArgumentException(
+                    "Đơn vị tính chứa ký tự không hợp lệ.");
+            }
+
+            // Phải có chữ cái hoặc một ký hiệu đơn vị đo độc lập (%).
+            // Các ký tự như /, -, . không đủ để tạo đơn vị.
+            if (!Regex.IsMatch(cleanUnit, @"[\p{L}%]"))
+            {
+                throw new ArgumentException(
+                    "Đơn vị tính không hợp lệ.");
+            }
+
 
             if (minimumStock < 0)
                 throw new ArgumentException(

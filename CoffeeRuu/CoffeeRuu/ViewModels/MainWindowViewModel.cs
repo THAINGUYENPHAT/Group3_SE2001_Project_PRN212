@@ -1,14 +1,35 @@
 ﻿
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Input;
 using CoffeeRuu.Services;
 
 namespace CoffeeRuu.ViewModels
 {
-    public class MainWindowViewModel
+    public class MainWindowViewModel : INotifyPropertyChanged
     {
         private readonly NavigationService _navigationService;
         private readonly WindowService _windowService;
+
+        private string _currentPage = string.Empty;
+
+        public event PropertyChangedEventHandler? PropertyChanged;
+
+        public string CurrentPage
+        {
+            get => _currentPage;
+            private set
+            {
+                if (_currentPage == value)
+                {
+                    return;
+                }
+
+                _currentPage = value;
+                OnPropertyChanged();
+            }
+        }
 
         public Visibility HomeVisibility =>
             CanAccess("Home") ? Visibility.Visible : Visibility.Collapsed;
@@ -61,6 +82,8 @@ namespace CoffeeRuu.ViewModels
             _navigationService = navigationService;
             _windowService = windowService;
 
+            _navigationService.Navigated += OnNavigated;
+
             NavigateHomeCommand = new RelayCommand(
                 () => Navigate("Home"));
 
@@ -92,6 +115,11 @@ namespace CoffeeRuu.ViewModels
                 () => _windowService.Logout());
         }
 
+        private void OnNavigated(string pageName)
+        {
+            CurrentPage = pageName;
+        }
+
         private bool CanAccess(string screen)
         {
             return UserSession.Current?.CanAccess(screen) == true;
@@ -111,6 +139,14 @@ namespace CoffeeRuu.ViewModels
             }
 
             _navigationService.Navigate(screen);
+        }
+
+        private void OnPropertyChanged(
+            [CallerMemberName] string? propertyName = null)
+        {
+            PropertyChanged?.Invoke(
+                this,
+                new PropertyChangedEventArgs(propertyName));
         }
     }
 }

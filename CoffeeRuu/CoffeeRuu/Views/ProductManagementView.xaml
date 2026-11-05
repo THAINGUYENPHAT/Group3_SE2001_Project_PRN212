@@ -2,17 +2,38 @@
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:views="clr-namespace:CoffeeRuu.Views"
-      Background="#F7F5F0">
+      Background="#F5F5F0">
 
     <Grid Margin="20">
-        <TabControl SelectionChanged="TabControl_SelectionChanged">
-            <TabItem Header="☕ Quản lý thực đơn">
-                <views:MenuView/>
-            </TabItem>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
 
-            <TabItem Header="🧾 Quản lý công thức">
+        <!-- Tiêu đề trang -->
+        <StackPanel Grid.Row="0" Margin="0,0,0,16">
+            <TextBlock Text="Quản lý sản phẩm"
+                       FontSize="25"
+                       FontWeight="Bold"
+                       Foreground="#3B2A27"/>
 
-            </TabItem>
-        </TabControl>
+            <TextBlock Text="Quản lý thực đơn và danh mục món uống"
+                       FontSize="12"
+                       Foreground="#82716A"
+                       Margin="0,5,0,0"/>
+        </StackPanel>
+
+        <!-- Nội dung quản lý trực tiếp không dùng Tab thừa -->
+        <Border Grid.Row="1"
+                Background="White"
+                BorderBrush="#DED8D3"
+                BorderThickness="1"
+                CornerRadius="10"
+                Padding="14">
+
+            <!-- Đặt trực tiếp MenuView và cho phép co giãn theo chiều dọc bằng Grid/Star -->
+            <views:MenuView HorizontalAlignment="Stretch"
+                            VerticalAlignment="Stretch"/>
+        </Border>
     </Grid>
 </Page>

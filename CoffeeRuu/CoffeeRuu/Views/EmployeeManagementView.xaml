@@ -46,7 +46,7 @@
             </Setter>
         </Style>
 
-        <!-- O nhap lieu -->
+        <!-- O nhap lieu: Su dung giao dien TextBox mac dinh cua WPF -->
         <Style x:Key="CoffeeTextBox" TargetType="{x:Type TextBox}">
             <Setter Property="Height" Value="36"/>
             <Setter Property="Padding" Value="10,6"/>
@@ -56,31 +56,6 @@
             <Setter Property="BorderBrush" Value="{StaticResource BorderColor}"/>
             <Setter Property="BorderThickness" Value="1"/>
             <Setter Property="VerticalContentAlignment" Value="Center"/>
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="{x:Type TextBox}">
-                        <Border x:Name="InputBorder"
-                                Background="{TemplateBinding Background}"
-                                BorderBrush="{TemplateBinding BorderBrush}"
-                                BorderThickness="{TemplateBinding BorderThickness}"
-                                CornerRadius="5">
-                            <ScrollViewer x:Name="PART_ContentHost"
-                                          Margin="{TemplateBinding Padding}"
-                                          VerticalAlignment="Center"/>
-                        </Border>
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="IsKeyboardFocused" Value="True">
-                                <Setter TargetName="InputBorder"
-                                        Property="BorderBrush" Value="#8D6E63"/>
-                            </Trigger>
-                            <Trigger Property="IsEnabled" Value="False">
-                                <Setter TargetName="InputBorder"
-                                        Property="Opacity" Value="0.6"/>
-                            </Trigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
         </Style>
 
         <!-- Danh sach lua chon -->
@@ -419,7 +394,7 @@
                                     Click="TogglePasswordButton_Click"
                                     ToolTip="Hiện hoặc ẩn mật khẩu"/>
                         </Grid>
-                        <TextBlock Text="Bắt buộc khi thêm; nhập mật khẩu mới khi đổi mật khẩu."
+                        <TextBlock Text="Nhập mật khẩu mới khi đổi mật khẩu."
                                    Foreground="{StaticResource MutedText}" FontSize="10"
                                    TextWrapping="Wrap" Margin="0,0,0,13"/>
 
@@ -488,7 +463,7 @@
                             </CheckBox.Style>
                         </CheckBox>
 
-                        <!-- Nut them moi: Style chi khai bao mot lan -->
+                        <!-- Nut them moi -->
                         <Button Content="➕  Lưu nhân viên mới"
                                 Command="{Binding AddCommand}"
                                 Height="40" Margin="0,0,0,8">
@@ -524,43 +499,6 @@
                             </Button.Style>
                         </Button>
 
-                        <!-- Nut doi mat khau -->
-                        <Button Content="🔑  Đổi mật khẩu"
-                                Command="{Binding ChangePasswordCommand}"
-                                IsEnabled="{Binding CanUpdate}"
-                                Height="40" Margin="0,0,0,8">
-                            <Button.Style>
-                                <Style TargetType="{x:Type Button}"
-                                       BasedOn="{StaticResource CoffeeButton}">
-                                    <Setter Property="Visibility" Value="Visible"/>
-                                    <Setter Property="Background" Value="#80665B"/>
-                                    <Style.Triggers>
-                                        <DataTrigger Binding="{Binding IsAddMode}" Value="True">
-                                            <Setter Property="Visibility" Value="Collapsed"/>
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </Button.Style>
-                        </Button>
-
-                        <!-- Nut vo hieu hoa -->
-                        <Button Content="🔒  Vô hiệu hóa tài khoản"
-                                Command="{Binding DeactivateCommand}"
-                                IsEnabled="{Binding CanDeactivate}"
-                                Height="40" Margin="0,0,0,8">
-                            <Button.Style>
-                                <Style TargetType="{x:Type Button}"
-                                       BasedOn="{StaticResource CoffeeButton}">
-                                    <Setter Property="Visibility" Value="Visible"/>
-                                    <Setter Property="Background" Value="#A64F46"/>
-                                    <Style.Triggers>
-                                        <DataTrigger Binding="{Binding IsAddMode}" Value="True">
-                                            <Setter Property="Visibility" Value="Collapsed"/>
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </Button.Style>
-                        </Button>
 
                         <Button Content="Hủy"
                                 Command="{Binding CancelCommand}"
