@@ -533,5 +533,9 @@ namespace CoffeeRuu.Services
                     Note = note
                 });
         }
+        public Task<List<EmployeeChoice>> GetEmployeesAsync()
+        {
+            return _repository.GetEmployeesAsync();
+        }
     }
 }

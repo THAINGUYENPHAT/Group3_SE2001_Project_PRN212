@@ -1,23 +1,24 @@
-﻿using CoffeeRuu.Data;
+﻿
+using CoffeeRuu.Data;
 using CoffeeRuu.ViewModels;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace CoffeeRuu.Repositories
 {
     public class OrderRepository
     {
-        // Thay vì DbContextOptions, lưu hàm tạo Context
         private readonly Func<CoffeeRuuDbContext> _contextFactory;
 
-        // Constructor nhận vào hàm khởi tạo Context
-        public OrderRepository(Func<CoffeeRuuDbContext> contextFactory)
+        public OrderRepository(
+            Func<CoffeeRuuDbContext> contextFactory)
         {
-            _contextFactory = contextFactory ?? throw new ArgumentNullException(nameof(contextFactory));
+            _contextFactory = contextFactory
+                ?? throw new ArgumentNullException(
+                    nameof(contextFactory));
         }
 
         public CoffeeRuuDbContext CreateContext()
@@ -25,10 +26,9 @@ namespace CoffeeRuu.Repositories
             return _contextFactory();
         }
 
-        // ================================
-        // GIỮ NGUYÊN TẤT CẢ CÁC HÀM BÊN DƯỚI
-        // (GetMenuAsync, GetTablesAsync, GetOrdersAsync, GetKdsAsync)
-        // ================================
+        // ============================
+        // 1. DANH SÁCH SẢN PHẨM
+        // ============================
 
         public async Task<List<MenuChoice>> GetMenuAsync()
         {
@@ -52,6 +52,10 @@ namespace CoffeeRuu.Repositories
                 .ToListAsync();
         }
 
+        // ============================
+        // 2. DANH SÁCH BÀN
+        // ============================
+
         public async Task<List<TableChoice>> GetTablesAsync()
         {
             await using var db = CreateContext();
@@ -71,10 +75,16 @@ namespace CoffeeRuu.Repositories
                 .ToListAsync();
         }
 
+        // ============================
+        // 3. DANH SÁCH ĐƠN HÀNG
+        // ============================
+
         public async Task<List<OrderListRow>> GetOrdersAsync()
         {
             await using var db = CreateContext();
 
+            // Vẫn lấy tất cả trạng thái để
+            // có thể xem lịch sử bằng bộ lọc.
             return await db.Orders
                 .AsNoTracking()
                 .OrderByDescending(o => o.CreatedAt)
@@ -84,9 +94,11 @@ namespace CoffeeRuu.Repositories
                 {
                     OrderId = o.OrderId,
                     OrderCode = o.OrderCode,
+
                     TableName = o.Table != null
                         ? o.Table.TableName
                         : "Mang đi",
+
                     OrderType = o.OrderType,
                     OrderStatus = o.OrderStatus,
                     TotalAmount = o.TotalAmount,
@@ -95,6 +107,10 @@ namespace CoffeeRuu.Repositories
                 .ToListAsync();
         }
 
+        // ============================
+        // 4. DANH SÁCH KDS
+        // ============================
+
         public async Task<List<KdsItemRow>> GetKdsAsync()
         {
             await using var db = CreateContext();
@@ -102,12 +118,16 @@ namespace CoffeeRuu.Repositories
             return await db.OrderItems
                 .AsNoTracking()
                 .Where(i =>
-                    (i.Order.OrderStatus == "New" ||
-                     i.Order.OrderStatus == "Preparing" ||
-                     i.Order.OrderStatus == "Ready") &&
-                    (i.PreparationStatus == "Queued" ||
-                     i.PreparationStatus == "Preparing" ||
-                     i.PreparationStatus == "Ready"))
+                    (
+                        i.Order.OrderStatus == "New" ||
+                        i.Order.OrderStatus == "Preparing" ||
+                        i.Order.OrderStatus == "Ready"
+                    )
+                    &&
+                    (
+                        i.PreparationStatus == "Queued" ||
+                        i.PreparationStatus == "Preparing"
+                    ))
                 .OrderBy(i => i.Order.CreatedAt)
                 .ThenBy(i => i.OrderItemId)
                 .Select(i => new KdsItemRow
@@ -127,6 +147,31 @@ namespace CoffeeRuu.Repositories
                     PreparationStatus = i.PreparationStatus,
                     CreatedAt = i.Order.CreatedAt
                 })
+                .ToListAsync();
+        }
+
+        // ============================
+        // 5. DANH SÁCH NHÂN VIÊN
+        // ============================
+
+        public async Task<List<EmployeeChoice>> GetEmployeesAsync()
+        {
+            await using var db = CreateContext();
+
+            return await db.Employees
+                .AsNoTracking()
+                .Where(e => e.IsActive)
+                .Join(
+                    db.Roles,
+                    e => e.RoleId,
+                    r => r.RoleId,
+                    (e, r) => new EmployeeChoice
+                    {
+                        EmployeeId = e.EmployeeId,
+                        FullName = e.FullName,
+                        RoleName = r.RoleName
+                    })
+                .OrderBy(e => e.EmployeeId)
                 .ToListAsync();
         }
     }
