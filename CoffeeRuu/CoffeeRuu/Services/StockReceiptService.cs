@@ -79,12 +79,21 @@ public class StockReceiptService
             throw new ArgumentException(
                 "Ghi chú không được vượt quá 500 ký tự.");
 
+        var ingredientIds = new HashSet<int>();
+
         // Kiểm tra từng dòng nguyên liệu
         foreach (var item in request.Items)
         {
             if (item.IngredientId <= 0)
                 throw new ArgumentException(
                     "Vui lòng chọn nguyên liệu hợp lệ.");
+
+            if (!ingredientIds.Add(item.IngredientId))
+            {
+                throw new ArgumentException(
+                    "Một nguyên liệu không được xuất hiện " +
+                    "nhiều lần trong cùng phiếu nhập.");
+            }
 
             if (item.Quantity <= 0)
                 throw new ArgumentException(
@@ -111,6 +120,31 @@ public class StockReceiptService
                 "Tổng tiền vượt quá giới hạn cho phép.");
 
         // Gọi Repository thực hiện transaction
+        var activeSuppliers = await _repository.GetActiveSuppliersAsync();
+
+        if (!activeSuppliers.Any(
+            s => s.SupplierId == request.SupplierId))
+        {
+            throw new ArgumentException(
+                "Nhà cung cấp không tồn tại hoặc đã ngừng hợp tác.");
+        }
+
+        var activeIngredients = await _repository.GetActiveIngredientsAsync();
+
+        var activeIngredientIds = activeIngredients
+            .Select(i => i.IngredientId)
+            .ToHashSet();
+
+        foreach (var item in request.Items)
+        {
+            if (!activeIngredientIds.Contains(item.IngredientId))
+            {
+                throw new ArgumentException(
+                    $"Nguyên liệu có ID {item.IngredientId} " +
+                    "không tồn tại hoặc đã ngừng sử dụng.");
+            }
+        }
+
         return await _repository.CreateAsync(request);
     }
 }
