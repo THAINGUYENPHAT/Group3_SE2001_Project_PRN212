@@ -1,110 +1,126 @@
-﻿
-<Window x:Class="CoffeeRuu.Views.ProductDialog"
+﻿<Window x:Class="CoffeeRuu.Views.ProductDialog"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="Thông tin món uống"
-        Height="590"
-        Width="460"
+        Height="650"
+        Width="520"
         WindowStartupLocation="CenterOwner"
         ResizeMode="NoResize"
-        Background="#F5F5F0">
+        Background="#F9F6F0"
+        FontFamily="Segoe UI">
 
     <Window.Resources>
-        <Style x:Key="FormLabelStyle" TargetType="TextBlock">
-            <Setter Property="FontSize" Value="12"/>
+
+        <!-- Màu chủ đạo -->
+        <SolidColorBrush x:Key="BrownPrimary" Color="#8D6E63"/>
+        <SolidColorBrush x:Key="BrownDark" Color="#4E342E"/>
+        <SolidColorBrush x:Key="BrownLight" Color="#EFEBE9"/>
+        <SolidColorBrush x:Key="TextBrown" Color="#3E2723"/>
+        <SolidColorBrush x:Key="MutedBrown" Color="#795548"/>
+
+        <!-- Style tiêu đề trường -->
+        <Style x:Key="FieldLabel" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="{StaticResource TextBrown}"/>
+            <Setter Property="FontSize" Value="13"/>
             <Setter Property="FontWeight" Value="SemiBold"/>
-            <Setter Property="Foreground" Value="#4E342E"/>
-            <Setter Property="Margin" Value="0,0,0,6"/>
+            <Setter Property="Margin" Value="0,0,0,7"/>
         </Style>
 
-        <Style x:Key="FormTextBoxStyle" TargetType="TextBox">
-            <Setter Property="Height" Value="36"/>
-            <Setter Property="Padding" Value="10,7"/>
+        <!-- Style TextBox -->
+        <Style x:Key="InputTextBox" TargetType="TextBox">
+            <Setter Property="Height" Value="39"/>
+            <Setter Property="Padding" Value="10,0"/>
             <Setter Property="FontSize" Value="13"/>
-            <Setter Property="Foreground" Value="#3B2A27"/>
+            <Setter Property="Foreground" Value="{StaticResource TextBrown}"/>
             <Setter Property="Background" Value="White"/>
-            <Setter Property="BorderBrush" Value="#DED8D3"/>
+            <Setter Property="BorderBrush" Value="#D7CCC8"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="HorizontalContentAlignment" Value="Left"/>
+
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TextBox">
+                        <Border Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="7"
+                                SnapsToDevicePixels="True">
+
+                            <ScrollViewer x:Name="PART_ContentHost"
+                                          Margin="10,0"
+                                          VerticalAlignment="Center"
+                                          Focusable="False"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Style ComboBox -->
+        <Style x:Key="InputComboBox" TargetType="ComboBox">
+            <Setter Property="Height" Value="39"/>
+            <Setter Property="Padding" Value="9,5"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="Foreground" Value="{StaticResource TextBrown}"/>
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="BorderBrush" Value="#D7CCC8"/>
             <Setter Property="BorderThickness" Value="1"/>
             <Setter Property="VerticalContentAlignment" Value="Center"/>
         </Style>
 
-        <Style x:Key="FormComboBoxStyle" TargetType="ComboBox">
-            <Setter Property="Height" Value="36"/>
-            <Setter Property="Padding" Value="8,5"/>
+        <!-- Style Button -->
+        <Style x:Key="ActionButton" TargetType="Button">
+            <Setter Property="Height" Value="40"/>
+            <Setter Property="MinWidth" Value="115"/>
+            <Setter Property="Padding" Value="18,0"/>
             <Setter Property="FontSize" Value="13"/>
-            <Setter Property="Foreground" Value="#3B2A27"/>
-            <Setter Property="Background" Value="White"/>
-            <Setter Property="BorderBrush" Value="#DED8D3"/>
-            <Setter Property="BorderThickness" Value="1"/>
-        </Style>
-
-        <Style x:Key="CancelButtonStyle" TargetType="Button">
-            <Setter Property="Width" Value="90"/>
-            <Setter Property="Height" Value="38"/>
-            <Setter Property="Background" Value="#E9DFD9"/>
-            <Setter Property="Foreground" Value="#4E342E"/>
             <Setter Property="FontWeight" Value="SemiBold"/>
-            <Setter Property="BorderThickness" Value="0"/>
             <Setter Property="Cursor" Value="Hand"/>
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="Button">
-                        <Border x:Name="ButtonBorder"
-                                Background="{TemplateBinding Background}"
-                                CornerRadius="6"
-                                Padding="{TemplateBinding Padding}">
-                            <ContentPresenter HorizontalAlignment="Center"
-                                              VerticalAlignment="Center"/>
-                        </Border>
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="ButtonBorder"
-                                        Property="Background"
-                                        Value="#D7C4BA"/>
-                            </Trigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
+            <Setter Property="BorderThickness" Value="0"/>
 
-        <Style x:Key="SaveButtonStyle" TargetType="Button">
-            <Setter Property="Width" Value="100"/>
-            <Setter Property="Height" Value="38"/>
-            <Setter Property="Background" Value="#4E342E"/>
-            <Setter Property="Foreground" Value="White"/>
-            <Setter Property="FontWeight" Value="Bold"/>
-            <Setter Property="BorderThickness" Value="0"/>
-            <Setter Property="Cursor" Value="Hand"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
                         <Border x:Name="ButtonBorder"
                                 Background="{TemplateBinding Background}"
-                                CornerRadius="6"
-                                Padding="{TemplateBinding Padding}">
-                            <ContentPresenter HorizontalAlignment="Center"
-                                              VerticalAlignment="Center"/>
+                                CornerRadius="8">
+
+                            <ContentPresenter
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"/>
                         </Border>
+
                         <ControlTemplate.Triggers>
+
                             <Trigger Property="IsMouseOver" Value="True">
                                 <Setter TargetName="ButtonBorder"
-                                        Property="Background"
-                                        Value="#6D4C41"/>
+                                        Property="Opacity"
+                                        Value="0.85"/>
                             </Trigger>
+
                             <Trigger Property="IsPressed" Value="True">
                                 <Setter TargetName="ButtonBorder"
-                                        Property="Background"
-                                        Value="#3B2A27"/>
+                                        Property="Opacity"
+                                        Value="0.7"/>
                             </Trigger>
+
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter TargetName="ButtonBorder"
+                                        Property="Opacity"
+                                        Value="0.5"/>
+                            </Trigger>
+
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
         </Style>
+
     </Window.Resources>
 
-    <Grid Margin="24">
+    <Grid Margin="25">
+
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
@@ -112,133 +128,165 @@
         </Grid.RowDefinitions>
 
         <!-- Tiêu đề -->
-        <StackPanel Grid.Row="0" Margin="0,0,0,18">
-            <TextBlock x:Name="TitleText"
-                       Text="Thông tin món uống"
+        <StackPanel Grid.Row="0" Margin="0,0,0,22">
+
+            <TextBlock Text="{Binding DialogTitle}"
                        FontSize="23"
                        FontWeight="Bold"
-                       Foreground="#3B2A27"/>
+                       Foreground="{StaticResource BrownDark}"/>
 
-            <TextBlock Text="Nhập thông tin và thiết lập giá bán cho món"
+            <TextBlock Text="Nhập thông tin món uống bên dưới"
                        FontSize="12"
-                       Foreground="#82716A"
+                       Foreground="{StaticResource MutedBrown}"
                        Margin="0,5,0,0"/>
+
         </StackPanel>
 
-        <!-- Nội dung biểu mẫu -->
-        <Border Grid.Row="1"
-                Background="White"
-                BorderBrush="#DED8D3"
-                BorderThickness="1"
-                CornerRadius="10"
-                Padding="16">
+        <!-- Nội dung nhập liệu -->
+        <ScrollViewer Grid.Row="1"
+                      VerticalScrollBarVisibility="Auto"
+                      HorizontalScrollBarVisibility="Disabled">
 
-            <ScrollViewer VerticalScrollBarVisibility="Auto"
-                          HorizontalScrollBarVisibility="Disabled">
+            <StackPanel>
 
-                <StackPanel>
-                    <TextBlock Text="Tên món uống"
-                               Style="{StaticResource FormLabelStyle}"/>
+                <!-- Tên món -->
+                <TextBlock Text="Tên món uống *"
+                           Style="{StaticResource FieldLabel}"/>
 
-                    <TextBox x:Name="ProductNameBox"
-                             Style="{StaticResource FormTextBoxStyle}"
-                             Margin="0,0,0,14"/>
+                <TextBox Style="{StaticResource InputTextBox}"
+                         Text="{Binding ProductName, UpdateSourceTrigger=PropertyChanged}"
+                         Margin="0,0,0,17"/>
 
-                    <TextBlock Text="Danh mục"
-                               Style="{StaticResource FormLabelStyle}"/>
+                <!-- Danh mục -->
+                <TextBlock Text="Danh mục *"
+                           Style="{StaticResource FieldLabel}"/>
 
-                    <ComboBox x:Name="CategoryComboBox"
-                              Style="{StaticResource FormComboBoxStyle}"
-                              DisplayMemberPath="CategoryName"
-                              SelectedValuePath="CategoryId"
-                              Margin="0,0,0,18"/>
+                <ComboBox Style="{StaticResource InputComboBox}"
+                          ItemsSource="{Binding Categories}"
+                          DisplayMemberPath="CategoryName"
+                          SelectedValuePath="CategoryId"
+                          SelectedValue="{Binding SelectedCategoryId, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                          Margin="0,0,0,17"/>
 
-                    <!-- Giá bán theo size -->
-                    <TextBlock Text="Giá theo size (VNĐ)"
-                               FontSize="14"
-                               FontWeight="Bold"
-                               Foreground="#4E342E"
-                               Margin="0,0,0,10"/>
+                <!-- Giá bán -->
+                <TextBlock Text="Giá bán theo kích cỡ"
+                           FontSize="15"
+                           FontWeight="Bold"
+                           Foreground="{StaticResource BrownDark}"
+                           Margin="0,0,0,12"/>
 
-                    <Grid Margin="0,0,0,16">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="*"/>
-                        </Grid.ColumnDefinitions>
+                <Grid Margin="0,0,0,17">
 
-                        <StackPanel Grid.Column="0" Margin="0,0,6,0">
-                            <TextBlock Text="S - Nhỏ"
-                                       Style="{StaticResource FormLabelStyle}"/>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="12"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="12"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
 
-                            <TextBox x:Name="PriceSBox"
-                                     Style="{StaticResource FormTextBoxStyle}"
-                                     ToolTip="Giá size S"/>
-                        </StackPanel>
+                    <!-- Size S -->
+                    <StackPanel Grid.Column="0">
 
-                        <StackPanel Grid.Column="1" Margin="3,0">
-                            <TextBlock Text="M - Vừa"
-                                       Style="{StaticResource FormLabelStyle}"/>
+                        <TextBlock Text="Size S *"
+                                   Style="{StaticResource FieldLabel}"/>
 
-                            <TextBox x:Name="PriceMBox"
-                                     Style="{StaticResource FormTextBoxStyle}"
-                                     ToolTip="Để trống nếu không có size M"/>
-                        </StackPanel>
+                        <TextBox Style="{StaticResource InputTextBox}"
+                                 Text="{Binding PriceS, UpdateSourceTrigger=PropertyChanged}"
+                                 ToolTip="Giá phải lớn hơn 1.000đ"/>
 
-                        <StackPanel Grid.Column="2" Margin="6,0,0,0">
-                            <TextBlock Text="L - Lớn"
-                                       Style="{StaticResource FormLabelStyle}"/>
+                    </StackPanel>
 
-                            <TextBox x:Name="PriceLBox"
-                                     Style="{StaticResource FormTextBoxStyle}"
-                                     ToolTip="Để trống nếu không có size L"/>
-                        </StackPanel>
-                    </Grid>
+                    <!-- Size M -->
+                    <StackPanel Grid.Column="2">
 
-                    <TextBlock Text="Mô tả"
-                               Style="{StaticResource FormLabelStyle}"/>
+                        <TextBlock Text="Size M"
+                                   Style="{StaticResource FieldLabel}"/>
 
-                    <TextBox x:Name="DescriptionBox"
-                             Height="70"
-                             Padding="10,8"
-                             FontSize="13"
-                             Foreground="#3B2A27"
-                             Background="White"
-                             BorderBrush="#DED8D3"
-                             BorderThickness="1"
-                             AcceptsReturn="True"
-                             TextWrapping="Wrap"
-                             VerticalContentAlignment="Top"
-                             VerticalScrollBarVisibility="Auto"
-                             Margin="0,0,0,14"/>
+                        <TextBox Style="{StaticResource InputTextBox}"
+                                 Text="{Binding PriceM, UpdateSourceTrigger=PropertyChanged}"
+                                 ToolTip="Có thể để trống"/>
 
-                    <CheckBox x:Name="AvailableCheckBox"
-                              Content="Món đang được bán"
-                              IsChecked="True"
-                              FontWeight="SemiBold"
-                              FontSize="12"
-                              Foreground="#4E342E"
-                              Cursor="Hand"/>
-                </StackPanel>
-            </ScrollViewer>
-        </Border>
+                    </StackPanel>
+
+                    <!-- Size L -->
+                    <StackPanel Grid.Column="4">
+
+                        <TextBlock Text="Size L"
+                                   Style="{StaticResource FieldLabel}"/>
+
+                        <TextBox Style="{StaticResource InputTextBox}"
+                                 Text="{Binding PriceL, UpdateSourceTrigger=PropertyChanged}"
+                                 ToolTip="Có thể để trống"/>
+
+                    </StackPanel>
+
+                </Grid>
+
+                <TextBlock Text="* Giá mỗi size phải lớn hơn 1.000đ."
+                           FontSize="11"
+                           Foreground="{StaticResource MutedBrown}"
+                           Margin="0,-10,0,17"/>
+
+                <!-- Mô tả -->
+                <TextBlock Text="Mô tả món uống"
+                           Style="{StaticResource FieldLabel}"/>
+
+                <TextBox Height="90"
+                         Padding="10"
+                         FontSize="13"
+                         Text="{Binding Description, UpdateSourceTrigger=PropertyChanged}"
+                         Foreground="{StaticResource TextBrown}"
+                         Background="White"
+                         BorderBrush="#D7CCC8"
+                         BorderThickness="1"
+                         AcceptsReturn="True"
+                         TextWrapping="Wrap"
+                         VerticalScrollBarVisibility="Auto"
+                         HorizontalScrollBarVisibility="Disabled"
+                         VerticalContentAlignment="Top"
+                         Margin="0,0,0,17"/>
+
+                <!-- Trạng thái -->
+                <CheckBox Content="Đang bán"
+                          IsChecked="{Binding IsAvailable, Mode=TwoWay}"
+                          FontSize="13"
+                          FontWeight="SemiBold"
+                          Foreground="{StaticResource BrownDark}"
+                          Cursor="Hand"
+                          Margin="0,0,0,10"/>
+
+                <!-- Thông báo lỗi -->
+                <TextBlock Text="{Binding ErrorMessage}"
+                           Foreground="Red"
+                           FontSize="12"
+                           TextWrapping="Wrap"
+                           Margin="0,0,0,10"/>
+
+            </StackPanel>
+
+        </ScrollViewer>
 
         <!-- Nút thao tác -->
         <StackPanel Grid.Row="2"
                     Orientation="Horizontal"
                     HorizontalAlignment="Right"
-                    Margin="0,16,0,0">
+                    Margin="0,20,0,0">
 
             <Button Content="Hủy"
-                    Style="{StaticResource CancelButtonStyle}"
-                    Margin="0,0,10,0"
-                    IsCancel="True"
-                    Click="CancelButton_Click"/>
+                    Command="{Binding CancelCommand}"
+                    Style="{StaticResource ActionButton}"
+                    Background="{StaticResource BrownLight}"
+                    Foreground="{StaticResource BrownDark}"
+                    Margin="0,0,10,0"/>
 
-            <Button Content="Lưu"
-                    Style="{StaticResource SaveButtonStyle}"
-                    IsDefault="True"
-                    Click="SaveButton_Click"/>
+            <Button Content="Lưu thông tin"
+                    Command="{Binding SaveCommand}"
+                    Style="{StaticResource ActionButton}"
+                    Background="{StaticResource BrownPrimary}"
+                    Foreground="White"/>
+
         </StackPanel>
+
     </Grid>
 </Window>

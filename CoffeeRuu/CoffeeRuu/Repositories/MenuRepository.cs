@@ -1,5 +1,4 @@
-﻿
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
@@ -17,19 +16,18 @@ namespace CoffeeRuu.Repositories
             _context = context;
         }
 
-        // Lấy danh sách sản phẩm kèm danh mục và giá từng size
+        // Lấy danh sách món kèm danh mục và giá từng size.
         public async Task<List<Product>> GetAllProductsAsync()
         {
             return await _context.Products
                 .AsNoTracking()
                 .Include(p => p.Category)
                 .Include(p => p.ProductSizes)
-                
                 .OrderBy(p => p.ProductName)
                 .ToListAsync();
         }
 
-        // Lấy sản phẩm theo ID, kèm danh mục và size
+        // Lấy món theo ID.
         public async Task<Product?> GetProductByIdAsync(int productId)
         {
             return await _context.Products
@@ -39,7 +37,7 @@ namespace CoffeeRuu.Repositories
                 .FirstOrDefaultAsync(p => p.ProductId == productId);
         }
 
-        // Lấy sản phẩm theo danh mục
+        // Lấy món theo danh mục.
         public async Task<List<Product>> GetProductsByCategoryAsync(
             int categoryId)
         {
@@ -53,7 +51,7 @@ namespace CoffeeRuu.Repositories
                 .ToListAsync();
         }
 
-        // Tìm sản phẩm theo tên bắt đầu bằng từ khóa
+        // Tìm món theo tên bắt đầu bằng từ khóa.
         public async Task<List<Product>> SearchProductsAsync(string keyword)
         {
             keyword = keyword?.Trim() ?? "";
@@ -74,47 +72,121 @@ namespace CoffeeRuu.Repositories
                 .OrderBy(p => p.ProductName)
                 .ToListAsync();
         }
-        // Thêm sản phẩm
+
+        // Thêm món mới cùng các size.
         public async Task AddProductAsync(Product product)
         {
             await _context.Products.AddAsync(product);
             await _context.SaveChangesAsync();
         }
 
-        // Cập nhật sản phẩm
+        // Cập nhật thông tin món và các size.
         public async Task UpdateProductAsync(Product product)
         {
+            // Lấy bản ghi đang được quản lý bởi DbContext.
             var existingProduct = await _context.Products
-                .FirstOrDefaultAsync(p => p.ProductId == product.ProductId);
+                .Include(p => p.ProductSizes)
+                .FirstOrDefaultAsync(
+                    p => p.ProductId == product.ProductId);
 
             if (existingProduct == null)
-                return;
+            {
+                throw new System.InvalidOperationException(
+                    "Không tìm thấy món cần cập nhật.");
+            }
 
-            // Chỉ cập nhật các thuộc tính của Product
+            // Cập nhật thông tin cơ bản.
             existingProduct.ProductName = product.ProductName;
             existingProduct.CategoryId = product.CategoryId;
             existingProduct.Description = product.Description;
             existingProduct.ImageUrl = product.ImageUrl;
             existingProduct.IsAvailable = product.IsAvailable;
 
-            // Không thay thế ProductSizes ở đây.
-            // Các size hiện có được giữ nguyên.
+            // Cập nhật từng size được gửi từ ProductDialog.
+            foreach (var incomingSize in product.ProductSizes)
+            {
+                // Ưu tiên tìm theo ProductSizeId.
+                var existingSize = incomingSize.ProductSizeId > 0
+                    ? existingProduct.ProductSizes.FirstOrDefault(
+                        s => s.ProductSizeId == incomingSize.ProductSizeId)
+                    : null;
+
+                // Nếu không tìm thấy theo ID, tìm theo tên size.
+                if (existingSize == null)
+                {
+                    existingSize = existingProduct.ProductSizes
+                        .FirstOrDefault(s =>
+                            GetSizeCode(s.SizeName) ==
+                            GetSizeCode(incomingSize.SizeName));
+                }
+
+                if (existingSize != null)
+                {
+                    // Cập nhật size đã tồn tại.
+                    existingSize.SizeName = incomingSize.SizeName;
+                    existingSize.Price = incomingSize.Price;
+                    existingSize.IsAvailable = incomingSize.IsAvailable;
+                }
+                else
+                {
+                    // Thêm size mới nếu món chưa có size này.
+                    existingProduct.ProductSizes.Add(new ProductSize
+                    {
+                        ProductId = existingProduct.ProductId,
+                        SizeName = incomingSize.SizeName,
+                        Price = incomingSize.Price,
+                        IsAvailable = incomingSize.IsAvailable
+                    });
+                }
+            }
 
             await _context.SaveChangesAsync();
         }
-        // Xóa sản phẩm khỏi database
+
+        // Chuẩn hóa tên size để so sánh S, M, L.
+        private static string GetSizeCode(string sizeName)
+        {
+            if (string.IsNullOrWhiteSpace(sizeName))
+                return "";
+
+            string normalized = sizeName.Trim().ToUpperInvariant();
+
+            if (normalized.EndsWith("(S)"))
+                return "S";
+
+            if (normalized.EndsWith("(M)"))
+                return "M";
+
+            if (normalized.EndsWith("(L)"))
+                return "L";
+
+            return normalized;
+        }
+
+        // Xóa mềm: chuyển món sang trạng thái ngừng bán.
         public async Task DeleteProductAsync(int productId)
         {
             var product = await _context.Products
                 .FirstOrDefaultAsync(p => p.ProductId == productId);
 
             if (product == null)
-                return;
+            {
+                throw new System.InvalidOperationException(
+                    "Không tìm thấy món cần ngừng bán.");
+            }
 
-            // Không xóa dữ liệu có thể liên quan đến công thức/order.
             product.IsAvailable = false;
 
             await _context.SaveChangesAsync();
         }
+
+            // Lấy danh sách danh mục từ database.
+public async Task<List<Category>> GetAllCategoriesAsync()
+        {
+            return await _context.Categories
+                .AsNoTracking()
+                .OrderBy(c => c.CategoryName)
+                .ToListAsync();
+        }
     }
-}
+    }

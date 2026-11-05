@@ -14,5 +14,10 @@ namespace CoffeeRuu.Views
         {
 
         }
+
+        private void MenuView_Loaded(object sender, System.Windows.RoutedEventArgs e)
+        {
+
+        }
     }
 }

@@ -1,5 +1,4 @@
-﻿
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -27,37 +26,34 @@ namespace CoffeeRuu.Services
         public async Task<List<Product>> GetProductsByCategoryAsync(
             int categoryId)
         {
-            return await _menuRepository
-                .GetProductsByCategoryAsync(categoryId);
+            return await _menuRepository.GetProductsByCategoryAsync(
+                categoryId);
         }
 
         // Tìm món theo tên.
         public async Task<List<Product>> SearchProductsAsync(
             string keyword)
         {
-            return await _menuRepository
-                .SearchProductsAsync(keyword);
+            return await _menuRepository.SearchProductsAsync(keyword);
         }
 
-        // Lấy chi tiết một món theo ID.
+        // Lấy chi tiết món theo ID.
         public async Task<Product?> GetProductByIdAsync(int productId)
         {
-            return await _menuRepository
-                .GetProductByIdAsync(productId);
+            return await _menuRepository.GetProductByIdAsync(productId);
         }
 
-        // Kiểm tra giá từng size trước khi lưu.
-        // Mỗi giá phải lớn hơn 1.000đ.
+        // Kiểm tra các size đang được bán phải có giá lớn hơn 1.000đ.
         private static void ValidatePrices(Product product)
         {
             if (product.ProductSizes == null ||
-                !product.ProductSizes.Any())
+                !product.ProductSizes.Any(s => s.IsAvailable))
             {
                 throw new InvalidOperationException(
                     "Vui lòng nhập ít nhất một kích cỡ và giá bán.");
             }
 
-            foreach (var size in product.ProductSizes)
+            foreach (var size in product.ProductSizes.Where(s => s.IsAvailable))
             {
                 if (size.Price <= 1000)
                 {
@@ -68,7 +64,6 @@ namespace CoffeeRuu.Services
         }
 
         // Kiểm tra tên món có bị trùng hay không.
-        // Nếu excludeProductId có giá trị, bỏ qua món đang sửa.
         private async Task ValidateProductNameAsync(
             string productName,
             int? excludeProductId = null)
@@ -99,27 +94,26 @@ namespace CoffeeRuu.Services
             }
         }
 
-        // Thêm món mới sau khi kiểm tra tên và giá.
+        // Thêm món mới.
         public async Task AddProductAsync(Product product)
         {
             await ValidateProductNameAsync(product.ProductName);
+
             ValidatePrices(product);
 
-            // Chuẩn hóa khoảng trắng đầu và cuối tên món.
             product.ProductName = product.ProductName.Trim();
 
             await _menuRepository.AddProductAsync(product);
         }
 
-        // Cập nhật món sau khi kiểm tra tên và giá.
+        // Cập nhật thông tin món và giá các size.
         public async Task UpdateProductAsync(Product product)
         {
             await ValidateProductNameAsync(
                 product.ProductName,
                 product.ProductId);
 
-            // Chỉ kiểm tra giá khi có thông tin size.
-            // Trạng thái bật/ngừng bán vẫn cập nhật bình thường.
+            // Chỉ kiểm tra giá nếu có danh sách size được gửi lên.
             if (product.ProductSizes != null &&
                 product.ProductSizes.Any())
             {
@@ -131,10 +125,17 @@ namespace CoffeeRuu.Services
             await _menuRepository.UpdateProductAsync(product);
         }
 
-        // Xóa món theo ID.
+        // Ngừng bán món theo ID.
         public async Task DeleteProductAsync(int productId)
         {
             await _menuRepository.DeleteProductAsync(productId);
+        }
+    
+
+    // Lấy danh sách danh mục thông qua Repository.
+public async Task<List<Category>> GetAllCategoriesAsync()
+        {
+            return await _menuRepository.GetAllCategoriesAsync();
         }
     }
 }
