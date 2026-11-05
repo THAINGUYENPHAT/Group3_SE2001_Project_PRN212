@@ -315,7 +315,7 @@
                               Margin="0,0,9,8"
                               ItemsSource="{Binding Categories}"
                               SelectedItem="{Binding SelectedCategory}"
-                              ToolTip="Lọc theo danh mục"/>
+                              ToolTip="Lọc theo danh mục" />
 
                     <!-- Lọc theo trạng thái đang bán/ngừng bán -->
                     <ComboBox Style="{StaticResource RoundCombo}"
