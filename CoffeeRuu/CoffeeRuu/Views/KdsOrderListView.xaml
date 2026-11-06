@@ -2,7 +2,8 @@
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       Background="#F5F5F0"
-      Loaded="Page_Loaded">
+      Loaded="Page_Loaded"
+      Title="KDS - Pha chế">
 
     <Page.Resources>
 
@@ -21,6 +22,44 @@
                 <Trigger Property="IsMouseOver" Value="True">
                     <Setter Property="Opacity" Value="0.85"/>
                 </Trigger>
+
+                <Trigger Property="IsEnabled" Value="False">
+                    <Setter Property="Opacity" Value="0.45"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <!-- MÀU TRẠNG THÁI MÓN -->
+        <Style TargetType="ListViewItem">
+            <Setter Property="Padding" Value="8,9"/>
+            <Setter Property="MinHeight" Value="42"/>
+            <Setter Property="HorizontalContentAlignment"
+                    Value="Stretch"/>
+            <Setter Property="BorderBrush" Value="#EEE9E5"/>
+            <Setter Property="BorderThickness" Value="0,0,0,1"/>
+
+            <Style.Triggers>
+
+                <!-- CHỜ PHA -->
+                <DataTrigger Binding="{Binding PreparationStatus}"
+                             Value="Queued">
+                    <Setter Property="Background"
+                            Value="#FFF8E9"/>
+                </DataTrigger>
+
+                <!-- ĐANG PHA -->
+                <DataTrigger Binding="{Binding PreparationStatus}"
+                             Value="Preparing">
+                    <Setter Property="Background"
+                            Value="#EAF3FF"/>
+                </DataTrigger>
+
+                <!-- DÒNG ĐƯỢC CHỌN -->
+                <Trigger Property="IsSelected" Value="True">
+                    <Setter Property="Background"
+                            Value="#D8C4B7"/>
+                </Trigger>
+
             </Style.Triggers>
         </Style>
 
@@ -30,20 +69,16 @@
     <Grid Margin="18,12,18,12">
 
         <Grid.RowDefinitions>
-            <!-- Tiêu đề -->
             <RowDefinition Height="Auto"/>
-
-            <!-- Nhân viên và thao tác -->
             <RowDefinition Height="Auto"/>
-
-            <!-- Danh sách chiếm không gian còn lại -->
             <RowDefinition Height="*"/>
-
-            <!-- Thông báo -->
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
+        <!-- ======================= -->
         <!-- 1. TIÊU ĐỀ KDS -->
+        <!-- ======================= -->
+
         <StackPanel Grid.Row="0"
                     Margin="0,0,0,12">
 
@@ -60,7 +95,10 @@
 
         </StackPanel>
 
-        <!-- 2. THANH THÔNG TIN VÀ THAO TÁC -->
+        <!-- ======================= -->
+        <!-- 2. NHÂN VIÊN VÀ THAO TÁC -->
+        <!-- ======================= -->
+
         <Border Grid.Row="1"
                 Background="White"
                 CornerRadius="10"
@@ -69,62 +107,79 @@
                 Padding="14"
                 Margin="0,0,0,12">
 
-            <WrapPanel Orientation="Horizontal"
-                       VerticalAlignment="Center">
+            <StackPanel>
 
-                <TextBlock Text="Mã NV:"
-                           FontSize="13"
-                           FontWeight="SemiBold"
-                           Foreground="#3B2A27"
-                           VerticalAlignment="Center"
-                           Margin="0,0,8,8"/>
-
-                <!-- HIỂN THỊ EMPLOYEEID -->
-                <Border Background="#F2E8E3"
-                        CornerRadius="5"
-                        Height="36"
-                        Width="75"
-                        Margin="0,0,12,8">
+                <!-- NHÂN VIÊN ĐANG ĐĂNG NHẬP -->
+                <StackPanel Orientation="Horizontal"
+                            Margin="0,0,0,12">
 
                     <TextBlock
-                        Text="{Binding EmployeeIdText}"
+                        Text="Đang đăng nhập: "
+                        FontSize="12"
+                        FontWeight="SemiBold"
+                        Foreground="#4E342E"/>
+
+                    <TextBlock
+                        Text="{Binding CurrentEmployeeDisplay}"
+                        FontSize="12"
+                        Foreground="#657D54"/>
+
+                </StackPanel>
+
+                <WrapPanel Orientation="Horizontal"
+                           VerticalAlignment="Center">
+
+                    <!-- DANH SÁCH NHÂN VIÊN -->
+                    <TextBlock
+                        Text="Nhân viên:"
                         FontSize="13"
-                        Foreground="#4E342E"
+                        FontWeight="SemiBold"
+                        Foreground="#3B2A27"
                         VerticalAlignment="Center"
-                        HorizontalAlignment="Center"/>
+                        Margin="0,0,8,8"/>
 
-                </Border>
+                    <ComboBox Width="265"
+                              Height="36"
+                              DisplayMemberPath="DisplayName"
+                              ItemsSource="{Binding Employees}"
+                              SelectedItem="{Binding SelectedEmployee,
+                                                     Mode=TwoWay}"
+                              Background="#FAF8F6"
+                              BorderBrush="#DED8D3"
+                              Margin="0,0,16,8"
+                              ToolTip="Xem danh sách nhân viên đang hoạt động"/>
 
-                <!-- NHẬP EMPLOYEEID -->
-                <Button Content="Nhập EmployeeID"
-                        Click="EnterEmployeeId_Click"
-                        Background="#4E342E"
-                        Style="{StaticResource KdsButton}"/>
+                    <!-- LÀM MỚI -->
+                    <Button Content="Làm mới"
+                            Command="{Binding RefreshCommand}"
+                            Background="#E9DFD9"
+                            Foreground="#4E342E"
+                            Style="{StaticResource KdsButton}"/>
 
-                <!-- LÀM MỚI -->
-                <Button Content="Làm mới"
-                        Command="{Binding RefreshCommand}"
-                        Background="#E9DFD9"
-                        Foreground="#4E342E"
-                        Style="{StaticResource KdsButton}"/>
+                    <!-- BẮT ĐẦU PHA -->
+                    <Button Content="Bắt đầu pha"
+                            Command="{Binding StartCommand}"
+                            IsEnabled="{Binding CanStart}"
+                            Background="#4E342E"
+                            Style="{StaticResource KdsButton}"/>
 
-                <!-- BẮT ĐẦU PHA -->
-                <Button Content="Bắt đầu pha"
-                        Command="{Binding StartCommand}"
-                        Background="#4E342E"
-                        Style="{StaticResource KdsButton}"/>
+                    <!-- PHA XONG -->
+                    <Button Content="Pha xong"
+                            Command="{Binding ReadyCommand}"
+                            IsEnabled="{Binding CanReady}"
+                            Background="#657D54"
+                            Style="{StaticResource KdsButton}"/>
 
-                <!-- PHA XONG -->
-                <Button Content="Pha xong"
-                        Command="{Binding ReadyCommand}"
-                        Background="#657D54"
-                        Style="{StaticResource KdsButton}"/>
+                </WrapPanel>
 
-            </WrapPanel>
+            </StackPanel>
 
         </Border>
 
-        <!-- 3. DANH SÁCH ĐƠN CẦN PHA CHẾ -->
+        <!-- ======================= -->
+        <!-- 3. DANH SÁCH KDS -->
+        <!-- ======================= -->
+
         <Border Grid.Row="2"
                 Background="White"
                 CornerRadius="10"
@@ -135,6 +190,7 @@
             <Grid>
 
                 <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
@@ -150,18 +206,74 @@
                         Foreground="#3B2A27"/>
 
                     <TextBlock
-                        Text="Chọn món trong đơn để cập nhật trạng thái xử lý."
+                        Text="Món đã pha xong sẽ tự động ẩn khỏi danh sách."
                         FontSize="12"
                         Foreground="#8A7770"
                         Margin="0,4,0,0"/>
 
                 </StackPanel>
 
+                <!-- ======================= -->
+                <!-- BỘ LỌC KDS -->
+                <!-- ======================= -->
+
+                <Border Grid.Row="1"
+                        Background="#FAF8F6"
+                        BorderBrush="#EEE8E2"
+                        BorderThickness="1"
+                        CornerRadius="7"
+                        Padding="10"
+                        Margin="0,0,0,12">
+
+                    <WrapPanel Orientation="Horizontal">
+
+                        <!-- TÌM MÃ ĐƠN HOẶC TÊN MÓN -->
+                        <StackPanel Margin="0,0,12,8">
+
+                            <TextBlock
+                                Text="Tìm mã đơn hoặc tên món"
+                                Foreground="#8A7770"
+                                FontSize="11"
+                                Margin="0,0,0,4"/>
+
+                            <TextBox Width="235"
+                                     Height="35"
+                                     Padding="9,4"
+                                     VerticalContentAlignment="Center"
+                                     Text="{Binding SearchKds,
+                                             UpdateSourceTrigger=PropertyChanged}"/>
+
+                        </StackPanel>
+
+                        <!-- LỌC TRẠNG THÁI -->
+                        <StackPanel Margin="0,0,12,8">
+
+                            <TextBlock
+                                Text="Trạng thái pha chế"
+                                Foreground="#8A7770"
+                                FontSize="11"
+                                Margin="0,0,0,4"/>
+
+                            <ComboBox Width="160"
+                                      Height="35"
+                                      ItemsSource="{Binding StatusOptions}"
+                                      SelectedItem="{Binding FilterStatus,
+                                                             Mode=TwoWay}"/>
+
+                        </StackPanel>
+
+                    </WrapPanel>
+
+                </Border>
+
+                <!-- ======================= -->
                 <!-- DANH SÁCH MÓN -->
-                <ListView Grid.Row="1"
-                          ItemsSource="{Binding Items}"
+                <!-- ======================= -->
+
+                <ListView Grid.Row="2"
+                          ItemsSource="{Binding FilteredItems}"
                           SelectedItem="{Binding SelectedItem,
-                                         Mode=TwoWay}"
+                                                 Mode=TwoWay}"
                           Background="White"
                           BorderBrush="#DED8D3"
                           BorderThickness="1"
@@ -170,8 +282,9 @@
                           ScrollViewer.VerticalScrollBarVisibility="Auto"
                           ScrollViewer.HorizontalScrollBarVisibility="Auto">
 
-                    <!-- HIỂN THỊ MÓN -->
+                    <!-- CÁC CỘT DỮ LIỆU -->
                     <ListView.View>
+
                         <GridView>
 
                             <GridViewColumn
@@ -200,25 +313,33 @@
                                 Width="280"/>
 
                         </GridView>
+
                     </ListView.View>
 
-                    <!-- NHÓM THEO MÃ ĐƠN -->
+                    <!-- ======================= -->
+                    <!-- GOM MÓN THEO MÃ ĐƠN -->
+                    <!-- ======================= -->
+
                     <ListView.GroupStyle>
+
                         <GroupStyle>
 
                             <GroupStyle.ContainerStyle>
+
                                 <Style TargetType="GroupItem">
 
                                     <Setter Property="Template">
+
                                         <Setter.Value>
 
                                             <ControlTemplate TargetType="GroupItem">
 
-                                                <Expander IsExpanded="False"
+                                                <Expander IsExpanded="True"
                                                           Margin="0,4,0,8"
                                                           Background="#F8F4F1">
 
                                                     <Expander.Header>
+
                                                         <StackPanel
                                                             Orientation="Horizontal"
                                                             Margin="8,8">
@@ -243,22 +364,25 @@
                                                                 Margin="12,0,0,0"/>
 
                                                         </StackPanel>
+
                                                     </Expander.Header>
 
-                                                    <ItemsPresenter
-                                                        Margin="4,4,4,8"/>
+                                                    <ItemsPresenter Margin="4,4,4,8"/>
 
                                                 </Expander>
 
                                             </ControlTemplate>
 
                                         </Setter.Value>
+
                                     </Setter>
 
                                 </Style>
+
                             </GroupStyle.ContainerStyle>
 
                         </GroupStyle>
+
                     </ListView.GroupStyle>
 
                 </ListView>
@@ -267,7 +391,10 @@
 
         </Border>
 
+        <!-- ======================= -->
         <!-- 4. THÔNG BÁO -->
+        <!-- ======================= -->
+
         <TextBlock Grid.Row="3"
                    Text="{Binding Message}"
                    FontSize="12"
@@ -276,4 +403,5 @@
                    TextWrapping="Wrap"/>
 
     </Grid>
+
 </Page>

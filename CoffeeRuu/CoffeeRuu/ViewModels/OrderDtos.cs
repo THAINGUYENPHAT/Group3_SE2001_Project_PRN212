@@ -64,4 +64,15 @@ namespace CoffeeRuu.ViewModels
         public string PreparationStatus { get; set; } = "";
         public DateTime CreatedAt { get; set; }
     }
+
+    public sealed class EmployeeChoice
+    {
+        public int EmployeeId { get; set; }
+        public string FullName { get; set; } = "";
+        public string RoleName { get; set; } = "";
+
+        public string DisplayName =>
+            $"{EmployeeId} - {FullName} ({RoleName})";
+    }
+
 }

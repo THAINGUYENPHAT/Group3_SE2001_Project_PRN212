@@ -12,21 +12,16 @@
     <Page.Resources>
 
         <!-- CARD -->
-        <Style x:Key="CardStyle"
-               TargetType="Border">
-
+        <Style x:Key="CardStyle" TargetType="Border">
             <Setter Property="Background" Value="White"/>
             <Setter Property="CornerRadius" Value="10"/>
             <Setter Property="Padding" Value="16"/>
             <Setter Property="BorderBrush" Value="#DED8D3"/>
             <Setter Property="BorderThickness" Value="1"/>
-
         </Style>
 
         <!-- NÚT CHÍNH -->
-        <Style x:Key="PrimaryButton"
-               TargetType="Button">
-
+        <Style x:Key="PrimaryButton" TargetType="Button">
             <Setter Property="Background" Value="#4E342E"/>
             <Setter Property="Foreground" Value="White"/>
             <Setter Property="BorderThickness" Value="0"/>
@@ -40,9 +35,7 @@
 
             <Setter Property="Template">
                 <Setter.Value>
-
                     <ControlTemplate TargetType="Button">
-
                         <Border x:Name="ButtonBorder"
                                 Background="{TemplateBinding Background}"
                                 CornerRadius="7"
@@ -55,7 +48,6 @@
                         </Border>
 
                         <ControlTemplate.Triggers>
-
                             <Trigger Property="IsMouseOver"
                                      Value="True">
                                 <Setter TargetName="ButtonBorder"
@@ -69,14 +61,10 @@
                                         Property="Opacity"
                                         Value="0.5"/>
                             </Trigger>
-
                         </ControlTemplate.Triggers>
-
                     </ControlTemplate>
-
                 </Setter.Value>
             </Setter>
-
         </Style>
 
         <!-- NÚT LÀM MỚI -->
@@ -86,7 +74,6 @@
 
             <Setter Property="Background" Value="#E9DFD9"/>
             <Setter Property="Foreground" Value="#4E342E"/>
-
         </Style>
 
         <!-- NÚT HỦY -->
@@ -95,12 +82,10 @@
                BasedOn="{StaticResource PrimaryButton}">
 
             <Setter Property="Background" Value="#AD5148"/>
-
         </Style>
 
         <!-- DATA GRID -->
         <Style TargetType="DataGrid">
-
             <Setter Property="AutoGenerateColumns" Value="False"/>
             <Setter Property="IsReadOnly" Value="True"/>
             <Setter Property="CanUserAddRows" Value="False"/>
@@ -108,7 +93,8 @@
             <Setter Property="CanUserResizeRows" Value="False"/>
             <Setter Property="HeadersVisibility" Value="Column"/>
             <Setter Property="GridLinesVisibility" Value="Horizontal"/>
-            <Setter Property="HorizontalGridLinesBrush" Value="#EEE8E2"/>
+            <Setter Property="HorizontalGridLinesBrush"
+                    Value="#EEE8E2"/>
             <Setter Property="RowHeight" Value="44"/>
             <Setter Property="ColumnHeaderHeight" Value="42"/>
             <Setter Property="BorderBrush" Value="#DED8D3"/>
@@ -120,40 +106,36 @@
             <Setter Property="SelectionUnit" Value="FullRow"/>
             <Setter Property="HorizontalAlignment" Value="Stretch"/>
             <Setter Property="VerticalAlignment" Value="Stretch"/>
-
         </Style>
 
         <!-- TIÊU ĐỀ CỘT -->
         <Style TargetType="DataGridColumnHeader">
-
             <Setter Property="Background" Value="#E9DFD9"/>
             <Setter Property="Foreground" Value="#3B2A27"/>
             <Setter Property="FontWeight" Value="SemiBold"/>
             <Setter Property="FontSize" Value="12"/>
             <Setter Property="Padding" Value="12,10"/>
-            <Setter Property="BorderThickness" Value="0,0,0,1"/>
+            <Setter Property="BorderThickness"
+                    Value="0,0,0,1"/>
             <Setter Property="BorderBrush" Value="#DED8D3"/>
-            <Setter Property="HorizontalContentAlignment" Value="Left"/>
-            <Setter Property="VerticalContentAlignment" Value="Center"/>
-
+            <Setter Property="HorizontalContentAlignment"
+                    Value="Left"/>
+            <Setter Property="VerticalContentAlignment"
+                    Value="Center"/>
         </Style>
 
         <!-- Ô DỮ LIỆU -->
         <Style TargetType="DataGridCell">
-
             <Setter Property="Padding" Value="10,5"/>
             <Setter Property="BorderThickness" Value="0"/>
-            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="VerticalContentAlignment"
+                    Value="Center"/>
             <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
-
         </Style>
 
     </Page.Resources>
 
-    <!-- ===================================== -->
-    <!-- BỐ CỤC CHÍNH -->
-    <!-- ===================================== -->
-
+    <!-- GIAO DIỆN CHÍNH -->
     <Grid Margin="18,12,18,12">
 
         <Grid.RowDefinitions>
@@ -164,8 +146,7 @@
         </Grid.RowDefinitions>
 
         <!-- 1. HEADER -->
-        <StackPanel Grid.Row="0"
-                    Margin="0,0,0,12">
+        <StackPanel Grid.Row="0" Margin="0,0,0,12">
 
             <TextBlock Text="Order Processing"
                        FontSize="22"
@@ -180,10 +161,7 @@
 
         </StackPanel>
 
-        <!-- ===================================== -->
-        <!-- 2. THÔNG TIN NHÂN VIÊN VÀ NÚT -->
-        <!-- ===================================== -->
-
+        <!-- 2. NHÂN VIÊN VÀ NÚT THAO TÁC -->
         <Border Grid.Row="1"
                 Style="{StaticResource CardStyle}"
                 Margin="0,0,0,12">
@@ -191,25 +169,23 @@
             <WrapPanel Orientation="Horizontal"
                        VerticalAlignment="Center">
 
-                <!-- EMPLOYEE ID -->
-                <TextBlock Text="EmployeeID:"
+                <!-- DANH SÁCH NHÂN VIÊN -->
+                <TextBlock Text="Nhân viên:"
                            FontSize="13"
                            FontWeight="SemiBold"
                            Foreground="#3B2A27"
                            VerticalAlignment="Center"
                            Margin="0,0,8,8"/>
 
-                <TextBox Width="90"
-                         Height="38"
-                         Padding="8,5"
-                         FontSize="13"
-                         VerticalContentAlignment="Center"
-                         Background="#FAF8F6"
-                         BorderBrush="#DED8D3"
-                         BorderThickness="1"
-                         Margin="0,0,16,8"
-                         Text="{Binding EmployeeIdText,
-                                UpdateSourceTrigger=PropertyChanged}"/>
+                <ComboBox Width="260"
+                          Height="38"
+                          DisplayMemberPath="DisplayName"
+                          ItemsSource="{Binding Employees}"
+                          SelectedItem="{Binding SelectedEmployee,
+                                                 Mode=TwoWay}"
+                          Background="#FAF8F6"
+                          BorderBrush="#DED8D3"
+                          Margin="0,0,16,8"/>
 
                 <!-- LÀM MỚI -->
                 <Button Content="Làm mới"
@@ -230,10 +206,7 @@
 
         </Border>
 
-        <!-- ===================================== -->
         <!-- 3. DANH SÁCH ĐƠN HÀNG -->
-        <!-- ===================================== -->
-
         <Border Grid.Row="2"
                 Style="{StaticResource CardStyle}">
 
@@ -241,17 +214,19 @@
 
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
 
-                <!-- TIÊU ĐỀ DANH SÁCH -->
+                <!-- TIÊU ĐỀ -->
                 <StackPanel Grid.Row="0"
                             Margin="0,0,0,12">
-                    <TextBlock
-                        Text="Danh sách đơn hàng"
-                        FontSize="18"
-                        FontWeight="SemiBold"
-                        Foreground="#3B2A27"/>
+
+                    <TextBlock Text="Danh sách đơn hàng"
+                               FontSize="18"
+                               FontWeight="SemiBold"
+                               Foreground="#3B2A27"/>
+
                     <TextBlock
                         Text="Chọn một đơn hàng để bàn giao hoặc hủy đơn mới."
                         FontSize="12"
@@ -260,18 +235,78 @@
 
                 </StackPanel>
 
+                <!-- BỘ LỌC ĐƠN HÀNG -->
+                <Border Grid.Row="1"
+                        Background="#FAF8F6"
+                        BorderBrush="#EEE8E2"
+                        BorderThickness="1"
+                        CornerRadius="7"
+                        Padding="10"
+                        Margin="0,0,0,12">
+
+                    <WrapPanel VerticalAlignment="Center">
+
+                        <!-- TÌM KIẾM MÃ ĐƠN -->
+                        <StackPanel Margin="0,0,12,8">
+
+                            <TextBlock Text="Tìm mã đơn"
+                                       Foreground="#8A7770"
+                                       FontSize="11"
+                                       Margin="0,0,0,4"/>
+
+                            <TextBox Width="210"
+                                     Height="35"
+                                     Padding="9,4"
+                                     VerticalContentAlignment="Center"
+                                     Text="{Binding SearchOrder,
+                                             UpdateSourceTrigger=PropertyChanged}"/>
+
+                        </StackPanel>
+
+                        <!-- LỌC THEO TRẠNG THÁI -->
+                        <StackPanel Margin="0,0,12,8">
+
+                            <TextBlock Text="Trạng thái"
+                                       Foreground="#8A7770"
+                                       FontSize="11"
+                                       Margin="0,0,0,4"/>
+
+                            <ComboBox Width="150"
+                                      Height="35"
+                                      ItemsSource="{Binding StatusOptions}"
+                                      SelectedItem="{Binding StatusFilter,
+                                                             Mode=TwoWay}"/>
+
+                        </StackPanel>
+
+                        <!-- LỌC THEO NGÀY -->
+                        <StackPanel Margin="0,0,12,8">
+
+                            <TextBlock
+                                Text="Ngày tạo đơn (để trống = tất cả)"
+                                Foreground="#8A7770"
+                                FontSize="11"
+                                Margin="0,0,0,4"/>
+
+                            <DatePicker Width="180"
+                                        Height="35"
+                                        SelectedDate="{Binding FilterDate,
+                                                               Mode=TwoWay}"/>
+
+                        </StackPanel>
+
+                    </WrapPanel>
+                </Border>
+
                 <!-- BẢNG ĐƠN HÀNG -->
-                <DataGrid Grid.Row="1"
-                          ItemsSource="{Binding Orders}"
+                <DataGrid Grid.Row="2"
+                          ItemsSource="{Binding FilteredOrders}"
                           SelectedItem="{Binding SelectedOrder,
-                                         Mode=TwoWay}"
+                                                 Mode=TwoWay}"
                           ScrollViewer.VerticalScrollBarVisibility="Auto"
                           ScrollViewer.HorizontalScrollBarVisibility="Auto">
 
-                    <!-- ===================================== -->
-                    <!-- MÀU THEO TRẠNG THÁI ĐƠN -->
-                    <!-- ===================================== -->
-
+                    <!-- MÀU TRẠNG THÁI -->
                     <DataGrid.RowStyle>
                         <Style TargetType="DataGridRow">
 
@@ -283,54 +318,49 @@
 
                             <Style.Triggers>
 
-                                <!-- ĐƠN MỚI -->
+                                <!-- NEW -->
                                 <DataTrigger
                                     Binding="{Binding OrderStatus}"
                                     Value="New">
 
                                     <Setter Property="Background"
                                             Value="#FFF8E7"/>
-
                                 </DataTrigger>
 
-                                <!-- ĐANG PHA -->
+                                <!-- PREPARING -->
                                 <DataTrigger
                                     Binding="{Binding OrderStatus}"
                                     Value="Preparing">
 
                                     <Setter Property="Background"
                                             Value="#EAF3FF"/>
-
                                 </DataTrigger>
 
-                                <!-- PHA XONG -->
+                                <!-- READY -->
                                 <DataTrigger
                                     Binding="{Binding OrderStatus}"
                                     Value="Ready">
 
                                     <Setter Property="Background"
                                             Value="#EAF8ED"/>
-
                                 </DataTrigger>
 
-                                <!-- ĐÃ BÀN GIAO -->
+                                <!-- COMPLETED -->
                                 <DataTrigger
                                     Binding="{Binding OrderStatus}"
                                     Value="Completed">
 
                                     <Setter Property="Background"
                                             Value="#E5F5E9"/>
-
                                 </DataTrigger>
 
-                                <!-- ĐÃ HỦY -->
+                                <!-- CANCELLED -->
                                 <DataTrigger
                                     Binding="{Binding OrderStatus}"
                                     Value="Cancelled">
 
                                     <Setter Property="Background"
                                             Value="#FDEEEE"/>
-
                                 </DataTrigger>
 
                                 <!-- DÒNG ĐANG CHỌN -->
@@ -342,7 +372,6 @@
 
                                     <Setter Property="Foreground"
                                             Value="#3B2A27"/>
-
                                 </Trigger>
 
                             </Style.Triggers>
@@ -350,10 +379,7 @@
                         </Style>
                     </DataGrid.RowStyle>
 
-                    <!-- ===================================== -->
                     <!-- CÁC CỘT -->
-                    <!-- ===================================== -->
-
                     <DataGrid.Columns>
 
                         <!-- MÃ ĐƠN -->
@@ -377,7 +403,7 @@
                             Width="1.1*"
                             MinWidth="90"/>
 
-                        <!-- TRẠNG THÁI ĐƠN -->
+                        <!-- TRẠNG THÁI -->
                         <DataGridTextColumn
                             Header="Trạng thái"
                             Binding="{Binding OrderStatus}"
@@ -408,10 +434,7 @@
 
         </Border>
 
-        <!-- ===================================== -->
         <!-- 4. THÔNG BÁO -->
-        <!-- ===================================== -->
-
         <TextBlock Grid.Row="3"
                    Text="{Binding Message}"
                    Foreground="#A34F36"
