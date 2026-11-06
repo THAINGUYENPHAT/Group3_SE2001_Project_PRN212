@@ -45,14 +45,14 @@ namespace CoffeeRuu.Views
 
             _navigationService.Register(
                 "Orders",
-                () => new OrderView
+                () => new OrderListView
                 {
                     DataContext = new OrderViewModel(_orderService)
                 });
 
             _navigationService.Register(
                 "KDS",
-                () => new KdsView
+                () => new KdsOrderListView
                 {
                     DataContext = new KdsViewModel(_orderService)
                 });

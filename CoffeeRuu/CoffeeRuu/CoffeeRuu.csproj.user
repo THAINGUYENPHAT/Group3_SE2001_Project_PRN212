@@ -23,9 +23,6 @@
     <Compile Update="Views\MenuView.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Update="Views\OrderCreateView.xaml.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Update="Views\OrderListView.xaml.cs">
       <SubType>Code</SubType>
     </Compile>

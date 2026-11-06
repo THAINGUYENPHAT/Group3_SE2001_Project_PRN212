@@ -44,10 +44,10 @@
                             <ContentPresenter
                                 HorizontalAlignment="Center"
                                 VerticalAlignment="Center"/>
-
                         </Border>
 
                         <ControlTemplate.Triggers>
+
                             <Trigger Property="IsMouseOver"
                                      Value="True">
                                 <Setter TargetName="ButtonBorder"
@@ -59,8 +59,9 @@
                                      Value="False">
                                 <Setter TargetName="ButtonBorder"
                                         Property="Opacity"
-                                        Value="0.5"/>
+                                        Value="0.45"/>
                             </Trigger>
+
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
                 </Setter.Value>
@@ -71,20 +72,11 @@
         <Style x:Key="SecondaryButton"
                TargetType="Button"
                BasedOn="{StaticResource PrimaryButton}">
-
             <Setter Property="Background" Value="#E9DFD9"/>
             <Setter Property="Foreground" Value="#4E342E"/>
         </Style>
 
-        <!-- NÚT HỦY -->
-        <Style x:Key="DangerButton"
-               TargetType="Button"
-               BasedOn="{StaticResource PrimaryButton}">
-
-            <Setter Property="Background" Value="#AD5148"/>
-        </Style>
-
-        <!-- DATA GRID -->
+        <!-- BẢNG ĐƠN HÀNG -->
         <Style TargetType="DataGrid">
             <Setter Property="AutoGenerateColumns" Value="False"/>
             <Setter Property="IsReadOnly" Value="True"/>
@@ -135,7 +127,7 @@
 
     </Page.Resources>
 
-    <!-- GIAO DIỆN CHÍNH -->
+    <!-- BỐ CỤC CHÍNH -->
     <Grid Margin="18,12,18,12">
 
         <Grid.RowDefinitions>
@@ -145,64 +137,95 @@
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <!-- 1. HEADER -->
-        <StackPanel Grid.Row="0" Margin="0,0,0,12">
-
-            <TextBlock Text="Order Processing"
-                       FontSize="22"
-                       FontWeight="Bold"
-                       Foreground="#3B2A27"/>
+        <!-- 1. TIÊU ĐỀ -->
+        <StackPanel Grid.Row="0"
+                    Margin="0,0,0,12">
 
             <TextBlock
-                Text="Theo dõi và xử lý các đơn hàng của quán."
+                Text="Order Processing"
+                FontSize="22"
+                FontWeight="Bold"
+                Foreground="#3B2A27"/>
+
+            <TextBlock
+                Text="Theo dõi và bàn giao các đơn hàng của quán."
                 FontSize="12"
                 Foreground="#8A7770"
                 Margin="0,4,0,0"/>
 
         </StackPanel>
 
-        <!-- 2. NHÂN VIÊN VÀ NÚT THAO TÁC -->
+        <!-- 2. NHÂN VIÊN VÀ THAO TÁC -->
         <Border Grid.Row="1"
                 Style="{StaticResource CardStyle}"
                 Margin="0,0,0,12">
 
-            <WrapPanel Orientation="Horizontal"
-                       VerticalAlignment="Center">
+            <StackPanel>
 
-                <!-- DANH SÁCH NHÂN VIÊN -->
-                <TextBlock Text="Nhân viên:"
-                           FontSize="13"
-                           FontWeight="SemiBold"
-                           Foreground="#3B2A27"
-                           VerticalAlignment="Center"
-                           Margin="0,0,8,8"/>
+                <!-- TÀI KHOẢN ĐANG ĐĂNG NHẬP -->
+                <StackPanel Orientation="Horizontal"
+                            Margin="0,0,0,8">
 
-                <ComboBox Width="260"
-                          Height="38"
-                          DisplayMemberPath="DisplayName"
-                          ItemsSource="{Binding Employees}"
-                          SelectedItem="{Binding SelectedEmployee,
-                                                 Mode=TwoWay}"
-                          Background="#FAF8F6"
-                          BorderBrush="#DED8D3"
-                          Margin="0,0,16,8"/>
+                    <TextBlock
+                        Text="Đang đăng nhập: "
+                        FontSize="12"
+                        FontWeight="SemiBold"
+                        Foreground="#4E342E"/>
 
-                <!-- LÀM MỚI -->
-                <Button Content="Làm mới"
+                    <TextBlock
+                        Text="{Binding CurrentEmployeeDisplay}"
+                        FontSize="12"
+                        Foreground="#657D54"/>
+
+                </StackPanel>
+
+                <!-- THÔNG BÁO QUYỀN -->
+                <TextBlock
+                    Text="{Binding OrderPermissionMessage}"
+                    FontSize="12"
+                    Foreground="#8A7770"
+                    Margin="0,0,0,12"/>
+
+                <WrapPanel Orientation="Horizontal"
+                           VerticalAlignment="Center">
+
+                    <!-- DANH SÁCH CASHIER CHỈ ĐỂ XEM -->
+                    <TextBlock
+                        Text="Danh sách Cashier:"
+                        FontSize="13"
+                        FontWeight="SemiBold"
+                        Foreground="#3B2A27"
+                        VerticalAlignment="Center"
+                        Margin="0,0,8,8"/>
+
+                    <ComboBox
+                        Width="260"
+                        Height="38"
+                        ItemsSource="{Binding Employees}"
+                        SelectedItem="{Binding SelectedEmployee,
+                                               Mode=TwoWay}"
+                        DisplayMemberPath="DisplayName"
+                        Background="#FAF8F6"
+                        BorderBrush="#DED8D3"
+                        Margin="0,0,16,8"
+                        ToolTip="Danh sách tham khảo, không thay đổi tài khoản đang đăng nhập"/>
+
+                    <!-- LÀM MỚI -->
+                    <Button
+                        Content="Làm mới"
                         Command="{Binding RefreshCommand}"
                         Style="{StaticResource SecondaryButton}"/>
 
-                <!-- BÀN GIAO -->
-                <Button Content="Bàn giao"
+                    <!-- BÀN GIAO -->
+                    <Button
+                        Content="Bàn giao"
                         Command="{Binding CompleteCommand}"
+                        IsEnabled="{Binding CanComplete}"
                         Style="{StaticResource PrimaryButton}"/>
 
-                <!-- HỦY ĐƠN -->
-                <Button Content="Hủy đơn mới"
-                        Command="{Binding CancelCommand}"
-                        Style="{StaticResource DangerButton}"/>
+                </WrapPanel>
 
-            </WrapPanel>
+            </StackPanel>
 
         </Border>
 
@@ -218,17 +241,18 @@
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
 
-                <!-- TIÊU ĐỀ -->
+                <!-- TIÊU ĐỀ DANH SÁCH -->
                 <StackPanel Grid.Row="0"
                             Margin="0,0,0,12">
 
-                    <TextBlock Text="Danh sách đơn hàng"
-                               FontSize="18"
-                               FontWeight="SemiBold"
-                               Foreground="#3B2A27"/>
+                    <TextBlock
+                        Text="Danh sách đơn hàng"
+                        FontSize="18"
+                        FontWeight="SemiBold"
+                        Foreground="#3B2A27"/>
 
                     <TextBlock
-                        Text="Chọn một đơn hàng để bàn giao hoặc hủy đơn mới."
+                        Text="Theo dõi trạng thái và chọn đơn Ready để bàn giao."
                         FontSize="12"
                         Foreground="#8A7770"
                         Margin="0,4,0,0"/>
@@ -249,37 +273,41 @@
                         <!-- TÌM KIẾM MÃ ĐƠN -->
                         <StackPanel Margin="0,0,12,8">
 
-                            <TextBlock Text="Tìm mã đơn"
-                                       Foreground="#8A7770"
-                                       FontSize="11"
-                                       Margin="0,0,0,4"/>
+                            <TextBlock
+                                Text="Tìm mã đơn"
+                                Foreground="#8A7770"
+                                FontSize="11"
+                                Margin="0,0,0,4"/>
 
-                            <TextBox Width="210"
-                                     Height="35"
-                                     Padding="9,4"
-                                     VerticalContentAlignment="Center"
-                                     Text="{Binding SearchOrder,
-                                             UpdateSourceTrigger=PropertyChanged}"/>
+                            <TextBox
+                                Width="210"
+                                Height="35"
+                                Padding="9,4"
+                                VerticalContentAlignment="Center"
+                                Text="{Binding SearchOrder,
+                                      UpdateSourceTrigger=PropertyChanged}"/>
 
                         </StackPanel>
 
-                        <!-- LỌC THEO TRẠNG THÁI -->
+                        <!-- LỌC TRẠNG THÁI -->
                         <StackPanel Margin="0,0,12,8">
 
-                            <TextBlock Text="Trạng thái"
-                                       Foreground="#8A7770"
-                                       FontSize="11"
-                                       Margin="0,0,0,4"/>
+                            <TextBlock
+                                Text="Trạng thái"
+                                Foreground="#8A7770"
+                                FontSize="11"
+                                Margin="0,0,0,4"/>
 
-                            <ComboBox Width="150"
-                                      Height="35"
-                                      ItemsSource="{Binding StatusOptions}"
-                                      SelectedItem="{Binding StatusFilter,
-                                                             Mode=TwoWay}"/>
+                            <ComboBox
+                                Width="150"
+                                Height="35"
+                                ItemsSource="{Binding StatusOptions}"
+                                SelectedItem="{Binding StatusFilter,
+                                               Mode=TwoWay}"/>
 
                         </StackPanel>
 
-                        <!-- LỌC THEO NGÀY -->
+                        <!-- LỌC NGÀY TẠO -->
                         <StackPanel Margin="0,0,12,8">
 
                             <TextBlock
@@ -288,14 +316,16 @@
                                 FontSize="11"
                                 Margin="0,0,0,4"/>
 
-                            <DatePicker Width="180"
-                                        Height="35"
-                                        SelectedDate="{Binding FilterDate,
-                                                               Mode=TwoWay}"/>
+                            <DatePicker
+                                Width="180"
+                                Height="35"
+                                SelectedDate="{Binding FilterDate,
+                                               Mode=TwoWay}"/>
 
                         </StackPanel>
 
                     </WrapPanel>
+
                 </Border>
 
                 <!-- BẢNG ĐƠN HÀNG -->
@@ -308,6 +338,7 @@
 
                     <!-- MÀU TRẠNG THÁI -->
                     <DataGrid.RowStyle>
+
                         <Style TargetType="DataGridRow">
 
                             <Setter Property="Background"
@@ -318,47 +349,42 @@
 
                             <Style.Triggers>
 
-                                <!-- NEW -->
+                                <!-- ĐƠN MỚI -->
                                 <DataTrigger
                                     Binding="{Binding OrderStatus}"
                                     Value="New">
-
                                     <Setter Property="Background"
                                             Value="#FFF8E7"/>
                                 </DataTrigger>
 
-                                <!-- PREPARING -->
+                                <!-- ĐANG PHA -->
                                 <DataTrigger
                                     Binding="{Binding OrderStatus}"
                                     Value="Preparing">
-
                                     <Setter Property="Background"
                                             Value="#EAF3FF"/>
                                 </DataTrigger>
 
-                                <!-- READY -->
+                                <!-- SẴN SÀNG BÀN GIAO -->
                                 <DataTrigger
                                     Binding="{Binding OrderStatus}"
                                     Value="Ready">
-
                                     <Setter Property="Background"
                                             Value="#EAF8ED"/>
                                 </DataTrigger>
 
-                                <!-- COMPLETED -->
+                                <!-- ĐÃ BÀN GIAO -->
                                 <DataTrigger
                                     Binding="{Binding OrderStatus}"
                                     Value="Completed">
-
                                     <Setter Property="Background"
                                             Value="#E5F5E9"/>
                                 </DataTrigger>
 
-                                <!-- CANCELLED -->
+                                <!-- ĐÃ HỦY - CHỈ HIỆN TRONG LỊCH SỬ -->
                                 <DataTrigger
                                     Binding="{Binding OrderStatus}"
                                     Value="Cancelled">
-
                                     <Setter Property="Background"
                                             Value="#FDEEEE"/>
                                 </DataTrigger>
@@ -366,10 +392,8 @@
                                 <!-- DÒNG ĐANG CHỌN -->
                                 <Trigger Property="IsSelected"
                                          Value="True">
-
                                     <Setter Property="Background"
                                             Value="#D8C4B7"/>
-
                                     <Setter Property="Foreground"
                                             Value="#3B2A27"/>
                                 </Trigger>
@@ -377,6 +401,7 @@
                             </Style.Triggers>
 
                         </Style>
+
                     </DataGrid.RowStyle>
 
                     <!-- CÁC CỘT -->

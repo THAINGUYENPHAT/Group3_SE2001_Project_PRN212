@@ -246,6 +246,7 @@ namespace CoffeeRuu.Services
                     IsolationLevel.Serializable);
 
             await CheckEmployeeAsync(db, employeeId);
+            await CheckKdsPermissionAsync(db, employeeId);
             await LockOrderAsync(db, orderId.Value);
 
             var order = await db.Orders
@@ -347,6 +348,7 @@ namespace CoffeeRuu.Services
                     IsolationLevel.Serializable);
 
             await CheckEmployeeAsync(db, employeeId);
+            await CheckCashierPermissionAsync(db, employeeId);
             await LockOrderAsync(db, orderId);
 
             var order = await db.Orders
@@ -537,5 +539,98 @@ namespace CoffeeRuu.Services
         {
             return _repository.GetEmployeesAsync();
         }
+
+        // ==========================
+        // 8. KIỂM TRA NHÂN VIÊN PHA CHẾ
+        // ==========================
+        private static async Task CheckKdsPermissionAsync(
+            CoffeeRuuDbContext db,
+            int employeeId)
+        {
+            var session = UserSession.Current;
+
+            // Kiểm tra tài khoản đăng nhập
+            if (session == null ||
+                session.EmployeeId != employeeId)
+            {
+                throw new InvalidOperationException(
+                    "Nhân viên thực hiện không khớp tài khoản đăng nhập.");
+            }
+
+            // Chỉ Barista mới được thao tác KDS
+            if (!string.Equals(
+                session.RoleName.Trim(),
+                "Barista",
+                StringComparison.OrdinalIgnoreCase))
+            {
+                throw new InvalidOperationException(
+                    "Chỉ Barista mới được phép pha chế.");
+            }
+
+            // Kiểm tra lại quyền theo database
+            bool isBarista = await db.Employees
+                .AsNoTracking()
+                .Where(e =>
+                    e.EmployeeId == employeeId &&
+                    e.IsActive)
+                .Join(
+                    db.Roles,
+                    e => e.RoleId,
+                    r => r.RoleId,
+                    (e, r) => r.RoleName)
+                .AnyAsync(roleName => roleName == "Barista");
+
+            if (!isBarista)
+            {
+                throw new InvalidOperationException(
+                    "Nhân viên không có quyền pha chế hoặc đã ngừng hoạt động.");
+            }
+        }
+
+        // ==========================
+        // 9. KIỂM TRA NHÂN VIÊN GIAO BÀN
+        // ==========================
+        private static async Task CheckCashierPermissionAsync(
+            CoffeeRuuDbContext db,
+            int employeeId)
+        {
+            var session = UserSession.Current;
+
+            if (session == null ||
+                session.EmployeeId != employeeId)
+            {
+                throw new InvalidOperationException(
+                    "Nhân viên thực hiện không khớp tài khoản đăng nhập.");
+            }
+
+            if (!string.Equals(
+                session.RoleName.Trim(),
+                "Cashier",
+                StringComparison.OrdinalIgnoreCase))
+            {
+                throw new InvalidOperationException(
+                    "Chỉ Cashier được phép bàn giao đơn hàng.");
+            }
+
+            bool isCashier = await db.Employees
+                .AsNoTracking()
+                .Where(e =>
+                    e.EmployeeId == employeeId &&
+                    e.IsActive)
+                .Join(
+                    db.Roles,
+                    e => e.RoleId,
+                    r => r.RoleId,
+                    (e, r) => r.RoleName)
+                .AnyAsync(roleName => roleName == "Cashier");
+
+            if (!isCashier)
+            {
+                throw new InvalidOperationException(
+                    "Nhân viên không có quyền bàn giao hoặc đã ngừng hoạt động.");
+            }
+        }
+
     }
+
 }

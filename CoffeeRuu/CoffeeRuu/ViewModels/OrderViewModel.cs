@@ -15,106 +15,35 @@ namespace CoffeeRuu.ViewModels
     {
         private readonly OrderService _service;
 
-        // ============================
-        // DANH SÁCH DỮ LIỆU
-        // ============================
-
-        public ObservableCollection<MenuChoice> Menu { get; }
-            = new();
-
-        public ObservableCollection<TableChoice> Tables { get; }
-            = new();
-
-        public ObservableCollection<CartLine> Cart { get; }
-            = new();
+        // ==================================
+        // DANH SÁCH ĐƠN HÀNG
+        // ==================================
 
         public ObservableCollection<OrderListRow> Orders { get; }
             = new();
 
-        public ObservableCollection<EmployeeChoice> Employees { get; }
-            = new();
-
-        public string[] OrderTypes { get; } =
-        {
-            "Takeaway",
-            "DineIn"
-        };
-
-        // ============================
-        // SẢN PHẨM ĐƯỢC CHỌN
-        // ============================
-
-        private MenuChoice? _selectedMenu;
-
-        public MenuChoice? SelectedMenu
-        {
-            get => _selectedMenu;
-            set => Set(ref _selectedMenu, value);
-        }
-
-        // ============================
-        // BÀN ĐƯỢC CHỌN
-        // ============================
-
-        private TableChoice? _selectedTable;
-
-        public TableChoice? SelectedTable
-        {
-            get => _selectedTable;
-            set => Set(ref _selectedTable, value);
-        }
-
-        // ============================
-        // MÓN TRONG GIỎ
-        // ============================
-
-        private CartLine? _selectedCart;
-
-        public CartLine? SelectedCart
-        {
-            get => _selectedCart;
-            set => Set(ref _selectedCart, value);
-        }
-
-        // ============================
-        // ĐƠN HÀNG ĐƯỢC CHỌN
-        // ============================
+        public ICollectionView FilteredOrders { get; }
 
         private OrderListRow? _selectedOrder;
 
         public OrderListRow? SelectedOrder
         {
             get => _selectedOrder;
-            set => Set(ref _selectedOrder, value);
-        }
-
-        // ============================
-        // LOẠI ĐƠN
-        // ============================
-
-        private string _orderType = "Takeaway";
-
-        public string OrderType
-        {
-            get => _orderType;
             set
             {
-                if (Set(ref _orderType, value))
+                if (Set(ref _selectedOrder, value))
                 {
-                    if (_orderType == "Takeaway")
-                        SelectedTable = null;
-
-                    Notify(nameof(IsDineIn));
+                    Notify(nameof(CanComplete));
                 }
             }
         }
 
-        public bool IsDineIn =>
-            OrderType == "DineIn";
-
-        // ============================
+        // ==================================
         // DANH SÁCH NHÂN VIÊN
-        // ============================
+        // ==================================
+
+        public ObservableCollection<EmployeeChoice> Employees { get; }
+            = new();
 
         private EmployeeChoice? _selectedEmployee;
 
@@ -124,91 +53,69 @@ namespace CoffeeRuu.ViewModels
             set => Set(ref _selectedEmployee, value);
         }
 
-        // Giữ tương thích với giao diện tạo đơn cũ.
-        // Mã người thao tác được lấy từ UserSession.
-        private string _employeeIdText = "";
+        // ==================================
+        // TÀI KHOẢN ĐANG ĐĂNG NHẬP
+        // ==================================
 
-        public string EmployeeIdText
+        public string CurrentEmployeeDisplay
         {
-            get => _employeeIdText;
-            set => Set(ref _employeeIdText, value);
+            get
+            {
+                var session = UserSession.Current;
+
+                if (session == null)
+                    return "Chưa đăng nhập";
+
+                return $"{session.EmployeeId} - " +
+                       $"{session.FullName} " +
+                       $"({session.RoleName})";
+            }
         }
 
-        // ============================
-        // SỐ LƯỢNG
-        // ============================
+        // ==================================
+        // PHÂN QUYỀN ORDER PROCESSING
+        // ==================================
 
-        private string _quantityText = "1";
-
-        public string QuantityText
+        public bool CanOperateOrders
         {
-            get => _quantityText;
-            set => Set(ref _quantityText, value);
+            get
+            {
+                var session = UserSession.Current;
+
+                return session != null
+                    && session.EmployeeId > 0
+                    && string.Equals(
+                        session.RoleName.Trim(),
+                        "Cashier",
+                        StringComparison.OrdinalIgnoreCase);
+            }
         }
 
-        // ============================
-        // GHI CHÚ MÓN
-        // ============================
-
-        private string _itemNote = "";
-
-        public string ItemNote
+        public string OrderPermissionMessage
         {
-            get => _itemNote;
-            set => Set(ref _itemNote, value);
+            get
+            {
+                if (UserSession.Current == null)
+                    return "Vui lòng đăng nhập.";
+
+                return CanOperateOrders
+                    ? "Bạn có quyền bàn giao đơn hàng."
+                    : "Chế độ chỉ xem - chỉ Cashier được bàn giao.";
+            }
         }
 
-        // ============================
-        // GHI CHÚ ĐƠN
-        // ============================
+        // ==================================
+        // KIỂM TRA NÚT BÀN GIAO
+        // ==================================
 
-        private string _orderNote = "";
+        public bool CanComplete =>
+            !IsBusy &&
+            CanOperateOrders &&
+            SelectedOrder?.OrderStatus == "Ready";
 
-        public string OrderNote
-        {
-            get => _orderNote;
-            set => Set(ref _orderNote, value);
-        }
-
-        // ============================
-        // THÔNG BÁO
-        // ============================
-
-        private string _message = "";
-
-        public string Message
-        {
-            get => _message;
-            set => Set(ref _message, value);
-        }
-
-        // ============================
-        // TRẠNG THÁI XỬ LÝ
-        // ============================
-
-        private bool _isBusy;
-
-        public bool IsBusy
-        {
-            get => _isBusy;
-            set => Set(ref _isBusy, value);
-        }
-
-        // ============================
-        // TỔNG TIỀN
-        // ============================
-
-        public decimal CartTotal =>
-            Cart.Sum(i => i.LineTotal);
-
-        public string CartTotalText =>
-            $"Tổng cộng: {CartTotal:N0} đ";
-
-        // ============================
-        // BỘ LỌC ĐƠN HÀNG
-        // ============================
-
-        public ICollectionView FilteredOrders { get; }
+        // ==================================
+        // BỘ LỌC TRẠNG THÁI
+        // ==================================
 
         public string[] StatusOptions { get; } =
         {
@@ -221,7 +128,6 @@ namespace CoffeeRuu.ViewModels
             "Cancelled"
         };
 
-        // Mặc định ẩn Completed và Cancelled
         private string _statusFilter = "Đang xử lý";
 
         public string StatusFilter
@@ -230,11 +136,17 @@ namespace CoffeeRuu.ViewModels
             set
             {
                 if (Set(ref _statusFilter, value))
+                {
                     FilteredOrders.Refresh();
+                    ValidateSelectedOrder();
+                }
             }
         }
 
-        // Tìm mã đơn
+        // ==================================
+        // TÌM KIẾM MÃ ĐƠN
+        // ==================================
+
         private string _searchOrder = "";
 
         public string SearchOrder
@@ -243,11 +155,17 @@ namespace CoffeeRuu.ViewModels
             set
             {
                 if (Set(ref _searchOrder, value))
+                {
                     FilteredOrders.Refresh();
+                    ValidateSelectedOrder();
+                }
             }
         }
 
-        // Lọc theo ngày
+        // ==================================
+        // LỌC THEO NGÀY
+        // ==================================
+
         private DateTime? _filterDate;
 
         public DateTime? FilterDate
@@ -256,119 +174,154 @@ namespace CoffeeRuu.ViewModels
             set
             {
                 if (Set(ref _filterDate, value))
+                {
                     FilteredOrders.Refresh();
+                    ValidateSelectedOrder();
+                }
             }
         }
 
-        // Kiểm tra điều kiện lọc
+        // ==================================
+        // HÀM LỌC ĐƠN HÀNG
+        // ==================================
+
         private bool FilterOrder(object obj)
         {
             if (obj is not OrderListRow order)
                 return false;
 
-            string keyword =
-                SearchOrder?.Trim() ?? "";
+            string keyword = SearchOrder.Trim();
 
             bool matchCode =
-                keyword.Length == 0 ||
-                order.OrderCode.Contains(
+                string.IsNullOrWhiteSpace(keyword) ||
+                (order.OrderCode?.Contains(
                     keyword,
-                    StringComparison.OrdinalIgnoreCase);
+                    StringComparison.OrdinalIgnoreCase) ?? false);
 
             bool matchStatus =
                 StatusFilter == "Tất cả" ||
 
-                (
-                    StatusFilter == "Đang xử lý" &&
-                    (
-                        order.OrderStatus == "New" ||
-                        order.OrderStatus == "Preparing" ||
-                        order.OrderStatus == "Ready"
-                    )
-                ) ||
+                (StatusFilter == "Đang xử lý" &&
+                 (order.OrderStatus == "New" ||
+                  order.OrderStatus == "Preparing" ||
+                  order.OrderStatus == "Ready")) ||
 
                 order.OrderStatus == StatusFilter;
 
             bool matchDate =
                 !FilterDate.HasValue ||
-                order.CreatedAt.Date ==
-                    FilterDate.Value.Date;
+                order.CreatedAt.Date == FilterDate.Value.Date;
 
-            return matchCode &&
-                   matchStatus &&
-                   matchDate;
+            return matchCode && matchStatus && matchDate;
         }
 
-        // ============================
-        // COMMANDS
-        // ============================
+        // Bỏ chọn đơn nếu đơn không còn hiển thị
+        private void ValidateSelectedOrder()
+        {
+            if (SelectedOrder != null &&
+                !FilterOrder(SelectedOrder))
+            {
+                SelectedOrder = null;
+            }
+        }
 
-        public ICommand AddCommand { get; }
-        public ICommand RemoveCommand { get; }
-        public ICommand CreateCommand { get; }
+        // ==================================
+        // THÔNG BÁO
+        // ==================================
+
+        private string _message = "";
+
+        public string Message
+        {
+            get => _message;
+            set => Set(ref _message, value);
+        }
+
+        // ==================================
+        // TRẠNG THÁI XỬ LÝ
+        // ==================================
+
+        private bool _isBusy;
+
+        public bool IsBusy
+        {
+            get => _isBusy;
+            set
+            {
+                if (Set(ref _isBusy, value))
+                {
+                    Notify(nameof(CanComplete));
+                }
+            }
+        }
+
+        // ==================================
+        // COMMANDS
+        // ==================================
+
         public ICommand RefreshCommand { get; }
-        public ICommand CancelCommand { get; }
         public ICommand CompleteCommand { get; }
 
-        // ============================
+        // ==================================
         // CONSTRUCTOR
-        // ============================
+        // ==================================
 
         public OrderViewModel(OrderService service)
         {
             _service = service;
 
-            // Tạo bộ lọc cho danh sách đơn
             FilteredOrders =
                 CollectionViewSource.GetDefaultView(Orders);
 
             FilteredOrders.Filter = FilterOrder;
 
-            AddCommand = new RelayCommand(AddItem);
-
-            RemoveCommand = new RelayCommand(RemoveItem);
-
-            CreateCommand = new RelayCommand(
-                async () => await RunAsync(CreateOrderAsync));
-
             RefreshCommand = new RelayCommand(
                 async () => await RunAsync(LoadDataAsync));
-
-            CancelCommand = new RelayCommand(
-                async () => await RunAsync(CancelOrderAsync));
 
             CompleteCommand = new RelayCommand(
                 async () => await RunAsync(CompleteOrderAsync));
         }
+
+        // ==================================
+        // KHỞI TẠO DỮ LIỆU
+        // ==================================
 
         public Task InitializeAsync()
         {
             return RunAsync(LoadDataAsync);
         }
 
-        // ============================
+        // ==================================
         // TẢI DỮ LIỆU
-        // ============================
+        // ==================================
 
         private async Task LoadDataAsync()
         {
-            int? previousEmployeeId =
-                SelectedEmployee?.EmployeeId;
-
             int? previousOrderId =
                 SelectedOrder?.OrderId;
 
-            var menu = await _service.GetMenuAsync();
-            var tables = await _service.GetTablesAsync();
+            int? previousEmployeeId =
+                SelectedEmployee?.EmployeeId;
+
+            // Lấy đơn hàng đã được tạo từ Menu/POS
             var orders = await _service.GetOrdersAsync();
+
+            // Lấy nhân viên
             var employees = await _service.GetEmployeesAsync();
 
-            Replace(Menu, menu);
-            Replace(Tables, tables);
+            // Cập nhật đơn hàng
             Replace(Orders, orders);
-            Replace(Employees, employees);
 
-            // Giữ nhân viên đang chọn
+            // Chỉ hiện danh sách Cashier
+            Replace(
+                Employees,
+                employees.Where(e =>
+                    string.Equals(
+                        e.RoleName.Trim(),
+                        "Cashier",
+                        StringComparison.OrdinalIgnoreCase)));
+
+            // Giữ nhân viên đã chọn trước đó
             int? employeeToShow =
                 previousEmployeeId ??
                 UserSession.Current?.EmployeeId;
@@ -376,169 +329,27 @@ namespace CoffeeRuu.ViewModels
             SelectedEmployee = Employees.FirstOrDefault(e =>
                 e.EmployeeId == employeeToShow);
 
-            // Mã nhân viên đăng nhập
-            EmployeeIdText =
-                UserSession.Current?.EmployeeId.ToString() ?? "";
+            // Nếu không có nhân viên cũ thì hiện Cashier đầu tiên
+            SelectedEmployee ??= Employees.FirstOrDefault();
 
-            // Giữ đơn đang chọn nếu còn
-            SelectedOrder = Orders.FirstOrDefault(o =>
-                o.OrderId == previousOrderId);
-
-            if (SelectedMenu == null ||
-                !Menu.Contains(SelectedMenu))
-            {
-                SelectedMenu = Menu.FirstOrDefault();
-            }
-
+            // Làm mới bộ lọc
             FilteredOrders.Refresh();
+
+            // Giữ đơn đang chọn nếu còn hiển thị
+            SelectedOrder = Orders.FirstOrDefault(o =>
+                o.OrderId == previousOrderId &&
+                FilterOrder(o));
+
+            // Cập nhật thông tin phiên đăng nhập
+            Notify(nameof(CurrentEmployeeDisplay));
+            Notify(nameof(CanOperateOrders));
+            Notify(nameof(OrderPermissionMessage));
+            Notify(nameof(CanComplete));
         }
 
-        // ============================
-        // THÊM MÓN VÀO GIỎ
-        // ============================
-
-        private void AddItem()
-        {
-            if (IsBusy)
-                return;
-
-            if (SelectedMenu == null)
-            {
-                Message = "Vui lòng chọn sản phẩm.";
-                return;
-            }
-
-            if (!int.TryParse(
-                QuantityText, out int quantity) ||
-                quantity < 1 || quantity > 100)
-            {
-                Message =
-                    "Số lượng phải từ 1 đến 100.";
-                return;
-            }
-
-            if (ItemNote.Length > 300)
-            {
-                Message =
-                    "Ghi chú món tối đa 300 ký tự.";
-                return;
-            }
-
-            Cart.Add(new CartLine
-            {
-                ProductSizeId =
-                    SelectedMenu.ProductSizeId,
-
-                ProductName =
-                    SelectedMenu.ProductName,
-
-                SizeName =
-                    SelectedMenu.SizeName,
-
-                UnitPrice =
-                    SelectedMenu.Price,
-
-                Quantity = quantity,
-                Note = ItemNote.Trim()
-            });
-
-            QuantityText = "1";
-            ItemNote = "";
-
-            NotifyCartTotal();
-
-            Message = "Đã thêm món vào đơn.";
-        }
-
-        // ============================
-        // XÓA MÓN KHỎI GIỎ
-        // ============================
-
-        private void RemoveItem()
-        {
-            if (IsBusy)
-                return;
-
-            if (SelectedCart == null)
-            {
-                Message = "Hãy chọn món cần xóa.";
-                return;
-            }
-
-            Cart.Remove(SelectedCart);
-            SelectedCart = null;
-
-            NotifyCartTotal();
-
-            Message = "Đã xóa món khỏi đơn.";
-        }
-
-        // ============================
-        // TẠO ĐƠN
-        // ============================
-
-        private async Task CreateOrderAsync()
-        {
-            int employeeId = GetEmployeeId();
-
-            var order = await _service.CreateOrderAsync(
-                Cart.ToList(),
-                OrderType,
-                SelectedTable?.TableId,
-                employeeId,
-                OrderNote);
-
-            Cart.Clear();
-
-            OrderNote = "";
-            ItemNote = "";
-            QuantityText = "1";
-
-            NotifyCartTotal();
-
-            await LoadDataAsync();
-
-            Message =
-                $"Đã tạo đơn {order.OrderCode}. " +
-                $"Tổng tiền: {order.TotalAmount:N0} đ.";
-        }
-
-        // ============================
-        // HỦY ĐƠN
-        // ============================
-
-        private async Task CancelOrderAsync()
-        {
-            if (SelectedOrder == null)
-            {
-                throw new InvalidOperationException(
-                    "Hãy chọn đơn cần hủy.");
-            }
-
-            // Chỉ hủy đơn mới
-            if (SelectedOrder.OrderStatus != "New")
-            {
-                throw new InvalidOperationException(
-                    "Chỉ được hủy đơn có trạng thái New.");
-            }
-
-            int orderId = SelectedOrder.OrderId;
-
-            await _service.CancelNewOrderAsync(
-                orderId,
-                GetEmployeeId());
-
-            // Làm mới để đơn Cancelled tự ẩn
-            await LoadDataAsync();
-
-            SelectedOrder = null;
-
-            Message = "Đã hủy đơn hàng.";
-        }
-
-        // ============================
+        // ==================================
         // BÀN GIAO ĐƠN
-        // ============================
+        // ==================================
 
         private async Task CompleteOrderAsync()
         {
@@ -548,31 +359,38 @@ namespace CoffeeRuu.ViewModels
                     "Hãy chọn đơn cần bàn giao.");
             }
 
+            if (!CanOperateOrders)
+            {
+                throw new InvalidOperationException(
+                    "Chỉ Cashier được phép bàn giao đơn.");
+            }
+
             if (SelectedOrder.OrderStatus != "Ready")
             {
                 throw new InvalidOperationException(
-                    "Chỉ bàn giao khi đơn đã Ready.");
+                    "Chỉ được bàn giao đơn đã Ready.");
             }
 
             int orderId = SelectedOrder.OrderId;
+            int employeeId = GetEmployeeId();
 
+            // Cập nhật trạng thái trong database
             await _service.CompleteOrderAsync(
                 orderId,
-                GetEmployeeId());
+                employeeId);
 
-            // Làm mới danh sách sau khi bàn giao
+            // Tải lại dữ liệu sau khi bàn giao
             await LoadDataAsync();
 
-            // Bỏ dòng đang chọn
+            // Bỏ chọn đơn vừa hoàn thành
             SelectedOrder = null;
 
-            Message =
-                "Đã bàn giao đơn hàng thành công.";
+            Message = "Đã bàn giao đơn hàng thành công.";
         }
 
-        // ============================
-        // MÃ NHÂN VIÊN THỰC HIỆN
-        // ============================
+        // ==================================
+        // NHÂN VIÊN THỰC HIỆN
+        // ==================================
 
         private int GetEmployeeId()
         {
@@ -585,24 +403,20 @@ namespace CoffeeRuu.ViewModels
                     "Vui lòng đăng nhập trước khi thao tác.");
             }
 
-            if (!session.CanAccess("Orders"))
+            if (!CanOperateOrders)
             {
                 throw new InvalidOperationException(
-                    "Tài khoản không có quyền xử lý đơn hàng.");
+                    "Tài khoản không có quyền bàn giao đơn.");
             }
 
+            // Lấy đúng người đang đăng nhập,
+            // không lấy từ ComboBox nhân viên.
             return session.EmployeeId;
         }
 
-        // ============================
-        // HÀM HỖ TRỢ
-        // ============================
-
-        private void NotifyCartTotal()
-        {
-            Notify(nameof(CartTotal));
-            Notify(nameof(CartTotalText));
-        }
+        // ==================================
+        // XỬ LÝ COMMAND
+        // ==================================
 
         private async Task RunAsync(Func<Task> action)
         {
@@ -626,6 +440,10 @@ namespace CoffeeRuu.ViewModels
             }
         }
 
+        // ==================================
+        // CẬP NHẬT OBSERVABLE COLLECTION
+        // ==================================
+
         private static void Replace<T>(
             ObservableCollection<T> target,
             IEnumerable<T> source)
@@ -633,7 +451,9 @@ namespace CoffeeRuu.ViewModels
             target.Clear();
 
             foreach (var item in source)
+            {
                 target.Add(item);
+            }
         }
     }
 }
