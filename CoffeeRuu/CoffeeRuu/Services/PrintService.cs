@@ -16,10 +16,11 @@ namespace CoffeeRuu.Services
         {
             PrintDocument pd = new PrintDocument();
 
-            // Cấu hình lề an toàn 5px để không bị sát mép giấy làm mất chữ
-            pd.DefaultPageSettings.Margins = new Margins(5, 5, 5, 5);
+            // Thiết lập lề 40 point (~1.4 cm) để cân đối trên tờ A4
+            pd.DefaultPageSettings.Margins = new Margins(40, 40, 40, 40);
+            pd.DefaultPageSettings.PaperSize = new PaperSize("A4", 595, 842);
 
-            pd.PrintPage += (sender, e) => DrawReceipt(e.Graphics, order);
+            pd.PrintPage += (sender, e) => DrawReceiptA4(e.Graphics, order);
 
             try
             {
@@ -31,118 +32,114 @@ namespace CoffeeRuu.Services
             }
         }
 
-        private void DrawReceipt(Graphics g, OrderDto order)
+        private void DrawReceiptA4(Graphics g, OrderDto order)
         {
-            // Thiết lập đơn vị chuẩn
-            g.PageUnit = GraphicsUnit.Pixel;
+            // Thiết lập đơn vị Point chuẩn cho A4
+            g.PageUnit = GraphicsUnit.Point;
 
-            // Chiều rộng chuẩn của khổ giấy nhiệt K80 (khoảng 270 - 280px)
-            float startX = 5;
-            float startY = 10;
-            float printWidth = 270; // Độ rộng hiển thị an toàn
+            float startX = 40;
+            float startY = 40;
+            float printWidth = 515; // 595 - (40*2) = 515 points (Độ rộng vùng in A4)
 
-            // Font chữ vừa vặn, chuẩn hóa đơn in nhiệt K80
-            Font fontHeaderBold = new Font("Arial", 12, FontStyle.Bold);
-            Font fontTitleBold = new Font("Arial", 11, FontStyle.Bold);
-            Font fontRegular = new Font("Arial", 9, FontStyle.Regular);
-            Font fontBold = new Font("Arial", 9, FontStyle.Bold);
-            Font fontTotal = new Font("Arial", 10.5f, FontStyle.Bold);
-            Font fontSmall = new Font("Arial", 7.5f, FontStyle.Regular);
+            // Font chữ chuẩn kích thước A4 (To, rõ, chuẩn báo cáo/hóa đơn)
+            Font fontHeaderBold = new Font("Arial", 18, FontStyle.Bold);
+            Font fontTitleBold = new Font("Arial", 15, FontStyle.Bold);
+            Font fontRegular = new Font("Arial", 11, FontStyle.Regular);
+            Font fontBold = new Font("Arial", 11, FontStyle.Bold);
+            Font fontTotal = new Font("Arial", 13, FontStyle.Bold);
+            Font fontSmall = new Font("Arial", 9.5f, FontStyle.Regular);
 
-            Pen dashPen = new Pen(Color.Black, 1) { DashStyle = System.Drawing.Drawing2D.DashStyle.Dash };
-            Pen solidPen = new Pen(Color.Black, 1);
+            Pen dashPen = new Pen(Color.Black, 1f) { DashStyle = System.Drawing.Drawing2D.DashStyle.Dash };
+            Pen solidPen = new Pen(Color.Black, 1.5f);
 
             StringFormat centerFormat = new StringFormat { Alignment = StringAlignment.Center };
             StringFormat rightFormat = new StringFormat { Alignment = StringAlignment.Far };
 
-            // 1. HEADER
-            g.DrawString("COFFEE RUU", fontHeaderBold, Brushes.Black, new RectangleF(startX, startY, printWidth, 20), centerFormat);
-            startY += 20;
-            g.DrawString("Cần Thơ", fontRegular, Brushes.Black, new RectangleF(startX, startY, printWidth, 16), centerFormat);
-            startY += 18;
+            // 1. HEADER TÊN QUÁN & THÔNG TIN HÓA ĐƠN
+            g.DrawString("COFFEE RUU", fontHeaderBold, Brushes.Black, new RectangleF(startX, startY, printWidth, 26), centerFormat);
+            startY += 26;
+            g.DrawString("Cần Thơ", fontRegular, Brushes.Black, new RectangleF(startX, startY, printWidth, 20), centerFormat);
+            startY += 24;
 
-            g.DrawString("HÓA ĐƠN THANH TOÁN", fontTitleBold, Brushes.Black, new RectangleF(startX, startY, printWidth, 20), centerFormat);
-            startY += 20;
+            g.DrawString("HÓA ĐƠN THANH TOÁN", fontTitleBold, Brushes.Black, new RectangleF(startX, startY, printWidth, 24), centerFormat);
+            startY += 28;
 
-            g.DrawString($"Số: {order.OrderCode}", fontBold, Brushes.Black, new RectangleF(startX, startY, printWidth, 18), centerFormat);
-            startY += 18;
+            g.DrawString($"Số: {order.OrderCode}", fontBold, Brushes.Black, new RectangleF(startX, startY, printWidth, 20), centerFormat);
+            startY += 26;
 
+            // Thông tin chung (Hiển thị 2 bên cho thoáng A4)
             g.DrawString($"Ngày: {order.CreatedAt:dd/MM/yyyy HH:mm}", fontRegular, Brushes.Black, startX, startY);
-            startY += 16;
-            g.DrawString("SL khách: 6", fontRegular, Brushes.Black, startX, startY);
-            startY += 16;
+            g.DrawString("SL khách: 6", fontRegular, Brushes.Black, new RectangleF(startX, startY, printWidth, 20), rightFormat);
+            startY += 22;
             g.DrawString("Thu ngân: Thu Ngân Ca4", fontRegular, Brushes.Black, startX, startY);
-            startY += 20;
+            startY += 26;
 
-            // 2. BẢNG MÓN - Cấu hình lại tọa độ cột nằm gọn trong 270px
+            // 2. BẢNG MÓN (Tọa độ cột trải dài full chiều rộng A4)
             g.DrawLine(solidPen, startX, startY, startX + printWidth, startY);
 
-            float col1 = startX;         // STT (#)   -> Rộng 18px
-            float col2 = startX + 18;    // Tên món  -> Rộng 102px
-            float col3 = startX + 120;   // SL       -> Rộng 25px
-            float col4 = startX + 145;   // ĐG       -> Rộng 45px
-            float col5 = startX + 190;   // KM       -> Rộng 25px
-            float col6 = startX + 215;   // TT       -> Rộng 55px (Vừa đủ mép phải)
+            float col1 = startX;         // STT (#)   -> Rộng 30px
+            float col2 = startX + 30;    // Tên món  -> Rộng 230px
+            float col3 = startX + 260;   // SL       -> Rộng 50px
+            float col4 = startX + 310;   // ĐG       -> Rộng 70px
+            float col5 = startX + 380;   // % KM     -> Rộng 55px
+            float col6 = startX + 435;   // TT       -> Rộng 80px (Vừa sát lề phải)
 
-            float headerHeight = 20;
-            g.DrawString("#", fontBold, Brushes.Black, col1, startY + 3);
-            g.DrawString("Tên món", fontBold, Brushes.Black, col2, startY + 3);
-            g.DrawString("SL", fontBold, Brushes.Black, col3, startY + 3);
-            g.DrawString("ĐG", fontBold, Brushes.Black, col4, startY + 3);
-            g.DrawString("KM", fontBold, Brushes.Black, col5, startY + 3);
-            g.DrawString("TT", fontBold, Brushes.Black, col6, startY + 3);
+            float headerHeight = 24;
+            g.DrawString("#", fontBold, Brushes.Black, col1, startY + 4);
+            g.DrawString("Tên món", fontBold, Brushes.Black, col2, startY + 4);
+            g.DrawString("SL", fontBold, Brushes.Black, col3, startY + 4);
+            g.DrawString("ĐG", fontBold, Brushes.Black, col4, startY + 4);
+            g.DrawString("% KM", fontBold, Brushes.Black, col5, startY + 4);
+            g.DrawString("TT", fontBold, Brushes.Black, col6, startY + 4);
 
             g.DrawLine(solidPen, startX, startY + headerHeight, startX + printWidth, startY + headerHeight);
-            startY += headerHeight + 4;
+            startY += headerHeight + 6;
 
             int index = 1;
             foreach (var item in order.Items)
             {
-                float rowHeight = 20;
+                float rowHeight = 24;
 
-                g.DrawString(index.ToString(), fontRegular, Brushes.Black, col1, startY + 2);
-
-                // Tên món nếu dài sẽ tự ngắt gọn gàng
-                g.DrawString(item.ProductName, fontRegular, Brushes.Black, new RectangleF(col2, startY + 2, 100, rowHeight));
-
-                g.DrawString(item.Quantity.ToString(), fontRegular, Brushes.Black, col3, startY + 2);
-                g.DrawString($"{item.Price:N0}", fontRegular, Brushes.Black, col4, startY + 2);
-                g.DrawString("", fontRegular, Brushes.Black, col5, startY + 2);
-                g.DrawString($"{item.TotalPrice:N0}", fontRegular, Brushes.Black, col6, startY + 2);
+                g.DrawString(index.ToString(), fontRegular, Brushes.Black, col1, startY + 3);
+                g.DrawString(item.ProductName, fontRegular, Brushes.Black, new RectangleF(col2, startY + 3, 225, rowHeight));
+                g.DrawString(item.Quantity.ToString(), fontRegular, Brushes.Black, col3, startY + 3);
+                g.DrawString($"{item.Price:N0}", fontRegular, Brushes.Black, col4, startY + 3);
+                g.DrawString("", fontRegular, Brushes.Black, col5, startY + 3);
+                g.DrawString($"{item.TotalPrice:N0}", fontRegular, Brushes.Black, col6, startY + 3);
 
                 startY += rowHeight;
                 index++;
             }
 
             g.DrawLine(dashPen, startX, startY, startX + printWidth, startY);
-            startY += 8;
+            startY += 12;
 
-            // 3. TỔNG CỘNG VÀ THANH TOÁN (Căn lề phải chuẩn xác)
+            // 3. TỔNG CỘNG VÀ THANH TOÁN
             g.DrawString("Tiền hàng", fontRegular, Brushes.Black, startX, startY);
-            g.DrawString($"{order.TotalAmount:N0}đ", fontRegular, Brushes.Black, new RectangleF(startX, startY, printWidth, 18), rightFormat);
-            startY += 18;
+            g.DrawString($"{order.TotalAmount:N0}đ", fontRegular, Brushes.Black, new RectangleF(startX, startY, printWidth, 20), rightFormat);
+            startY += 24;
 
             g.DrawLine(solidPen, startX, startY, startX + printWidth, startY);
-            startY += 6;
+            startY += 8;
 
             g.DrawString("Tổng thanh toán", fontTotal, Brushes.Black, startX, startY);
-            g.DrawString($"{order.TotalAmount:N0}đ", fontTotal, Brushes.Black, new RectangleF(startX, startY, printWidth, 20), rightFormat);
-            startY += 20;
-
-            g.DrawString("Tiền mặt", fontRegular, Brushes.Black, startX, startY);
-            g.DrawString($"{order.CustomerPaid:N0}đ", fontRegular, Brushes.Black, new RectangleF(startX, startY, printWidth, 18), rightFormat);
-            startY += 18;
-
-            g.DrawString("Trả lại khách", fontBold, Brushes.Black, startX, startY);
-            g.DrawString($"{order.ChangeAmount:N0}đ", fontBold, Brushes.Black, new RectangleF(startX, startY, printWidth, 18), rightFormat);
+            g.DrawString($"{order.TotalAmount:N0}đ", fontTotal, Brushes.Black, new RectangleF(startX, startY, printWidth, 24), rightFormat);
             startY += 26;
 
+            g.DrawString("Tiền mặt", fontRegular, Brushes.Black, startX, startY);
+            g.DrawString($"{order.CustomerPaid:N0}đ", fontRegular, Brushes.Black, new RectangleF(startX, startY, printWidth, 20), rightFormat);
+            startY += 22;
+
+            g.DrawString("Trả lại khách", fontBold, Brushes.Black, startX, startY);
+            g.DrawString($"{order.ChangeAmount:N0}đ", fontBold, Brushes.Black, new RectangleF(startX, startY, printWidth, 20), rightFormat);
+            startY += 40;
+
             // 4. FOOTER
-            g.DrawString("Pass Wifi: xincamon", fontBold, Brushes.Black, new RectangleF(startX, startY, printWidth, 18), centerFormat);
-            startY += 18;
-            g.DrawString("Trân trọng cảm ơn!", fontBold, Brushes.Black, new RectangleF(startX, startY, printWidth, 18), centerFormat);
-            startY += 18;
-            g.DrawString("CUKCUK - Một sản phẩm của MISA", fontSmall, Brushes.Black, new RectangleF(startX, startY, printWidth, 16), centerFormat);
+            g.DrawString("Pass Wifi: xincamon", fontBold, Brushes.Black, new RectangleF(startX, startY, printWidth, 20), centerFormat);
+            startY += 22;
+            g.DrawString("Trân trọng cảm ơn!", fontBold, Brushes.Black, new RectangleF(startX, startY, printWidth, 20), centerFormat);
+            startY += 22;
+            g.DrawString("CUKCUK - Một sản phẩm của MISA", fontSmall, Brushes.Black, new RectangleF(startX, startY, printWidth, 18), centerFormat);
         }
     }
 }
