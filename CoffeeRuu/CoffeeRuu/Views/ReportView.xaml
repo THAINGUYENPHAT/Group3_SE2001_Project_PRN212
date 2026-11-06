@@ -127,7 +127,7 @@
                                VerticalAlignment="Center"
                                Margin="0,0,8,0"/>
 
-                    <DatePicker x:Name="StartDatePicker"
+                    <DatePicker SelectedDate="{Binding StartDate, Mode=TwoWay}"
                                 Grid.Column="1"
                                 Style="{StaticResource ReportDatePickerStyle}"
                                 VerticalContentAlignment="Center"/>
@@ -140,14 +140,14 @@
                                VerticalAlignment="Center"
                                Margin="16,0,8,0"/>
 
-                    <DatePicker x:Name="EndDatePicker"
+                    <DatePicker SelectedDate="{Binding EndDate, Mode=TwoWay}"
                                 Grid.Column="3"
                                 Style="{StaticResource ReportDatePickerStyle}"
                                 VerticalContentAlignment="Center"/>
 
                     <Button Grid.Column="5"
                             Content="Lọc báo cáo"
-                            Click="RefreshButton_Click"
+                            Command="{Binding LoadCommand}"
                             Style="{StaticResource ReportButtonStyle}"
                             Background="#4E342E"
                             Foreground="White"
@@ -155,7 +155,7 @@
 
                     <Button Grid.Column="6"
                             Content="Xuất Excel"
-                            Click="ExportButton_Click"
+                            Command="{Binding ExportCommand}"
                             Style="{StaticResource ReportButtonStyle}"
                             Background="#477653"
                             Foreground="White"/>
@@ -177,8 +177,7 @@
                                    FontSize="11"
                                    FontWeight="SemiBold"/>
 
-                        <TextBlock x:Name="RevenueText"
-                                   Text="0 ₫"
+                        <TextBlock Text="{Binding RevenueText}"
                                    FontSize="24"
                                    FontWeight="Bold"
                                    Foreground="#477653"
@@ -199,8 +198,7 @@
                                    FontSize="11"
                                    FontWeight="SemiBold"/>
 
-                        <TextBlock x:Name="OrderCountText"
-                                   Text="0"
+                        <TextBlock Text="{Binding OrderCountText}"
                                    FontSize="24"
                                    FontWeight="Bold"
                                    Foreground="#4E342E"
@@ -221,8 +219,7 @@
                                    FontWeight="SemiBold"
                                    TextWrapping="Wrap"/>
 
-                        <TextBlock x:Name="AverageOrderText"
-                                   Text="0 ₫"
+                        <TextBlock Text="{Binding AverageOrderText}"
                                    FontSize="24"
                                    FontWeight="Bold"
                                    Foreground="#4E342E"
@@ -247,7 +244,7 @@
                         BorderThickness="1"
                         Padding="1">
 
-                    <DataGrid x:Name="DailyRevenueGrid"
+                    <DataGrid ItemsSource="{Binding DailyRows}"
                               Style="{StaticResource ReportDataGridStyle}"
                               ColumnHeaderStyle="{StaticResource ReportColumnHeaderStyle}"
                               AutoGenerateColumns="False"
@@ -293,7 +290,7 @@
                         BorderThickness="1"
                         Padding="1">
 
-                    <DataGrid x:Name="BestSellingGrid"
+                    <DataGrid ItemsSource="{Binding ProductRows}"
                               Style="{StaticResource ReportDataGridStyle}"
                               ColumnHeaderStyle="{StaticResource ReportColumnHeaderStyle}"
                               AutoGenerateColumns="False"
@@ -328,7 +325,7 @@
                     CornerRadius="7"
                     Padding="12"
                     Margin="0,0,0,8">
-                <TextBlock x:Name="StatusText"
+                <TextBlock Text="{Binding StatusText}"
                            Foreground="#6D5A53"
                            FontSize="12"
                            TextWrapping="Wrap"/>

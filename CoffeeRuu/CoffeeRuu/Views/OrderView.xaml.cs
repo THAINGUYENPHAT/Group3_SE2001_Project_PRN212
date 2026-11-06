@@ -7,7 +7,7 @@ namespace CoffeeRuu.Views
 {
     public partial class OrderView : Page
     {
-        private bool _loaded;
+        private bool _loaded = false;
 
         public OrderView()
         {
@@ -26,18 +26,14 @@ namespace CoffeeRuu.Views
 
             _loaded = true;
 
-            OrderCreateFrame.Navigate(
-                new OrderCreateView
-                {
-                    DataContext = vm
-                });
-
+            // Chỉ hiển thị trang Danh sách đơn hàng
             OrderListFrame.Navigate(
                 new OrderListView
                 {
                     DataContext = vm
                 });
 
+            // Tải danh sách từ database
             await vm.InitializeAsync();
         }
     }

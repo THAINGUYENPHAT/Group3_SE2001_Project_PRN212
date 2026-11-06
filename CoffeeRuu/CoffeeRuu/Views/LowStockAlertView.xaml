@@ -89,17 +89,17 @@
 
                 <DataGridTextColumn
                     Header="Tồn hiện tại"
-                    Binding="{Binding CurrentStock}"
+                    Binding="{Binding CurrentStock, StringFormat=N1}"
                     Width="*"/>
 
                 <DataGridTextColumn
                     Header="Tồn tối thiểu"
-                    Binding="{Binding MinimumStock}"
+                    Binding="{Binding MinimumStock, StringFormat=N1}"
                     Width="*"/>
 
                 <DataGridTextColumn
                     Header="Thiếu so với ngưỡng"
-                    Binding="{Binding ShortageQuantity}"
+                    Binding="{Binding ShortageQuantity, StringFormat=N1}"
                     Width="1.5*"/>
 
                 <DataGridTextColumn

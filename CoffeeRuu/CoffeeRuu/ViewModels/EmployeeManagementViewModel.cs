@@ -51,49 +51,77 @@ namespace CoffeeRuu.ViewModels
         public string Username
         {
             get => _username;
-            set { _username = value; OnPropertyChanged(); }
+            set
+            {
+                _username = value;
+                OnPropertyChanged();
+            }
         }
 
         private string _fullName = "";
         public string FullName
         {
             get => _fullName;
-            set { _fullName = value; OnPropertyChanged(); }
+            set
+            {
+                _fullName = value;
+                OnPropertyChanged();
+            }
         }
 
         private string _phone = "";
         public string Phone
         {
             get => _phone;
-            set { _phone = value; OnPropertyChanged(); }
+            set
+            {
+                _phone = value;
+                OnPropertyChanged();
+            }
         }
 
         private string _email = "";
         public string Email
         {
             get => _email;
-            set { _email = value; OnPropertyChanged(); }
+            set
+            {
+                _email = value;
+                OnPropertyChanged();
+            }
         }
 
         private string _password = "";
         public string Password
         {
             get => _password;
-            set { _password = value; OnPropertyChanged(); }
+            set
+            {
+                _password = value;
+                OnPropertyChanged();
+            }
         }
 
         private bool _isActive = true;
         public bool IsActive
         {
             get => _isActive;
-            set { _isActive = value; OnPropertyChanged(); }
+            set
+            {
+                _isActive = value;
+                OnPropertyChanged();
+            }
         }
 
         private Role? _selectedRole;
         public Role? SelectedRole
         {
             get => _selectedRole;
-            set { _selectedRole = value; OnPropertyChanged(); }
+            set
+            {
+                _selectedRole = value;
+                OnPropertyChanged();
+            }
         }
 
         private bool _isFormVisible;
@@ -233,7 +261,6 @@ namespace CoffeeRuu.ViewModels
         public ICommand EditEmployeeCommand { get; }
         public ICommand UpdateCommand { get; }
         public ICommand DeactivateCommand { get; }
-        public ICommand ChangePasswordCommand { get; }
         public ICommand CancelCommand { get; }
         public ICommand ClearCommand { get; }
 
@@ -247,7 +274,6 @@ namespace CoffeeRuu.ViewModels
             EditEmployeeCommand = new ParameterCommand(EditEmployee);
             UpdateCommand = new RelayCommand(UpdateEmployee);
             DeactivateCommand = new RelayCommand(DeactivateEmployee);
-            ChangePasswordCommand = new RelayCommand(ChangePassword);
             CancelCommand = new RelayCommand(CancelForm);
             ClearCommand = new RelayCommand(CancelForm);
 
@@ -284,6 +310,8 @@ namespace CoffeeRuu.ViewModels
             Email = employee.Email ?? "";
             IsActive = employee.IsActive;
             SelectedRole = FindRole(employee.RoleId);
+
+            // De trong de khong thay doi mat khau cu.
             Password = "";
 
             IsAddMode = false;
@@ -320,7 +348,8 @@ namespace CoffeeRuu.ViewModels
                     new RoleFilterOption(null, "Tất cả vai trò"));
 
                 if (_selectedRoleFilter == null ||
-                    !RoleFilters.Any(r => r.RoleId == _selectedRoleFilter.RoleId))
+                    !RoleFilters.Any(r =>
+                        r.RoleId == _selectedRoleFilter.RoleId))
                 {
                     SelectedRoleFilter = RoleFilters.FirstOrDefault();
                 }
@@ -419,19 +448,16 @@ namespace CoffeeRuu.ViewModels
             OnPropertyChanged(nameof(FilteredCount));
         }
 
-
         private void AddEmployee()
         {
             try
             {
-                // 1. Username
                 if (string.IsNullOrWhiteSpace(Username))
                 {
                     throw new InvalidOperationException(
                         "Vui lòng nhập tên đăng nhập.");
                 }
 
-                // 2. Password
                 if (string.IsNullOrWhiteSpace(Password))
                 {
                     throw new InvalidOperationException(
@@ -444,22 +470,12 @@ namespace CoffeeRuu.ViewModels
                         "Mật khẩu phải có ít nhất 6 ký tự.");
                 }
 
-                // 3. Full name
                 if (string.IsNullOrWhiteSpace(FullName))
                 {
                     throw new InvalidOperationException(
                         "Vui lòng nhập họ và tên.");
                 }
 
-                // 4. Phone
-                // Neu de trong thi Service se cho phep.
-                // Neu nhap sai dinh dang, Service se thong bao loi.
-
-                // 5. Email
-                // Neu de trong thi Service se cho phep.
-                // Neu nhap sai dinh dang, Service se thong bao loi.
-
-                // 6. Role
                 if (SelectedRole == null)
                 {
                     throw new InvalidOperationException(
@@ -497,7 +513,6 @@ namespace CoffeeRuu.ViewModels
             }
         }
 
-
         private void UpdateEmployee()
         {
             try
@@ -506,6 +521,18 @@ namespace CoffeeRuu.ViewModels
                 {
                     throw new InvalidOperationException(
                         "Vui lòng chọn tài khoản cần cập nhật.");
+                }
+
+                if (string.IsNullOrWhiteSpace(Username))
+                {
+                    throw new InvalidOperationException(
+                        "Vui lòng nhập tên đăng nhập.");
+                }
+
+                if (string.IsNullOrWhiteSpace(FullName))
+                {
+                    throw new InvalidOperationException(
+                        "Vui lòng nhập họ và tên.");
                 }
 
                 if (SelectedRole == null)
@@ -527,6 +554,18 @@ namespace CoffeeRuu.ViewModels
                         "Không thể vô hiệu hóa tài khoản Admin.");
                 }
 
+                // Neu co nhap mat khau moi thi kiem tra do dai.
+                // Neu de trong thi giu nguyen mat khau cu.
+                bool changePassword =
+                    !string.IsNullOrWhiteSpace(Password);
+
+                if (changePassword && Password.Length < 6)
+                {
+                    throw new InvalidOperationException(
+                        "Mật khẩu mới phải có ít nhất 6 ký tự.");
+                }
+
+                // Cap nhat thong tin nhan vien.
                 _employeeService.Update(
                     SelectedEmployee.EmployeeId,
                     Username,
@@ -536,10 +575,20 @@ namespace CoffeeRuu.ViewModels
                     SelectedRole.RoleId,
                     IsActive);
 
+                // Chi doi mat khau khi nguoi dung co nhap mat khau moi.
+                if (changePassword)
+                {
+                    _employeeService.ChangePassword(
+                        SelectedEmployee.EmployeeId,
+                        Password);
+                }
+
                 LoadData();
                 CancelForm();
 
-                StatusMessage = "Cập nhật tài khoản thành công.";
+                StatusMessage = changePassword
+                    ? "Cập nhật thông tin và đổi mật khẩu thành công."
+                    : "Cập nhật thông tin thành công. Mật khẩu cũ được giữ nguyên.";
 
                 MessageBox.Show(
                     StatusMessage,
@@ -554,47 +603,6 @@ namespace CoffeeRuu.ViewModels
                 MessageBox.Show(
                     ex.Message,
                     "Không thể cập nhật",
-                    MessageBoxButton.OK,
-                    MessageBoxImage.Warning);
-            }
-        }
-
-        private void ChangePassword()
-        {
-            try
-            {
-                if (SelectedEmployee == null)
-                {
-                    throw new InvalidOperationException(
-                        "Vui lòng chọn tài khoản cần đổi mật khẩu.");
-                }
-
-                if (string.IsNullOrWhiteSpace(Password))
-                {
-                    throw new InvalidOperationException(
-                        "Vui lòng nhập mật khẩu mới.");
-                }
-
-                _employeeService.ChangePassword(
-                    SelectedEmployee.EmployeeId,
-                    Password);
-
-                Password = "";
-                StatusMessage = "Đổi mật khẩu thành công.";
-
-                MessageBox.Show(
-                    StatusMessage,
-                    "Thông báo",
-                    MessageBoxButton.OK,
-                    MessageBoxImage.Information);
-            }
-            catch (Exception ex)
-            {
-                StatusMessage = ex.Message;
-
-                MessageBox.Show(
-                    ex.Message,
-                    "Không thể đổi mật khẩu",
                     MessageBoxButton.OK,
                     MessageBoxImage.Warning);
             }
@@ -692,7 +700,6 @@ namespace CoffeeRuu.ViewModels
         public int InactiveCount { get; set; }
     }
 
-    // Command ho tro nhan Employee tu nut Chinh sua trong tung dong DataGrid.
     internal sealed class ParameterCommand : ICommand
     {
         private readonly Action<object?> _execute;

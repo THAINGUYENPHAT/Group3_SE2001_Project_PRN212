@@ -7,7 +7,7 @@ namespace CoffeeRuu.Views
 {
     public partial class KdsView : Page
     {
-        private bool _loaded;
+        private bool _initialized = false;
 
         public KdsView()
         {
@@ -18,20 +18,22 @@ namespace CoffeeRuu.Views
             object sender,
             RoutedEventArgs e)
         {
-            if (_loaded)
+            if (_initialized)
                 return;
 
             if (DataContext is not KdsViewModel vm)
                 return;
 
-            _loaded = true;
+            _initialized = true;
 
+            // MỞ TRANG KDS
             KdsOrdersFrame.Navigate(
                 new KdsOrderListView
                 {
                     DataContext = vm
                 });
 
+            // TẢI ĐƠN PHA CHẾ TỪ DATABASE
             await vm.InitializeAsync();
         }
     }
