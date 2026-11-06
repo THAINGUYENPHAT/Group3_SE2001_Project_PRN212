@@ -33,7 +33,7 @@
 
             <!-- Đặt trực tiếp MenuView và cho phép co giãn theo chiều dọc bằng Grid/Star -->
             <views:MenuView HorizontalAlignment="Stretch"
-                            VerticalAlignment="Stretch"/>
+                VerticalAlignment="Stretch"/>
         </Border>
     </Grid>
 </Page>
