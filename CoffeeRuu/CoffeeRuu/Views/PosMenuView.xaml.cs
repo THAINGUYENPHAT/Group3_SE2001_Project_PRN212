@@ -1,17 +1,10 @@
-﻿using CoffeeRuu.Models;
+﻿using CoffeeRuu.Repositories;
 using CoffeeRuu.Services;
 using CoffeeRuu.ViewModels;
-using Microsoft.EntityFrameworkCore;
 using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Linq;
-using System.Runtime.CompilerServices;
+using System.IO;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Controls.Primitives;
-using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
@@ -19,124 +12,44 @@ namespace CoffeeRuu.Views
 {
     public partial class PosMenuView : UserControl
     {
-        private readonly MenuService _menuService;
-        private readonly OrderService _orderService;
-        private readonly PrintService _printService;
-
-        // ID Nhân viên đang đăng nhập
-        public int CurrentEmployeeId { get; set; } = 1;
-
-        // Danh sách sản phẩm gốc từ database
-        private readonly ObservableCollection<PosMenuCardItem> _allProducts = new();
-
-        // Danh sách sản phẩm đang hiển thị
-        private readonly ObservableCollection<PosMenuCardItem> _filteredProducts = new();
-
-        // Danh sách món trong hóa đơn hiện tại (Giỏ hàng)
-        public ObservableCollection<PosOrderItem> CartItems { get; set; } = new();
-
-        private string _selectedCategory = "";
+        private readonly PosMenuViewModel _viewModel;
 
         public PosMenuView()
         {
             InitializeComponent();
 
-            var dbContext = App.CreateDbContext();
-            _menuService = new MenuService(new Repositories.MenuRepository(dbContext));
-            _orderService = new OrderService(new Repositories.OrderRepository(App.CreateDbContext));
-            _printService = new PrintService();
+            var menuService = new MenuService(
+                new MenuRepository(App.CreateDbContext()));
 
-            // Gắn ItemsSource cho danh sách món và hóa đơn
-            MenuCardItemsControl.ItemsSource = _filteredProducts;
-            InvoiceDataGrid.ItemsSource = CartItems;
+            var orderService = new OrderService(
+                new OrderRepository(App.CreateDbContext));
+
+            IPrintService printService = new PrintService();
+
+            _viewModel = new PosMenuViewModel(
+                menuService,
+                orderService,
+                printService);
+
+            // Các hộp thoại là phần giao tiếp giữa View và ViewModel.
+            _viewModel.ShowItemNoteDialog = ShowItemNoteDialog;
+            _viewModel.ShowQrPaymentDialog = ShowQrPaymentDialog;
+            _viewModel.ShowMessage = ShowMessage;
+            _viewModel.NavigateToKds = NavigateToKds;
+
+            DataContext = _viewModel;
 
             Loaded += PosMenuView_Loaded;
         }
 
-        private async void PosMenuView_Loaded(object sender, RoutedEventArgs e)
+        private void PosMenuView_Loaded(
+            object sender,
+            RoutedEventArgs e)
         {
-            try
-            {
-                var products = await _menuService.GetAllProductsAsync();
-
-                _allProducts.Clear();
-
-                foreach (var product in products)
-                {
-                    if (!product.IsAvailable)
-                        continue;
-
-                    var item = new PosMenuCardItem
-                    {
-                        ProductId = product.ProductId,
-                        ProductName = product.ProductName,
-                        CategoryName = product.Category?.CategoryName ?? ""
-                    };
-
-                    if (product.ProductSizes != null)
-                    {
-                        foreach (var size in product.ProductSizes
-                            .Where(s => s.IsAvailable)
-                            .OrderBy(s => s.Price))
-                        {
-                            item.SizePrices.Add(new PosMenuSizePrice
-                            {
-                                ProductSizeId = size.ProductSizeId,
-                                SizeName = size.SizeName,
-                                Price = size.Price
-                            });
-                        }
-                    }
-
-                    if (item.SizePrices.Count > 0)
-                        _allProducts.Add(item);
-                }
-
-                ApplyFilters();
-                await LoadTablesAsync();
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(
-                    "Không thể tải danh sách món.\n" + ex.Message,
-                    "Lỗi tải menu",
-                    MessageBoxButton.OK,
-                    MessageBoxImage.Error);
-            }
+            _viewModel.LoadDataCommand.Execute(null);
         }
 
-        //lấy danh sách bàn
-        private async Task LoadTablesAsync()
-        {
-            await using var db = App.CreateDbContext();
-
-            // Lấy danh sách bàn từ database
-            var tables = await db.CafeTables
-                .AsNoTracking()
-                .Where(t =>
-                    t.IsActive &&
-                    (t.TableStatus == "Available" ||
-                     t.TableStatus == "Occupied"))
-                .OrderBy(t => t.TableId)
-                .Select(t => new
-                {
-                    TableId = t.TableId,
-                    Display = t.TableName
-                })
-                .ToListAsync();
-
-            // Hiển thị danh sách bàn trên ComboBox
-            if (FindName("TableComboBox") is ComboBox comboBox)
-            {
-                comboBox.ItemsSource = tables;
-
-                if (tables.Count > 0)
-                    comboBox.SelectedIndex = 0;
-            }
-        }
-
-        #region Xử lý Giỏ hàng & Thanh toán
-        //ghi chú đơn hàng
+        // Hộp thoại ghi chú món.
         private string? ShowItemNoteDialog(
             string productName,
             string sizeName)
@@ -146,8 +59,7 @@ namespace CoffeeRuu.Views
                 Title = "Ghi chú món",
                 Width = 420,
                 Height = 280,
-                WindowStartupLocation =
-                    WindowStartupLocation.CenterOwner,
+                WindowStartupLocation = WindowStartupLocation.CenterOwner,
                 Owner = Window.GetWindow(this),
                 ResizeMode = ResizeMode.NoResize,
                 Background = Brushes.White
@@ -178,8 +90,7 @@ namespace CoffeeRuu.Views
                 AcceptsReturn = true,
                 TextWrapping = TextWrapping.Wrap,
                 MaxLength = 300,
-                VerticalScrollBarVisibility =
-                    ScrollBarVisibility.Auto
+                VerticalScrollBarVisibility = ScrollBarVisibility.Auto
             };
 
             panel.Children.Add(noteBox);
@@ -227,388 +138,98 @@ namespace CoffeeRuu.Views
                 : null;
         }
 
-        // Thêm món vào hóa đơn khi click nút chọn Size
-        private void AddToCartButton_Click(object sender, RoutedEventArgs e)
+        // Hộp thoại xác nhận thanh toán QR.
+        private bool ShowQrPaymentDialog(decimal totalAmount)
         {
-            if (sender is Button button && button.DataContext is PosMenuSizePrice sizePrice)
+            var qrWindow = new Window
             {
-                var parentCard = FindParent<Border>(button);
-                if (parentCard?.DataContext is PosMenuCardItem product)
-                {
-                    // 1. Mở cửa sổ nhập ghi chú
-                    string? note = ShowItemNoteDialog(
-                        product.ProductName,
-                        sizePrice.SizeName);
+                Title = "Thanh toán qua Mã QR VietQR",
+                Width = 360,
+                Height = 440,
+                WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                Owner = Window.GetWindow(this),
+                ResizeMode = ResizeMode.NoResize,
+                Background = new SolidColorBrush(
+                    (Color)ColorConverter.ConvertFromString("#F7F5F0"))
+            };
 
-                    // Bấm Hủy thì không thêm món
-                    if (note == null)
-                        return;
-
-                    var existingItem = CartItems.FirstOrDefault(x =>
-                        x.ProductId == product.ProductId &&
-                        x.ProductSizeId == sizePrice.ProductSizeId &&
-                        x.Note == note);
-
-                    if (existingItem != null)
-                    {
-                        existingItem.Quantity++;
-                    }
-                    else
-                    {
-                        CartItems.Add(new PosOrderItem
-                        {
-                            ProductId = product.ProductId,
-                            ProductSizeId = sizePrice.ProductSizeId,
-                            ProductName = product.ProductName,
-                            SizeName = sizePrice.SizeName,
-                            Price = sizePrice.Price,
-                            Quantity = 1,
-                            Note = note
-                        });
-                    }
-
-                    UpdateTotalAmount();
-                }
-            }
-        }
-
-        // Xóa món khỏi hóa đơn
-        private void RemoveFromCartButton_Click(object sender, RoutedEventArgs e)
-        {
-            if (sender is Button button && button.DataContext is PosOrderItem item)
+            var stackPanel = new StackPanel
             {
-                CartItems.Remove(item);
-                UpdateTotalAmount();
-            }
-        }
+                Margin = new Thickness(15)
+            };
 
-        // Cập nhật tổng tiền
-        private void UpdateTotalAmount()
-        {
-            decimal total = CartItems.Sum(x => x.TotalPrice);
-            TotalAmountText.Text = $"{total:N0} đ";
-        }
-
-        // XỬ LÝ THANH TOÁN: HIỂN THỊ ẢNH QR TỪ THƯ MỤC IMG -> IN HÓA ĐƠN
-        private async void CheckoutButton_Click(object sender, RoutedEventArgs e)
-        {
-            if (CartItems.Count == 0)
+            stackPanel.Children.Add(new TextBlock
             {
-                MessageBox.Show("Vui lòng chọn ít nhất 1 món để thanh toán!", "Thông báo", MessageBoxButton.OK, MessageBoxImage.Warning);
-                return;
-            }
-
-
-            // LẤY LOẠI ĐƠN HÀNG
-            var orderTypeBox =
-                FindName("OrderTypeComboBox") as ComboBox;
-
-            if (orderTypeBox?.SelectedItem
-                is not ComboBoxItem selectedType)
-            {
-                MessageBox.Show("Vui lòng chọn loại đơn hàng.");
-                return;
-            }
-
-            string orderType =
-                selectedType.Tag?.ToString() ?? "";
-
-            // Lấy bàn khi dùng tại quán
-                 int? tableId = null;
-
-            if (orderType == "DineIn")
-            {
-                var tableBox =
-                    FindName("TableComboBox") as ComboBox;
-
-                if (tableBox?.SelectedValue
-                    is not int selectedTableId)
-                {
-                    MessageBox.Show(
-                        "Vui lòng chọn bàn trước khi thanh toán.");
-                    return;
-                }
-
-                tableId = selectedTableId;
-            }
-            else if (orderType != "Takeaway")
-            {
-                MessageBox.Show("Loại đơn hàng không hợp lệ.");
-                return;
-            }
-
-            try
-            {
-                // 1. Tính tổng tiền hóa đơn
-                decimal totalAmount = CartItems.Sum(x => x.TotalPrice);
-
-                // 2. Hiển thị hộp thoại chứa Mã QR cho khách quét
-                var qrWindow = new Window
-                {
-                    Title = "Thanh toán qua Mã QR VietQR",
-                    Width = 360,
-                    Height = 440,
-                    WindowStartupLocation = WindowStartupLocation.CenterOwner,
-                    Owner = Window.GetWindow(this),
-                    ResizeMode = ResizeMode.NoResize,
-                    Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#F7F5F0"))
-                };
-
-                var stackPanel = new StackPanel { Margin = new Thickness(15) };
-
-                stackPanel.Children.Add(new TextBlock
-                {
-                    Text = $"Tổng tiền: {totalAmount:N0} đ",
-                    FontSize = 18,
-                    FontWeight = FontWeights.Bold,
-                    Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#C62828")),
-                    HorizontalAlignment = HorizontalAlignment.Center,
-                    Margin = new Thickness(0, 0, 0, 10)
-                });
-
-                // 3. Tải ảnh QR trực tiếp từ thư mục img (Chỉnh lại tên và đuôi file nếu khác QR.jpg)
-                string localImagePath = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "img", "QR.jpg");
-
-                var qrImage = new Image
-                {
-                    Width = 240,
-                    Height = 240,
-                    Source = new BitmapImage(new Uri(localImagePath, UriKind.Absolute)),
-                    Margin = new Thickness(0, 0, 0, 15)
-                };
-                stackPanel.Children.Add(qrImage);
-
-                // Nút xác nhận đã nhận tiền -> Chuyển sang in hóa đơn
-                var confirmButton = new Button
-                {
-                    Content = "Đã nhận tiền / In hóa đơn",
-                    MinHeight = 40,
-                    Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#4E342E")),
-                    Foreground = Brushes.White,
-                    FontWeight = FontWeights.Bold,
-                    Cursor = Cursors.Hand,
-                    BorderThickness = new Thickness(0)
-                };
-
-                confirmButton.Click += (s, args) =>
-                {
-                    qrWindow.DialogResult = true;
-                    qrWindow.Close();
-                };
-
-                stackPanel.Children.Add(confirmButton);
-                qrWindow.Content = stackPanel;
-
-                // Bật cửa sổ QR và chờ người dùng bấm nút Xác nhận
-                bool? isPaid = qrWindow.ShowDialog();
-
-                if (isPaid != true)
-                {
-                    // Người dùng đóng cửa sổ QR mà không bấm nút xác nhận
-                    return;
-                }
-
-                // 4. Lưu đơn hàng vào CSDL
-                var cartLines = CartItems.Select(x => new CartLine
-                {
-                    ProductSizeId = x.ProductSizeId,
-                    ProductName = x.ProductName,
-                    SizeName = x.SizeName,
-                    UnitPrice = x.Price,
-                    Quantity = x.Quantity,
-                    Note = x.Note
-                }).ToList();
-
-
-                Order savedOrder = await _orderService.CreateOrderAsync(
-                    cart: cartLines,
-                    orderType: orderType,
-                    tableId: tableId,
-                    employeeId: CurrentEmployeeId,
-                    note: ""
-                );
-
-
-                // 5. Gọi dịch vụ In Hóa Đơn
-                var orderDto = new OrderDto
-                {
-                    OrderId = savedOrder.OrderId,
-                    OrderCode = savedOrder.OrderCode,
-                    CreatedAt = savedOrder.CreatedAt,
-                    TotalAmount = savedOrder.TotalAmount,
-                    CustomerPaid = savedOrder.TotalAmount,
-                    ChangeAmount = 0,
-                    PaymentMethod = "Chuyển khoản QR",
-                    Items = CartItems.Select(x => new OrderItemDto
-                    {
-                        ProductName = x.ProductName,
-                        SizeName = x.SizeName,
-                        Quantity = x.Quantity,
-                        Price = x.Price,
-                        Note = x.Note
-
-                    }).ToList()
-                };
-
-                _printService.PrintReceipt(orderDto);
-
-                MessageBox.Show($"Thanh toán và in hóa đơn thành công đơn hàng #{savedOrder.OrderCode}!", "Thành công", MessageBoxButton.OK, MessageBoxImage.Information);
-
-                // 6. Xóa giỏ hàng sau khi hoàn tất
-                CartItems.Clear();
-                UpdateTotalAmount();
-
-                //chuyển sang KDS
-                if (Window.GetWindow(this) is MainShellWindow mainWindow)
-                {
-                    mainWindow.OpenKds();
-                }
-            }
-                 
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Lỗi trong quá trình thanh toán: {ex.Message}", "Lỗi Thanh Toán", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
-        }
-
-        #endregion
-
-        #region Lọc & Tìm kiếm Sản phẩm
-
-        private void CategoryButton_Click(object sender, RoutedEventArgs e)
-        {
-            if (sender is not Button button)
-                return;
-
-            _selectedCategory = button.Tag?.ToString() ?? "";
-
-            foreach (var item in FindButtons(this))
-            {
-                bool isSelected = (item.Tag?.ToString() ?? "") == _selectedCategory;
-
-                item.Background = new SolidColorBrush(
-                    (Color)ColorConverter.ConvertFromString(isSelected ? "#4E342E" : "#D7CCC8"));
-
-                item.Foreground = new SolidColorBrush(
-                    (Color)ColorConverter.ConvertFromString(isSelected ? "#FFFFFF" : "#3E2723"));
-            }
-
-            ApplyFilters();
-        }
-
-        private void SearchTextBox_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            ApplyFilters();
-        }
-
-        private void ApplyFilters()
-        {
-            string keyword = SearchTextBox?.Text?.Trim() ?? "";
-
-            _filteredProducts.Clear();
-
-            var result = _allProducts.Where(p =>
-            {
-                bool matchesCategory =
-                    string.IsNullOrEmpty(_selectedCategory) ||
-                    string.Equals(p.CategoryName, _selectedCategory, StringComparison.OrdinalIgnoreCase);
-
-                bool matchesKeyword =
-                    string.IsNullOrEmpty(keyword) ||
-                    p.ProductName.Contains(keyword, StringComparison.CurrentCultureIgnoreCase);
-
-                return matchesCategory && matchesKeyword;
+                Text = $"Tổng tiền: {totalAmount:N0} đ",
+                FontSize = 18,
+                FontWeight = FontWeights.Bold,
+                Foreground = new SolidColorBrush(
+                    (Color)ColorConverter.ConvertFromString("#C62828")),
+                HorizontalAlignment = HorizontalAlignment.Center,
+                Margin = new Thickness(0, 0, 0, 10)
             });
 
-            foreach (var product in result)
-                _filteredProducts.Add(product);
+            string localImagePath = Path.Combine(
+                AppDomain.CurrentDomain.BaseDirectory,
+                "img",
+                "QR.jpg");
+
+            var qrImage = new Image
+            {
+                Width = 240,
+                Height = 240,
+                Source = new BitmapImage(
+                    new Uri(localImagePath, UriKind.Absolute)),
+                Margin = new Thickness(0, 0, 0, 15)
+            };
+
+            stackPanel.Children.Add(qrImage);
+
+            var confirmButton = new Button
+            {
+                Content = "Đã nhận tiền / In hóa đơn",
+                MinHeight = 40,
+                Background = new SolidColorBrush(
+                    (Color)ColorConverter.ConvertFromString("#4E342E")),
+                Foreground = Brushes.White,
+                FontWeight = FontWeights.Bold,
+                Cursor = System.Windows.Input.Cursors.Hand,
+                BorderThickness = new Thickness(0)
+            };
+
+            confirmButton.Click += (s, e) =>
+            {
+                qrWindow.DialogResult = true;
+            };
+
+            stackPanel.Children.Add(confirmButton);
+            qrWindow.Content = stackPanel;
+
+            return qrWindow.ShowDialog() == true;
         }
 
-        #endregion
-
-        #region Hàm tiện ích VisualTree
-
-        private static IEnumerable<Button> FindButtons(DependencyObject parent)
+        // Hiển thị thông báo từ ViewModel.
+        private void ShowMessage(
+            string message,
+            string title,
+            bool isError)
         {
-            int count = VisualTreeHelper.GetChildrenCount(parent);
+            MessageBox.Show(
+                message,
+                title,
+                MessageBoxButton.OK,
+                isError
+                    ? MessageBoxImage.Error
+                    : MessageBoxImage.Information);
+        }
 
-            for (int i = 0; i < count; i++)
+        // Chuyển sang màn hình KDS.
+        private void NavigateToKds()
+        {
+            if (Window.GetWindow(this) is MainShellWindow mainWindow)
             {
-                var child = VisualTreeHelper.GetChild(parent, i);
-
-                if (child is Button button && button.Tag != null)
-                {
-                    yield return button;
-                }
-
-                foreach (var nested in FindButtons(child))
-                    yield return nested;
+                mainWindow.OpenKds();
             }
         }
-
-        private static T FindParent<T>(DependencyObject child) where T : DependencyObject
-        {
-            DependencyObject parentObject = VisualTreeHelper.GetParent(child);
-            if (parentObject == null) return null;
-            if (parentObject is T parent) return parent;
-            return FindParent<T>(parentObject);
-        }
-
-        #endregion
     }
-
-    #region Models hỗ trợ Dữ liệu Giao diện
-
-    public class PosMenuCardItem
-    {
-        public int ProductId { get; set; }
-        public string ProductName { get; set; } = "";
-        public string CategoryName { get; set; } = "";
-
-        public ObservableCollection<PosMenuSizePrice> SizePrices { get; set; } = new();
-    }
-
-    public class PosMenuSizePrice
-    {
-        public int ProductSizeId { get; set; }
-        public string SizeName { get; set; } = "";
-        public decimal Price { get; set; }
-    }
-
-    public class PosOrderItem : INotifyPropertyChanged
-    {
-        private int _quantity;
-
-        public int ProductId { get; set; }
-        public int ProductSizeId { get; set; }
-        public string ProductName { get; set; } = "";
-        public string SizeName { get; set; } = "";
-        public string DisplayName => string.IsNullOrEmpty(SizeName) ? ProductName : $"{ProductName} ({SizeName})";
-        public decimal Price { get; set; }
-        public string Note { get; set; } = "";
-
-        public int Quantity
-        {
-            get => _quantity;
-            set
-            {
-                if (_quantity != value)
-                {
-                    _quantity = value;
-                    OnPropertyChanged();
-                    OnPropertyChanged(nameof(TotalPrice));
-                }
-            }
-        }
-
-        public decimal TotalPrice => Price * Quantity;
-
-        public event PropertyChangedEventHandler PropertyChanged;
-        protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
-    }
-
-    #endregion
 }

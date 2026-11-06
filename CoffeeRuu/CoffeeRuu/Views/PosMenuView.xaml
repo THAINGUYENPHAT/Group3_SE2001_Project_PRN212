@@ -1,5 +1,4 @@
-﻿
-<UserControl x:Class="CoffeeRuu.Views.PosMenuView"
+﻿<UserControl x:Class="CoffeeRuu.Views.PosMenuView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              Background="#F5F5F0"
@@ -157,10 +156,9 @@
                            Margin="0,4,0,12"
                            TextWrapping="Wrap"/>
 
-                <TextBox x:Name="SearchTextBox"
-                         Style="{StaticResource PosTextBoxStyle}"
+                <TextBox Style="{StaticResource PosTextBoxStyle}"
                          ToolTip="Nhập tên món cần tìm"
-                         TextChanged="SearchTextBox_TextChanged"/>
+                         Text="{Binding SearchKeyword, UpdateSourceTrigger=PropertyChanged}"/>
             </StackPanel>
 
             <!-- Bộ lọc danh mục -->
@@ -168,37 +166,33 @@
                           VerticalScrollBarVisibility="Disabled"
                           HorizontalScrollBarVisibility="Auto"
                           Margin="0,0,0,8">
-                <WrapPanel>
-                    <Button Content="Tất cả"
-                            Tag=""
-                            Style="{StaticResource CategoryButtonStyle}"
-                            Click="CategoryButton_Click"/>
+                <ItemsControl ItemsSource="{Binding Categories}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <WrapPanel/>
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
 
-                    <Button Content="Cà phê"
-                            Tag="Cà phê"
-                            Style="{StaticResource CategoryButtonStyle}"
-                            Click="CategoryButton_Click"/>
-
-                    <Button Content="Trà sữa"
-                            Tag="Trà sữa"
-                            Style="{StaticResource CategoryButtonStyle}"
-                            Click="CategoryButton_Click"/>
-
-                    <Button Content="Trà trái cây"
-                            Tag="Trà trái cây"
-                            Style="{StaticResource CategoryButtonStyle}"
-                            Click="CategoryButton_Click"/>
-
-                    <Button Content="Đá xay"
-                            Tag="Đá xay"
-                            Style="{StaticResource CategoryButtonStyle}"
-                            Click="CategoryButton_Click"/>
-
-                    <Button Content="Đồ ăn vặt"
-                            Tag="Đồ ăn vặt"
-                            Style="{StaticResource CategoryButtonStyle}"
-                            Click="CategoryButton_Click"/>
-                </WrapPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Button Content="{Binding CategoryName}"
+        Command="{Binding DataContext.SelectCategoryCommand, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
+        CommandParameter="{Binding CategoryValue}">
+                                <Button.Style>
+                                    <Style TargetType="Button"
+               BasedOn="{StaticResource CategoryButtonStyle}">
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding IsSelected}" Value="True">
+                                                <Setter Property="Background" Value="#4E342E"/>
+                                                <Setter Property="Foreground" Value="White"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Button.Style>
+                            </Button>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
             </ScrollViewer>
 
             <!-- Danh sách thẻ món -->
@@ -207,7 +201,7 @@
                           HorizontalScrollBarVisibility="Disabled"
                           CanContentScroll="True">
 
-                <ItemsControl x:Name="MenuCardItemsControl">
+                <ItemsControl ItemsSource="{Binding FilteredMenuItems}">
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
                             <WrapPanel HorizontalAlignment="Left"/>
@@ -253,7 +247,8 @@
                                         <ItemsControl.ItemTemplate>
                                             <DataTemplate>
                                                 <Button Style="{StaticResource SizeAddButtonStyle}"
-                                                        Click="AddToCartButton_Click"
+                                                        Command="{Binding DataContext.AddToCartCommand, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
+                                                        CommandParameter="{Binding}"
                                                         ToolTip="Click để thêm món này vào hóa đơn">
                                                     <Grid>
                                                         <Grid.ColumnDefinitions>
@@ -332,9 +327,9 @@
                                Foreground="#4E342E"
                                Margin="0,0,0,6"/>
 
-                    <ComboBox x:Name="OrderTypeComboBox"
-                              Style="{StaticResource PosComboBoxStyle}"
-                              SelectedIndex="0">
+                    <ComboBox Style="{StaticResource PosComboBoxStyle}"
+                              SelectedValuePath="Tag"
+                              SelectedValue="{Binding OrderType, Mode=TwoWay}">
                         <ComboBoxItem Content="Dùng tại quán"
                                       Tag="DineIn"/>
                         <ComboBoxItem Content="Mang đi"
@@ -342,18 +337,13 @@
                     </ComboBox>
 
                     <!-- Chỉ hiển thị khi dùng tại quán -->
-                    <StackPanel x:Name="TablePanel"
-                                Margin="0,12,0,0">
-
+                    <StackPanel Margin="0,12,0,0">
                         <StackPanel.Style>
                             <Style TargetType="StackPanel">
-                                <Setter Property="Visibility"
-                                        Value="Collapsed"/>
+                                <Setter Property="Visibility" Value="Collapsed"/>
                                 <Style.Triggers>
-                                    <DataTrigger Binding="{Binding SelectedItem.Tag, ElementName=OrderTypeComboBox}"
-                                                 Value="DineIn">
-                                        <Setter Property="Visibility"
-                                                Value="Visible"/>
+                                    <DataTrigger Binding="{Binding OrderType}" Value="DineIn">
+                                        <Setter Property="Visibility" Value="Visible"/>
                                     </DataTrigger>
                                 </Style.Triggers>
                             </Style>
@@ -365,16 +355,16 @@
                                    Foreground="#4E342E"
                                    Margin="0,0,0,6"/>
 
-                        <ComboBox x:Name="TableComboBox"
-                                  Style="{StaticResource PosComboBoxStyle}"
-                                  DisplayMemberPath="Display"
-                                  SelectedValuePath="TableId"/>
+                        <ComboBox Style="{StaticResource PosComboBoxStyle}"
+                                  ItemsSource="{Binding Tables}"
+                                  DisplayMemberPath="TableName"
+                                  SelectedItem="{Binding SelectedTable, Mode=TwoWay}"/>
                     </StackPanel>
                 </StackPanel>
 
                 <!-- Các món trong hóa đơn -->
                 <DataGrid Grid.Row="2"
-                          x:Name="InvoiceDataGrid"
+                          ItemsSource="{Binding Cart}"
                           Style="{StaticResource PosDataGridStyle}"
                           ColumnHeaderStyle="{StaticResource PosDataGridHeaderStyle}"
                           AutoGenerateColumns="False"
@@ -397,7 +387,7 @@
                                             Width="30"/>
 
                         <DataGridTextColumn Header="Tiền"
-                                            Binding="{Binding TotalPrice, StringFormat={}{0:N0}}"
+                                            Binding="{Binding LineTotal, StringFormat={}{0:N0}}"
                                             Width="65"/>
 
                         <DataGridTextColumn Header="Ghi chú"
@@ -414,7 +404,8 @@
                                             FontWeight="Bold"
                                             BorderThickness="0"
                                             Cursor="Hand"
-                                            Click="RemoveFromCartButton_Click"
+                                            Command="{Binding DataContext.RemoveFromCartCommand, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
+                                            CommandParameter="{Binding}"
                                             ToolTip="Xóa món này"/>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
@@ -441,8 +432,7 @@
                                    VerticalAlignment="Center"/>
 
                         <TextBlock Grid.Column="1"
-                                   x:Name="TotalAmountText"
-                                   Text="0 đ"
+                                   Text="{Binding TotalAmount, StringFormat={}{0:N0} đ}"
                                    FontWeight="Bold"
                                    FontSize="19"
                                    Foreground="#A33D32"
@@ -451,7 +441,7 @@
                     </Grid>
 
                     <Button Content="Thanh toán / In hóa đơn"
-                            Click="CheckoutButton_Click"
+                            Command="{Binding CheckoutCommand}"
                             MinHeight="44"
                             Padding="8"
                             Background="#4E342E"
