@@ -11,6 +11,9 @@ public partial class CoffeeRuuDbContext : DbContext
         : base(options)
     {
     }
+    public CoffeeRuuDbContext()
+    {
+    }
 
     public virtual DbSet<AuditLog> AuditLogs { get; set; }
 

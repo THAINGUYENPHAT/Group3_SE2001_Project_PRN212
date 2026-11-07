@@ -288,24 +288,10 @@ namespace CoffeeRuu.Services
             // F6.2 - Trừ kho khi bắt đầu pha chế
             if (nextStatus == "Preparing")
             {
-                var deductionRepository =
-                    new InventoryDeductionRepository(
-                        _repository.CreateContext);
+                var deductionService = new InventoryDeductionService(_repository.CreateContext);
 
-                var deductionService =
-                    new InventoryDeductionService(
-                        deductionRepository,
-                        ToppingQuantityScope.PerDrink);
-
-                bool deducted = await deductionService
-                    .DeductStockForOrderItemAsync(
-                        db,
-                        orderItemId,
-                        employeeId);
-
-                if (!deducted)
-                    throw new InvalidOperationException(
-                        "Món này đã được trừ kho trước đó.");
+                // Hàm DeductStockForOrderItemAsync nhận vào db, orderItemId và employeeId
+                await deductionService.DeductStockForOrderItemAsync(db, orderItemId, employeeId);
             }
 
 

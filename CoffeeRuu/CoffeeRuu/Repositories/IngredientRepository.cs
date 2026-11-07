@@ -29,6 +29,10 @@ namespace CoffeeRuu.Repositories
                 .OrderBy(i => i.IngredientName)
                 .ToListAsync();
         }
+        public CoffeeRuuDbContext CreateContext()
+        {
+            return new CoffeeRuuDbContext();
+        }
 
         // 2. Tìm nguyên liệu theo ID
         public async Task<Ingredient?> GetByIdAsync(int id)
