@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 using System.Data;
+using System.Windows;
 
 namespace CoffeeRuu.Services
 {
@@ -44,6 +45,86 @@ namespace CoffeeRuu.Services
         public Task<List<KdsItemRow>> GetKdsAsync()
         {
             return _repository.GetKdsAsync();
+        }
+
+        // ==========================
+        // KIỂM TRA VÀ TRỪ KHO THEO ĐỊNH LƯỢNG KHI THANH TOÁN
+        // ==========================
+
+        public async Task<bool> ValidateAndDeductStockAsync(IReadOnlyCollection<CartLine> cart)
+        {
+            if (cart == null || cart.Count == 0)
+                return false;
+
+            await using var db = _repository.CreateContext();
+            await using var transaction = await db.Database.BeginTransactionAsync(IsolationLevel.Serializable);
+
+            try
+            {
+                var requiredIngredients = new Dictionary<int, decimal>();
+
+                foreach (var cartItem in cart)
+                {
+                    // Lấy danh sách định lượng nguyên liệu theo ProductSizeId từ bảng ProductRecipes
+                    var recipes = await db.ProductRecipes
+                        .Where(r => r.ProductSizeId == cartItem.ProductSizeId)
+                        .ToListAsync();
+
+                    foreach (var recipe in recipes)
+                    {
+                        decimal needed = recipe.QuantityUsed * cartItem.Quantity;
+
+                        if (requiredIngredients.ContainsKey(recipe.IngredientId))
+                            requiredIngredients[recipe.IngredientId] += needed;
+                        else
+                            requiredIngredients[recipe.IngredientId] = needed;
+                    }
+                }
+
+                // 1. Kiểm tra tồn kho thực tế
+                foreach (var req in requiredIngredients)
+                {
+                    var ingredient = await db.Ingredients.FindAsync(req.Key);
+                    if (ingredient == null || ingredient.CurrentStock < req.Value)
+                    {
+                        string name = ingredient?.IngredientName ?? "Nguyên liệu";
+                        string unit = ingredient?.Unit ?? "";
+                        decimal stock = ingredient?.CurrentStock ?? 0;
+
+                        MessageBox.Show(
+                            $"Hàng trong kho không đủ để bán!\n\n" +
+                            $"Nguyên liệu: {name}\n" +
+                            $"Cần dùng: {req.Value:N3} {unit}\n" +
+                            $"Tồn kho hiện tại: {stock:N3} {unit}",
+                            "Lỗi kho hàng - Không thể thanh toán",
+                            MessageBoxButton.OK,
+                            MessageBoxImage.Warning);
+
+                        await transaction.RollbackAsync();
+                        return false; // Chặn thanh toán ngay lập tức
+                    }
+                }
+
+                // 2. Trừ tồn kho khi tất cả nguyên liệu đều đủ
+                foreach (var req in requiredIngredients)
+                {
+                    var ingredient = await db.Ingredients.FindAsync(req.Key);
+                    if (ingredient != null)
+                    {
+                        ingredient.CurrentStock -= req.Value;
+                    }
+                }
+
+                await db.SaveChangesAsync();
+                await transaction.CommitAsync();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                await transaction.RollbackAsync();
+                MessageBox.Show($"Lỗi kiểm tra kho: {ex.Message}", "Lỗi", MessageBoxButton.OK, MessageBoxImage.Error);
+                return false;
+            }
         }
 
         // ==========================
@@ -284,30 +365,6 @@ namespace CoffeeRuu.Services
                 throw new InvalidOperationException(
                     $"Không thể chuyển từ " +
                     $"{item.PreparationStatus} sang {nextStatus}.");
-
-            // F6.2 - Trừ kho khi bắt đầu pha chế
-            if (nextStatus == "Preparing")
-            {
-                var deductionRepository =
-                    new InventoryDeductionRepository(
-                        _repository.CreateContext);
-
-                var deductionService =
-                    new InventoryDeductionService(
-                        deductionRepository,
-                        ToppingQuantityScope.PerDrink);
-
-                bool deducted = await deductionService
-                    .DeductStockForOrderItemAsync(
-                        db,
-                        orderItemId,
-                        employeeId);
-
-                if (!deducted)
-                    throw new InvalidOperationException(
-                        "Món này đã được trừ kho trước đó.");
-            }
-
 
             item.PreparationStatus = nextStatus;
 
