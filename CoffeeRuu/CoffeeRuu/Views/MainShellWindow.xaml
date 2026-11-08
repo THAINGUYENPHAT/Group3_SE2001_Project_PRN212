@@ -137,6 +137,16 @@
             </Style.Triggers>
         </Style>
 
+        <Style x:Key="RecipeManagementSidebarButtonStyle"
+               TargetType="Button"
+               BasedOn="{StaticResource SidebarButtonStyle}">
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding CurrentPage}" Value="RecipeManagement">
+                    <Setter Property="Tag" Value="Active"/>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+
         <Style x:Key="ReportSidebarButtonStyle"
                TargetType="Button"
                BasedOn="{StaticResource SidebarButtonStyle}">
@@ -271,47 +281,52 @@
                                    Foreground="#BCA49A"
                                    Margin="8,0,0,12"/>
 
-                        <Button Content="🏠   Trang chủ"
+                        <Button Content="🏠    Trang chủ"
                                 Style="{StaticResource HomeSidebarButtonStyle}"
                                 Command="{Binding NavigateHomeCommand}"
                                 Visibility="{Binding HomeVisibility}"/>
 
-                        <Button Content="📃   Menu"
+                        <Button Content="📃    Menu"
                                 Style="{StaticResource MenuSidebarButtonStyle}"
                                 Command="{Binding NavigateMenuCommand}"
                                 Visibility="{Binding MenuVisibility}"/>
 
-                        <Button Content="☕   Sản phẩm"
+                        <Button Content="☕    Sản phẩm"
                                 Style="{StaticResource ProductSidebarButtonStyle}"
                                 Command="{Binding NavigateProductCommand}"
                                 Visibility="{Binding ProductVisibility}"/>
 
-                        <Button Content="🧾   Đơn hàng"
+                        <Button Content="🧾    Đơn hàng"
                                 Style="{StaticResource OrdersSidebarButtonStyle}"
                                 Command="{Binding NavigateOrdersCommand}"
                                 Visibility="{Binding OrdersVisibility}"/>
 
-                        <Button Content="📺   KDS - Pha chế"
+                        <Button Content="📺    KDS - Pha chế"
                                 Style="{StaticResource KdsSidebarButtonStyle}"
                                 Command="{Binding NavigateKdsCommand}"
                                 Visibility="{Binding KdsVisibility}"/>
 
-                        <Button Content="📦   Kho hàng"
+                        <Button Content="📦    Kho hàng"
                                 Style="{StaticResource InventorySidebarButtonStyle}"
                                 Command="{Binding InventoryCommand}"
                                 Visibility="{Binding InventoryVisibility}"/>
 
-                        <Button Content="📊   Báo cáo"
+                        <Button Content="📖    Công thức"
+                                Style="{StaticResource RecipeManagementSidebarButtonStyle}"
+                                Command="{Binding RecipeManagementCommand}"
+                                Visibility="{Binding RecipeManagementVisibility}"/>
+
+                        <Button Content="📊    Báo cáo"
                                 Style="{StaticResource ReportSidebarButtonStyle}"
                                 Command="{Binding ReportCommand}"
                                 Visibility="{Binding ReportVisibility}"/>
 
-                        <Button Content="🪑   Quản lý bàn"
+                        <Button Content="🪑    Quản lý bàn"
                                 Style="{StaticResource TableSidebarButtonStyle}"
                                 Command="{Binding TableCommand}"
                                 Visibility="{Binding TableVisibility}"/>
 
-                        <Button Content="👥   Nhân viên"
+                        <Button Content="👥    Nhân viên"
                                 Style="{StaticResource EmployeeSidebarButtonStyle}"
                                 Command="{Binding EmployeeCommand}"
                                 Visibility="{Binding EmployeeVisibility}"/>
@@ -324,7 +339,7 @@
                             Background="#624942"
                             Margin="0,0,0,12"/>
 
-                    <Button Content="🚪   Đăng xuất"
+                    <Button Content="🚪    Đăng xuất"
                             Style="{StaticResource LogoutButtonStyle}"
                             Height="42"
                             Command="{Binding LogoutCommand}"/>

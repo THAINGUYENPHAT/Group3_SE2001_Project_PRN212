@@ -38,6 +38,9 @@
     <Compile Update="Views\ProductManagementView.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="Views\RecipeManagementView.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Update="Views\SupplierView.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
