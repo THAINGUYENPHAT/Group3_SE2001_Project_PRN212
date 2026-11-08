@@ -1392,3 +1392,277 @@ UNION ALL SELECT N'OrderStatusHistory', COUNT_BIG(*) FROM dbo.OrderStatusHistory
 UNION ALL SELECT N'AuditLogs', COUNT_BIG(*) FROM dbo.AuditLogs
 ORDER BY TableName;
 GO
+
+
+
+
+
+
+USE CoffeeRuuDB;
+GO
+
+SET NOCOUNT ON;
+SET XACT_ABORT ON;
+
+BEGIN TRY
+    BEGIN TRANSACTION;
+
+    /* =====================================================
+       1. ADD MISSING INGREDIENTS
+       ===================================================== */
+
+    INSERT INTO dbo.Ingredients
+        (IngredientName, Unit, CurrentStock, MinimumStock, IsActive)
+    SELECT v.IngredientName, v.Unit, 0, v.MinimumStock, 1
+    FROM
+    (
+        VALUES
+        (N'Nước cốt dừa', N'lít', 2.000),
+        (N'Mật ong', N'lít', 1.000),
+        (N'Dâu tây', N'kg', 1.000),
+        (N'Tắc', N'kg', 1.000),
+        (N'Xí muội', N'kg', 0.500),
+        (N'Ổi hồng', N'kg', 1.000),
+        (N'Sả', N'kg', 0.500),
+        (N'Kem tươi', N'kg', 1.000),
+        (N'Bơ', N'kg', 1.000),
+        (N'Bột cacao', N'kg', 0.500),
+        (N'Pate', N'kg', 1.000)
+    ) AS v(IngredientName, Unit, MinimumStock)
+    WHERE NOT EXISTS
+    (
+        SELECT 1
+        FROM dbo.Ingredients i
+        WHERE i.IngredientName = v.IngredientName
+    );
+
+
+    /* =====================================================
+       2. CLEAR OLD PRODUCT RECIPES
+       Replace old demo recipes with complete recipes.
+       ToppingRecipes are NOT affected.
+       ===================================================== */
+
+    DELETE FROM dbo.ProductRecipes;
+
+
+    /* =====================================================
+       3. DEFINE BASE RECIPES FOR SIZE S
+       QuantityUsed = amount required for ONE serving.
+       ===================================================== */
+
+    DECLARE @Recipes TABLE
+    (
+        ProductName NVARCHAR(150),
+        IngredientName NVARCHAR(120),
+        QuantityS DECIMAL(12,3)
+    );
+
+    INSERT INTO @Recipes
+        (ProductName, IngredientName, QuantityS)
+    VALUES
+
+    /* ================= COFFEE ================= */
+
+    (N'Bạc xỉu', N'Hạt cà phê', 0.020),
+    (N'Bạc xỉu', N'Sữa tươi', 0.150),
+    (N'Bạc xỉu', N'Sữa đặc', 0.030),
+
+    (N'Cà phê đen đá', N'Hạt cà phê', 0.025),
+    (N'Cà phê đen đá', N'Đường', 0.010),
+
+    (N'Cà phê muối', N'Hạt cà phê', 0.025),
+    (N'Cà phê muối', N'Kem cheese', 0.030),
+    (N'Cà phê muối', N'Sữa đặc', 0.020),
+
+    (N'Cà phê cốt dừa', N'Hạt cà phê', 0.020),
+    (N'Cà phê cốt dừa', N'Nước cốt dừa', 0.080),
+    (N'Cà phê cốt dừa', N'Sữa đặc', 0.025),
+
+    (N'Americano', N'Hạt cà phê', 0.025),
+
+    (N'Latte', N'Hạt cà phê', 0.020),
+    (N'Latte', N'Sữa tươi', 0.180),
+
+    (N'Cappuccino', N'Hạt cà phê', 0.020),
+    (N'Cappuccino', N'Sữa tươi', 0.120),
+    (N'Cappuccino', N'Kem tươi', 0.030),
+
+    (N'Mocha', N'Hạt cà phê', 0.020),
+    (N'Mocha', N'Sữa tươi', 0.120),
+    (N'Mocha', N'Bột chocolate', 0.020),
+
+    /* ================= MILK TEA ================= */
+
+    (N'Trà sữa truyền thống', N'Trà đen', 0.010),
+    (N'Trà sữa truyền thống', N'Sữa tươi', 0.100),
+    (N'Trà sữa truyền thống', N'Đường', 0.020),
+
+    (N'Trà sữa trân châu đường đen', N'Trà đen', 0.010),
+    (N'Trà sữa trân châu đường đen', N'Sữa tươi', 0.100),
+    (N'Trà sữa trân châu đường đen', N'Trân châu khô', 0.040),
+    (N'Trà sữa trân châu đường đen', N'Đường', 0.020),
+
+    (N'Trà sữa matcha', N'Bột matcha', 0.008),
+    (N'Trà sữa matcha', N'Sữa tươi', 0.150),
+    (N'Trà sữa matcha', N'Đường', 0.020),
+
+    (N'Trà sữa chocolate', N'Bột chocolate', 0.020),
+    (N'Trà sữa chocolate', N'Sữa tươi', 0.120),
+    (N'Trà sữa chocolate', N'Đường', 0.020),
+
+    (N'Trà sữa khoai môn', N'Bột khoai môn', 0.025),
+    (N'Trà sữa khoai môn', N'Sữa tươi', 0.150),
+    (N'Trà sữa khoai môn', N'Đường', 0.020),
+
+    (N'Trà sữa ô long', N'Trà ô long', 0.010),
+    (N'Trà sữa ô long', N'Sữa tươi', 0.100),
+    (N'Trà sữa ô long', N'Đường', 0.020),
+
+    /* ================= FRUIT TEA ================= */
+
+    (N'Trà đào cam sả', N'Trà đen', 0.008),
+    (N'Trà đào cam sả', N'Syrup đào', 0.030),
+    (N'Trà đào cam sả', N'Cam tươi', 0.050),
+    (N'Trà đào cam sả', N'Sả', 0.005),
+
+    (N'Trà vải', N'Trà đen', 0.008),
+    (N'Trà vải', N'Vải đóng hộp', 0.050),
+    (N'Trà vải', N'Đường', 0.015),
+
+    (N'Trà chanh mật ong', N'Trà đen', 0.008),
+    (N'Trà chanh mật ong', N'Chanh tươi', 0.030),
+    (N'Trà chanh mật ong', N'Mật ong', 0.020),
+
+    (N'Trà dâu', N'Trà đen', 0.008),
+    (N'Trà dâu', N'Dâu tây', 0.050),
+    (N'Trà dâu', N'Đường', 0.015),
+
+    (N'Trà tắc xí muội', N'Trà đen', 0.008),
+    (N'Trà tắc xí muội', N'Tắc', 0.040),
+    (N'Trà tắc xí muội', N'Xí muội', 0.010),
+    (N'Trà tắc xí muội', N'Đường', 0.010),
+
+    (N'Trà ổi hồng', N'Trà đen', 0.008),
+    (N'Trà ổi hồng', N'Ổi hồng', 0.050),
+    (N'Trà ổi hồng', N'Đường', 0.015),
+
+    /* ================= FRAPPE ================= */
+
+    (N'Matcha đá xay', N'Bột matcha', 0.010),
+    (N'Matcha đá xay', N'Sữa tươi', 0.150),
+    (N'Matcha đá xay', N'Kem tươi', 0.030),
+    (N'Matcha đá xay', N'Đường', 0.020),
+
+    (N'Chocolate đá xay', N'Bột chocolate', 0.025),
+    (N'Chocolate đá xay', N'Sữa tươi', 0.150),
+    (N'Chocolate đá xay', N'Kem tươi', 0.030),
+    (N'Chocolate đá xay', N'Đường', 0.020),
+
+    (N'Cookies đá xay', N'Bánh quy chocolate', 0.030),
+    (N'Cookies đá xay', N'Sữa tươi', 0.150),
+    (N'Cookies đá xay', N'Kem tươi', 0.030),
+    (N'Cookies đá xay', N'Đường', 0.020),
+
+    (N'Cà phê đá xay', N'Hạt cà phê', 0.020),
+    (N'Cà phê đá xay', N'Sữa tươi', 0.120),
+    (N'Cà phê đá xay', N'Kem tươi', 0.030),
+    (N'Cà phê đá xay', N'Đường', 0.020),
+
+    /* ================= SNACKS ================= */
+
+    (N'Bánh croissant', N'Bột mì', 0.100),
+    (N'Bánh croissant', N'Bơ', 0.030),
+
+    (N'Bánh tiramisu', N'Bột mì', 0.050),
+    (N'Bánh tiramisu', N'Bột cacao', 0.010),
+    (N'Bánh tiramisu', N'Kem tươi', 0.040),
+    (N'Bánh tiramisu', N'Hạt cà phê', 0.005),
+
+    (N'Bánh brownie chocolate', N'Bột chocolate', 0.030),
+    (N'Bánh brownie chocolate', N'Bột mì', 0.040),
+    (N'Bánh brownie chocolate', N'Bơ', 0.020),
+
+    (N'Khoai tây chiên', N'Khoai tây', 0.200),
+
+    (N'Xúc xích chiên', N'Xúc xích', 1.000),
+
+    (N'Bánh mì que', N'Bột mì', 0.080),
+    (N'Bánh mì que', N'Pate', 0.030),
+    (N'Bánh mì que', N'Bơ', 0.010);
+
+
+    /* =====================================================
+       4. GENERATE RECIPES FOR ALL PRODUCT SIZES
+       S = 1.00
+       M = 1.25
+       L = 1.50
+       Snacks only have S.
+       ===================================================== */
+
+    INSERT INTO dbo.ProductRecipes
+        (ProductSizeId, IngredientId, QuantityUsed)
+    SELECT
+        ps.ProductSizeId,
+        i.IngredientId,
+        CAST
+        (
+            r.QuantityS *
+            CASE
+                WHEN ps.SizeName = N'Nhỏ (S)' THEN 1.00
+                WHEN ps.SizeName = N'Lớn (M)' THEN 1.25
+                WHEN ps.SizeName = N'Rất lớn (L)' THEN 1.50
+                ELSE 1.00
+            END
+            AS DECIMAL(12,3)
+        )
+    FROM @Recipes r
+    INNER JOIN dbo.Products p
+        ON p.ProductName = r.ProductName
+    INNER JOIN dbo.ProductSizes ps
+        ON ps.ProductId = p.ProductId
+    INNER JOIN dbo.Ingredients i
+        ON i.IngredientName = r.IngredientName;
+
+
+    COMMIT TRANSACTION;
+
+    PRINT N'All 30 product recipes have been inserted successfully.';
+
+END TRY
+BEGIN CATCH
+
+    IF @@TRANCOUNT > 0
+        ROLLBACK TRANSACTION;
+
+    THROW;
+
+END CATCH;
+GO
+
+
+
+
+
+UPDATE dbo.Ingredients
+SET CurrentStock = CASE IngredientName
+    WHEN N'Nước cốt dừa' THEN 5
+    WHEN N'Mật ong' THEN 3
+    WHEN N'Dâu tây' THEN 5
+    WHEN N'Tắc' THEN 5
+    WHEN N'Xí muội' THEN 2
+    WHEN N'Ổi hồng' THEN 5
+    WHEN N'Sả' THEN 3
+    WHEN N'Kem tươi' THEN 5
+    WHEN N'Bơ' THEN 5
+    WHEN N'Bột cacao' THEN 2
+    WHEN N'Pate' THEN 3
+    ELSE CurrentStock
+END
+WHERE IngredientName IN (
+    N'Nước cốt dừa', N'Mật ong', N'Dâu tây',
+    N'Tắc', N'Xí muội', N'Ổi hồng', N'Sả',
+    N'Kem tươi', N'Bơ', N'Bột cacao', N'Pate'
+)
+AND CurrentStock = 0;
+GO

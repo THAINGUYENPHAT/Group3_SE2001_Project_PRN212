@@ -293,6 +293,73 @@ namespace CoffeeRuu.Services
         }
 
         // ==========================
+        // TRỪ KHO THEO RECIPE
+        // ==========================
+
+        private async Task DeductStockByRecipeAsync(
+            CoffeeRuuDbContext db,
+            OrderItem item)
+        {
+            // Lấy công thức theo Size của món được đặt
+            var recipes = await db.ProductRecipes
+                .Include(r => r.Ingredient)
+                .Where(r => r.ProductSizeId == item.ProductSizeId)
+                .ToListAsync();
+
+            if (recipes.Count == 0)
+            {
+                throw new InvalidOperationException(
+                    $"Món {item.ProductNameSnapshot} chưa có công thức. " +
+                    "Không thể hoàn thành pha chế.");
+            }
+
+            // Gom nguyên liệu trùng nhau
+            var requiredIngredients = recipes
+                .GroupBy(r => r.IngredientId)
+                .Select(g => new
+                {
+                    IngredientId = g.Key,
+                    Quantity = g.Sum(r => r.QuantityUsed) * item.Quantity
+                })
+                .ToList();
+
+            // Kiểm tra toàn bộ nguyên liệu trước khi trừ
+            foreach (var required in requiredIngredients)
+            {
+                var ingredient = recipes
+                    .First(r => r.IngredientId == required.IngredientId)
+                    .Ingredient;
+
+                if (!ingredient.IsActive)
+                {
+                    throw new InvalidOperationException(
+                        $"Nguyên liệu {ingredient.IngredientName} đã ngừng hoạt động.");
+                }
+
+                if (ingredient.CurrentStock < required.Quantity)
+                {
+                    throw new InvalidOperationException(
+                        $"Không đủ nguyên liệu để hoàn thành món!\n\n" +
+                        $"Nguyên liệu: {ingredient.IngredientName}\n" +
+                        $"Cần dùng: {required.Quantity:N3} {ingredient.Unit}\n" +
+                        $"Tồn kho: {ingredient.CurrentStock:N3} {ingredient.Unit}");
+                }
+            }
+
+            // Tất cả nguyên liệu đủ mới bắt đầu trừ
+            foreach (var required in requiredIngredients)
+            {
+                var ingredient = recipes
+                    .First(r => r.IngredientId == required.IngredientId)
+                    .Ingredient;
+
+                ingredient.CurrentStock -= required.Quantity;
+            }
+
+            // Không SaveChanges ở đây.
+            // Để UpdatePreparationAsync lưu chung transaction.
+        }
+        // ==========================
         // 2. KDS: CẬP NHẬT PHA CHẾ
         // ==========================
 
@@ -366,6 +433,13 @@ namespace CoffeeRuu.Services
                     $"Không thể chuyển từ " +
                     $"{item.PreparationStatus} sang {nextStatus}.");
 
+            // Nếu món chuẩn bị hoàn thành thì trừ kho theo Recipe
+            if (nextStatus == "Ready")
+            {
+                await DeductStockByRecipeAsync(db, item);
+            }
+
+            // Chỉ cập nhật trạng thái khi trừ kho thành công
             item.PreparationStatus = nextStatus;
 
             // Tính lại trạng thái tổng của đơn

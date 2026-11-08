@@ -49,7 +49,9 @@ namespace CoffeeRuu.ViewModels
             CanAccess("Inventory") ? Visibility.Visible : Visibility.Collapsed;
 
         public Visibility RecipeManagementVisibility =>
-            CanAccess("RecipeManagement") ? Visibility.Visible : Visibility.Collapsed;
+            UserSession.Current?.RoleName == "Admin"
+                ? Visibility.Visible
+                : Visibility.Collapsed;
 
         public Visibility ReportVisibility =>
             CanAccess("Report") ? Visibility.Visible : Visibility.Collapsed;
