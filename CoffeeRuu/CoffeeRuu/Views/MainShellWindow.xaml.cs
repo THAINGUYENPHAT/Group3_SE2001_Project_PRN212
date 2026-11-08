@@ -1,5 +1,4 @@
-﻿
-using System.Windows;
+﻿using System.Windows;
 using CoffeeRuu.Repositories;
 using CoffeeRuu.Services;
 using CoffeeRuu.ViewModels;
@@ -60,6 +59,14 @@ namespace CoffeeRuu.Views
             _navigationService.Register(
                 "Inventory",
                 () => new InventoryView());
+
+            // Đăng ký màn hình Quản lý công thức kèm ViewModel
+            _navigationService.Register(
+                "RecipeManagement",
+                () => new RecipeManagementView
+                {
+                    DataContext = new RecipeManagementViewModel(App.CreateDbContext)
+                });
 
             _navigationService.Register(
                 "Report",

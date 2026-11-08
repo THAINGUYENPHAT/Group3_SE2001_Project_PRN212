@@ -1,5 +1,4 @@
-﻿
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Input;
@@ -49,6 +48,11 @@ namespace CoffeeRuu.ViewModels
         public Visibility InventoryVisibility =>
             CanAccess("Inventory") ? Visibility.Visible : Visibility.Collapsed;
 
+        public Visibility RecipeManagementVisibility =>
+            UserSession.Current?.RoleName == "Admin"
+                ? Visibility.Visible
+                : Visibility.Collapsed;
+
         public Visibility ReportVisibility =>
             CanAccess("Report") ? Visibility.Visible : Visibility.Collapsed;
 
@@ -64,6 +68,7 @@ namespace CoffeeRuu.ViewModels
         public ICommand NavigateOrdersCommand { get; }
         public ICommand NavigateKdsCommand { get; }
         public ICommand InventoryCommand { get; }
+        public ICommand RecipeManagementCommand { get; }
         public ICommand ReportCommand { get; }
         public ICommand TableCommand { get; }
         public ICommand EmployeeCommand { get; }
@@ -101,6 +106,9 @@ namespace CoffeeRuu.ViewModels
 
             InventoryCommand = new RelayCommand(
                 () => Navigate("Inventory"));
+
+            RecipeManagementCommand = new RelayCommand(
+                () => Navigate("RecipeManagement"));
 
             ReportCommand = new RelayCommand(
                 () => Navigate("Report"));

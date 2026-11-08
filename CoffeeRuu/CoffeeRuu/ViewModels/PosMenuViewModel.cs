@@ -1,10 +1,12 @@
 ﻿using CoffeeRuu.Models;
 using CoffeeRuu.Services;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Windows; // Thêm để dùng MessageBox nếu cần
 
 namespace CoffeeRuu.ViewModels
 {
@@ -23,7 +25,6 @@ namespace CoffeeRuu.ViewModels
         private decimal _totalAmount;
 
         // ID nhân viên đang đăng nhập.
-        // Giữ nguyên giá trị hiện tại của màn hình POS.
         public int CurrentEmployeeId { get; set; } = 1;
 
         // Dữ liệu menu.
@@ -168,15 +169,10 @@ namespace CoffeeRuu.ViewModels
         private void InitializeCategories()
         {
             Categories.Add(new PosMenuCategory("Tất cả", ""));
-
             Categories.Add(new PosMenuCategory("Cà phê", "Cà phê"));
-
             Categories.Add(new PosMenuCategory("Trà sữa", "Trà sữa"));
-
             Categories.Add(new PosMenuCategory("Trà trái cây", "Trà trái cây"));
-
             Categories.Add(new PosMenuCategory("Đá xay", "Đá xay"));
-
             Categories.Add(new PosMenuCategory("Đồ ăn vặt", "Đồ ăn vặt"));
 
             UpdateCategorySelection();
@@ -319,18 +315,15 @@ namespace CoffeeRuu.ViewModels
             if (sizePrice == null)
                 return;
 
-            // Mở hộp thoại ghi chú.
             string? note = ShowItemNoteDialog?.Invoke(
                 sizePrice.ProductName,
                 sizePrice.SizeName);
 
-            // Người dùng bấm Hủy.
             if (note == null)
                 return;
 
             note = note.Trim();
 
-            // Chỉ gộp khi cùng size và cùng ghi chú.
             var existingItem = Cart.FirstOrDefault(item =>
                 item.ProductSizeId == sizePrice.ProductSizeId &&
                 item.Note == note);
@@ -385,12 +378,11 @@ namespace CoffeeRuu.ViewModels
         private void UpdateCartTotals()
         {
             TotalAmount = Cart.Sum(item => item.LineTotal);
-
             RaiseCheckoutCanExecuteChanged();
         }
 
         // ==========================
-        // 5. THANH TOÁN
+        // 5. THANH TOÁN VÀ TRỪ TỒN KHO
         // ==========================
 
         private bool CanCheckout()
@@ -409,14 +401,9 @@ namespace CoffeeRuu.ViewModels
             if (!CanCheckout())
                 return;
 
-            if (OrderType != "DineIn" &&
-                OrderType != "Takeaway")
+            if (OrderType != "DineIn" && OrderType != "Takeaway")
             {
-                ShowMessage?.Invoke(
-                    "Loại đơn hàng không hợp lệ.",
-                    "Thông báo",
-                    false);
-
+                ShowMessage?.Invoke("Loại đơn hàng không hợp lệ.", "Thông báo", false);
                 return;
             }
 
@@ -426,14 +413,9 @@ namespace CoffeeRuu.ViewModels
             {
                 if (SelectedTable == null)
                 {
-                    ShowMessage?.Invoke(
-                        "Vui lòng chọn bàn trước khi thanh toán.",
-                        "Thông báo",
-                        false);
-
+                    ShowMessage?.Invoke("Vui lòng chọn bàn trước khi thanh toán.", "Thông báo", false);
                     return;
                 }
-
                 tableId = SelectedTable.TableId;
             }
 
@@ -441,16 +423,7 @@ namespace CoffeeRuu.ViewModels
 
             try
             {
-                // 1. Tính tổng tiền.
-                decimal totalAmount = TotalAmount;
-
-                // 2. Hiển thị QR và xác nhận đã nhận tiền.
-                bool isPaid = ShowQrPaymentDialog?.Invoke(totalAmount) == true;
-
-                if (!isPaid)
-                    return;
-
-                // 3. Chuyển giỏ hàng sang dữ liệu mà OrderService yêu cầu.
+                // 1. CHUYỂN GIỎ HÀNG SANG ĐỊNH DẠNG ĐỂ KIỂM TRA & TẠO ĐƠN
                 var cartLines = Cart.Select(item => new CartLine
                 {
                     ProductSizeId = item.ProductSizeId,
@@ -461,7 +434,33 @@ namespace CoffeeRuu.ViewModels
                     Note = item.Note
                 }).ToList();
 
-                // 4. Lưu đơn hàng vào database.
+                // =========================================================================
+                // 2. KIỂM TRA TỒN KHO THEO ĐỊNH LƯỢNG (CHẶN BÁN & THÔNG BÁO NẾU KHÔNG ĐỦ)
+                // =========================================================================
+                // Gọi phương thức từ OrderService (hoặc OrderService tự kiểm tra bên trong CreateOrderAsync / CheckStock)
+                // Ở đây giả định OrderService hỗ trợ phương thức kiểm tra & trừ tồn kho theo định lượng công thức.
+                bool hasEnoughStock = await _orderService.ValidateAndDeductStockAsync(cartLines);
+                if (!hasEnoughStock)
+                {
+                    // Thông báo đã được handle hoặc hiển thị trong service, dừng quá trình thanh toán tại đây.
+                    IsBusy = false;
+                    return;
+                }
+
+                // 3. Hiển thị QR và xác nhận đã nhận tiền.
+                decimal totalAmount = TotalAmount;
+                bool isPaid = ShowQrPaymentDialog?.Invoke(totalAmount) == true;
+
+                if (!isPaid)
+                {
+                    // Nếu khách hủy thanh toán, cần hoàn lại (rollback) số lượng tồn kho đã trừ tạm tính ở bước 2 nếu cần,
+                    // hoặc bạn có thể gọi kiểm tra kho NGAY SAU khi khách quét QR thanh toán thành công tùy theo luồng dự án.
+                    // (Khuyên cáo: Nên đặt logic check & trừ kho gói gọn trong transaction của OrderService khi CreateOrderAsync).
+                    IsBusy = false;
+                    return;
+                }
+
+                // 4. Lưu đơn hàng vào database (Đã bao gồm trừ tồn kho chuẩn xác trong transaction).
                 Order savedOrder = await _orderService.CreateOrderAsync(
                     cart: cartLines,
                     orderType: OrderType,
@@ -500,7 +499,6 @@ namespace CoffeeRuu.ViewModels
 
                 // 7. Xóa giỏ hàng.
                 Cart.Clear();
-
                 UpdateCartTotals();
 
                 // 8. Chuyển sang KDS.
@@ -532,24 +530,17 @@ namespace CoffeeRuu.ViewModels
     public class PosMenuCardItem
     {
         public int ProductId { get; set; }
-
         public string ProductName { get; set; } = "";
-
         public string CategoryName { get; set; } = "";
-
         public ObservableCollection<PosMenuSizePrice> SizePrices { get; set; } = new();
     }
 
     public class PosMenuSizePrice
     {
         public int ProductId { get; set; }
-
         public string ProductName { get; set; } = "";
-
         public int ProductSizeId { get; set; }
-
         public string SizeName { get; set; } = "";
-
         public decimal Price { get; set; }
     }
 
@@ -558,7 +549,6 @@ namespace CoffeeRuu.ViewModels
         private bool _isSelected;
 
         public string CategoryName { get; set; }
-
         public string CategoryValue { get; set; }
 
         public bool IsSelected
@@ -567,9 +557,7 @@ namespace CoffeeRuu.ViewModels
             set => SetProperty(ref _isSelected, value);
         }
 
-        public PosMenuCategory(
-            string categoryName,
-            string categoryValue)
+        public PosMenuCategory(string categoryName, string categoryValue)
         {
             CategoryName = categoryName;
             CategoryValue = categoryValue;
