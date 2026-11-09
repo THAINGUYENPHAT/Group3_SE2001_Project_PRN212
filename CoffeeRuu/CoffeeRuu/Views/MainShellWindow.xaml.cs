@@ -51,10 +51,29 @@ namespace CoffeeRuu.Views
 
             _navigationService.Register(
                 "KDS",
-                () => new KdsView
+                () =>
                 {
-                    DataContext = new KdsViewModel(_orderService)
+                    var vm = new KdsViewModel(_orderService);
+
+                    var page = new KdsOrderListView
+                    {
+                        DataContext = vm
+                    };
+
+                    page.Loaded += async (sender, e) =>
+                    {
+                        await vm.InitializeAsync();
+                        vm.StartAutoRefresh();
+                    };
+
+                    page.Unloaded += (sender, e) =>
+                    {
+                        vm.StopAutoRefresh();
+                    };
+
+                    return page;
                 });
+
 
             _navigationService.Register(
                 "Inventory",
