@@ -2,71 +2,39 @@
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       Background="#F5F5F0"
-      Loaded="Page_Loaded"
-      Title="KDS - Pha chế">
+      Title="Kitchen Display System">
 
     <Page.Resources>
 
-        <!-- STYLE CHUNG CHO NÚT -->
-        <Style x:Key="KdsButton" TargetType="Button">
+        <Style x:Key="CardStyle" TargetType="Border">
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="BorderBrush" Value="#DED8D3"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="CornerRadius" Value="10"/>
+            <Setter Property="Padding" Value="16"/>
+        </Style>
+
+        <Style x:Key="ActionButton" TargetType="Button">
+            <Setter Property="Background" Value="#4E342E"/>
             <Setter Property="Foreground" Value="White"/>
-            <Setter Property="FontSize" Value="12"/>
-            <Setter Property="FontWeight" Value="SemiBold"/>
-            <Setter Property="Height" Value="36"/>
-            <Setter Property="Padding" Value="14,7"/>
-            <Setter Property="Margin" Value="0,0,8,8"/>
             <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Padding" Value="16,8"/>
+            <Setter Property="Height" Value="38"/>
+            <Setter Property="MinWidth" Value="112"/>
+            <Setter Property="Margin" Value="0,0,10,0"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
             <Setter Property="Cursor" Value="Hand"/>
 
             <Style.Triggers>
-                <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="Opacity" Value="0.85"/>
-                </Trigger>
-
                 <Trigger Property="IsEnabled" Value="False">
-                    <Setter Property="Opacity" Value="0.45"/>
+                    <Setter Property="Opacity" Value="0.4"/>
                 </Trigger>
-            </Style.Triggers>
-        </Style>
-
-        <!-- MÀU TRẠNG THÁI MÓN -->
-        <Style TargetType="ListViewItem">
-            <Setter Property="Padding" Value="8,9"/>
-            <Setter Property="MinHeight" Value="42"/>
-            <Setter Property="HorizontalContentAlignment"
-                    Value="Stretch"/>
-            <Setter Property="BorderBrush" Value="#EEE9E5"/>
-            <Setter Property="BorderThickness" Value="0,0,0,1"/>
-
-            <Style.Triggers>
-
-                <!-- CHỜ PHA -->
-                <DataTrigger Binding="{Binding PreparationStatus}"
-                             Value="Queued">
-                    <Setter Property="Background"
-                            Value="#FFF8E9"/>
-                </DataTrigger>
-
-                <!-- ĐANG PHA -->
-                <DataTrigger Binding="{Binding PreparationStatus}"
-                             Value="Preparing">
-                    <Setter Property="Background"
-                            Value="#EAF3FF"/>
-                </DataTrigger>
-
-                <!-- DÒNG ĐƯỢC CHỌN -->
-                <Trigger Property="IsSelected" Value="True">
-                    <Setter Property="Background"
-                            Value="#D8C4B7"/>
-                </Trigger>
-
             </Style.Triggers>
         </Style>
 
     </Page.Resources>
 
-    <!-- BỐ CỤC CHÍNH -->
-    <Grid Margin="18,12,18,12">
+    <Grid Margin="18">
 
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -75,100 +43,88 @@
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <!-- ======================= -->
-        <!-- 1. TIÊU ĐỀ KDS -->
-        <!-- ======================= -->
-
+        <!-- TIÊU ĐỀ -->
         <StackPanel Grid.Row="0"
-                    Margin="0,0,0,12">
-
-            <TextBlock Text="KDS - Pha chế"
-                       FontSize="22"
-                       FontWeight="Bold"
-                       Foreground="#3B2A27"/>
+                    Margin="0,0,0,14">
 
             <TextBlock
-                Text="Quản lý đơn hàng và cập nhật trạng thái pha chế."
+                Text="Kitchen Display System (KDS)"
+                FontSize="24"
+                FontWeight="Bold"
+                Foreground="#3B2A27"/>
+
+            <TextBlock
+                Text="Tiếp nhận món đã đặt, xem ghi chú và cập nhật trạng thái pha chế."
                 FontSize="12"
-                Foreground="#8A7770"
-                Margin="0,4,0,0"/>
+                Foreground="#82736D"
+                Margin="0,5,0,0"/>
 
         </StackPanel>
 
-        <!-- ======================= -->
-        <!-- 2. NHÂN VIÊN VÀ THAO TÁC -->
-        <!-- ======================= -->
-
+        <!-- NHÂN VIÊN VÀ THAO TÁC -->
         <Border Grid.Row="1"
-                Background="White"
-                CornerRadius="10"
-                BorderBrush="#DED8D3"
-                BorderThickness="1"
-                Padding="14"
+                Style="{StaticResource CardStyle}"
                 Margin="0,0,0,12">
 
             <StackPanel>
 
-                <!-- NHÂN VIÊN ĐANG ĐĂNG NHẬP -->
                 <StackPanel Orientation="Horizontal"
-                            Margin="0,0,0,12">
+                            Margin="0,0,0,6">
 
                     <TextBlock
                         Text="Đang đăng nhập: "
-                        FontSize="12"
                         FontWeight="SemiBold"
                         Foreground="#4E342E"/>
 
                     <TextBlock
                         Text="{Binding CurrentEmployeeDisplay}"
-                        FontSize="12"
                         Foreground="#657D54"/>
 
                 </StackPanel>
 
-                <WrapPanel Orientation="Horizontal"
-                           VerticalAlignment="Center">
+                <TextBlock
+                    Text="{Binding KdsPermissionMessage}"
+                    Foreground="#82736D"
+                    FontSize="12"
+                    Margin="0,0,0,12"/>
 
-                    <!-- DANH SÁCH NHÂN VIÊN -->
+                <WrapPanel VerticalAlignment="Center">
+
                     <TextBlock
-                        Text="Nhân viên:"
-                        FontSize="13"
+                        Text="Danh sách Barista:"
+                        VerticalAlignment="Center"
                         FontWeight="SemiBold"
                         Foreground="#3B2A27"
-                        VerticalAlignment="Center"
-                        Margin="0,0,8,8"/>
+                        Margin="0,0,10,8"/>
 
-                    <ComboBox Width="265"
-                              Height="36"
-                              DisplayMemberPath="DisplayName"
-                              ItemsSource="{Binding Employees}"
-                              SelectedItem="{Binding SelectedEmployee,
-                                                     Mode=TwoWay}"
-                              Background="#FAF8F6"
-                              BorderBrush="#DED8D3"
-                              Margin="0,0,16,8"
-                              ToolTip="Xem danh sách nhân viên đang hoạt động"/>
+                    <ComboBox
+                        Width="250"
+                        Height="36"
+                        ItemsSource="{Binding Employees}"
+                        SelectedItem="{Binding SelectedEmployee}"
+                        DisplayMemberPath="DisplayName"
+                        Margin="0,0,16,8"
+                        ToolTip="Chọn tên không thay đổi người thực hiện thao tác."/>
 
-                    <!-- LÀM MỚI -->
-                    <Button Content="Làm mới"
-                            Command="{Binding RefreshCommand}"
-                            Background="#E9DFD9"
-                            Foreground="#4E342E"
-                            Style="{StaticResource KdsButton}"/>
+                    <Button
+                        Content="Làm mới"
+                        Style="{StaticResource ActionButton}"
+                        Background="#E9DFD9"
+                        Foreground="#4E342E"
+                        Command="{Binding RefreshCommand}"/>
 
-                    <!-- BẮT ĐẦU PHA -->
-                    <Button Content="Bắt đầu pha"
-                            Command="{Binding StartCommand}"
-                            IsEnabled="{Binding CanStart}"
-                            Background="#4E342E"
-                            Style="{StaticResource KdsButton}"/>
+                    <Button
+                        Content="Bắt đầu pha"
+                        Style="{StaticResource ActionButton}"
+                        Command="{Binding StartCommand}"
+                        IsEnabled="{Binding CanStart}"/>
 
-                    <!-- PHA XONG -->
-                    <Button Content="Pha xong"
-                            Command="{Binding ReadyCommand}"
-                            IsEnabled="{Binding CanReady}"
-                            Background="#657D54"
-                            Style="{StaticResource KdsButton}"/>
+                    <Button
+                        Content="Pha xong"
+                        Style="{StaticResource ActionButton}"
+                        Background="#657D54"
+                        Command="{Binding ReadyCommand}"
+                        IsEnabled="{Binding CanReady}"/>
 
                 </WrapPanel>
 
@@ -176,16 +132,9 @@
 
         </Border>
 
-        <!-- ======================= -->
-        <!-- 3. DANH SÁCH KDS -->
-        <!-- ======================= -->
-
+        <!-- DANH SÁCH MÓN -->
         <Border Grid.Row="2"
-                Background="White"
-                CornerRadius="10"
-                BorderBrush="#DED8D3"
-                BorderThickness="1"
-                Padding="14">
+                Style="{StaticResource CardStyle}">
 
             <Grid>
 
@@ -195,28 +144,24 @@
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
 
-                <!-- TIÊU ĐỀ DANH SÁCH -->
                 <StackPanel Grid.Row="0"
                             Margin="0,0,0,12">
 
                     <TextBlock
-                        Text="Danh sách đơn cần pha chế"
+                        Text="Danh sách món đang pha"
                         FontSize="18"
                         FontWeight="SemiBold"
                         Foreground="#3B2A27"/>
 
                     <TextBlock
-                        Text="Món đã pha xong sẽ tự động ẩn khỏi danh sách."
+                        Text="Món Ready tự ẩn sau khi lưu thành công. Các món được nhóm theo mã đơn."
+                        Foreground="#82736D"
                         FontSize="12"
-                        Foreground="#8A7770"
                         Margin="0,4,0,0"/>
 
                 </StackPanel>
 
-                <!-- ======================= -->
-                <!-- BỘ LỌC KDS -->
-                <!-- ======================= -->
-
+                <!-- TÌM KIẾM VÀ LỌC -->
                 <Border Grid.Row="1"
                         Background="#FAF8F6"
                         BorderBrush="#EEE8E2"
@@ -225,40 +170,38 @@
                         Padding="10"
                         Margin="0,0,0,12">
 
-                    <WrapPanel Orientation="Horizontal">
+                    <WrapPanel>
 
-                        <!-- TÌM MÃ ĐƠN HOẶC TÊN MÓN -->
-                        <StackPanel Margin="0,0,12,8">
+                        <StackPanel Margin="0,0,12,0">
 
                             <TextBlock
-                                Text="Tìm mã đơn hoặc tên món"
-                                Foreground="#8A7770"
+                                Text="Mã đơn hoặc tên món"
                                 FontSize="11"
+                                Foreground="#82736D"
                                 Margin="0,0,0,4"/>
 
-                            <TextBox Width="235"
-                                     Height="35"
-                                     Padding="9,4"
-                                     VerticalContentAlignment="Center"
-                                     Text="{Binding SearchKds,
-                                             UpdateSourceTrigger=PropertyChanged}"/>
+                            <TextBox
+                                Width="235"
+                                Height="34"
+                                Padding="8,5"
+                                Text="{Binding SearchKds,
+                                       UpdateSourceTrigger=PropertyChanged}"/>
 
                         </StackPanel>
 
-                        <!-- LỌC TRẠNG THÁI -->
-                        <StackPanel Margin="0,0,12,8">
+                        <StackPanel>
 
                             <TextBlock
                                 Text="Trạng thái pha chế"
-                                Foreground="#8A7770"
                                 FontSize="11"
+                                Foreground="#82736D"
                                 Margin="0,0,0,4"/>
 
-                            <ComboBox Width="160"
-                                      Height="35"
-                                      ItemsSource="{Binding StatusOptions}"
-                                      SelectedItem="{Binding FilterStatus,
-                                                             Mode=TwoWay}"/>
+                            <ComboBox
+                                Width="165"
+                                Height="34"
+                                ItemsSource="{Binding StatusOptions}"
+                                SelectedItem="{Binding FilterStatus}"/>
 
                         </StackPanel>
 
@@ -266,23 +209,15 @@
 
                 </Border>
 
-                <!-- ======================= -->
-                <!-- DANH SÁCH MÓN -->
-                <!-- ======================= -->
-
+                <!-- BẢNG MÓN THEO MÃ ĐƠN -->
                 <ListView Grid.Row="2"
                           ItemsSource="{Binding FilteredItems}"
-                          SelectedItem="{Binding SelectedItem,
-                                                 Mode=TwoWay}"
+                          SelectedItem="{Binding SelectedItem, Mode=TwoWay}"
                           Background="White"
                           BorderBrush="#DED8D3"
                           BorderThickness="1"
-                          HorizontalAlignment="Stretch"
-                          VerticalAlignment="Stretch"
-                          ScrollViewer.VerticalScrollBarVisibility="Auto"
                           ScrollViewer.HorizontalScrollBarVisibility="Auto">
 
-                    <!-- CÁC CỘT DỮ LIỆU -->
                     <ListView.View>
 
                         <GridView>
@@ -290,12 +225,12 @@
                             <GridViewColumn
                                 Header="Tên món"
                                 DisplayMemberBinding="{Binding ProductName}"
-                                Width="235"/>
+                                Width="240"/>
 
                             <GridViewColumn
                                 Header="Size"
                                 DisplayMemberBinding="{Binding SizeName}"
-                                Width="85"/>
+                                Width="90"/>
 
                             <GridViewColumn
                                 Header="Số lượng"
@@ -305,20 +240,16 @@
                             <GridViewColumn
                                 Header="Trạng thái"
                                 DisplayMemberBinding="{Binding PreparationStatus}"
-                                Width="120"/>
+                                Width="125"/>
 
                             <GridViewColumn
                                 Header="Ghi chú"
                                 DisplayMemberBinding="{Binding Note}"
-                                Width="280"/>
+                                Width="260"/>
 
                         </GridView>
 
                     </ListView.View>
-
-                    <!-- ======================= -->
-                    <!-- GOM MÓN THEO MÃ ĐƠN -->
-                    <!-- ======================= -->
 
                     <ListView.GroupStyle>
 
@@ -335,39 +266,35 @@
                                             <ControlTemplate TargetType="GroupItem">
 
                                                 <Expander IsExpanded="True"
-                                                          Margin="0,4,0,8"
-                                                          Background="#F8F4F1">
+                                                          Margin="0,4,0,8">
 
                                                     <Expander.Header>
 
-                                                        <StackPanel
-                                                            Orientation="Horizontal"
-                                                            Margin="8,8">
+                                                        <StackPanel Orientation="Horizontal">
 
                                                             <TextBlock
-                                                                Text="Mã đơn: "
-                                                                FontSize="13"
+                                                                Text="Đơn: "
                                                                 FontWeight="SemiBold"
                                                                 Foreground="#4E342E"/>
 
                                                             <TextBlock
                                                                 Text="{Binding Name}"
-                                                                FontSize="13"
-                                                                FontWeight="Bold"
+                                                                FontWeight="SemiBold"
                                                                 Foreground="#4E342E"/>
 
                                                             <TextBlock
-                                                                Text="{Binding ItemCount,
-                                                                       StringFormat='  |  Số dòng món: {0}'}"
-                                                                FontSize="12"
-                                                                Foreground="#8A7770"
-                                                                Margin="12,0,0,0"/>
+                                                                Text="  |  Số dòng món: "
+                                                                Foreground="#82736D"/>
+
+                                                            <TextBlock
+                                                                Text="{Binding ItemCount}"
+                                                                Foreground="#82736D"/>
 
                                                         </StackPanel>
 
                                                     </Expander.Header>
 
-                                                    <ItemsPresenter Margin="4,4,4,8"/>
+                                                    <ItemsPresenter/>
 
                                                 </Expander>
 
@@ -391,16 +318,13 @@
 
         </Border>
 
-        <!-- ======================= -->
-        <!-- 4. THÔNG BÁO -->
-        <!-- ======================= -->
-
+        <!-- THÔNG BÁO -->
         <TextBlock Grid.Row="3"
                    Text="{Binding Message}"
-                   FontSize="12"
                    Foreground="#A34F36"
-                   Margin="4,8,0,0"
-                   TextWrapping="Wrap"/>
+                   FontSize="12"
+                   TextWrapping="Wrap"
+                   Margin="4,10,0,0"/>
 
     </Grid>
 
