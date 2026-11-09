@@ -31,14 +31,19 @@
                                 Background="{TemplateBinding Background}"
                                 CornerRadius="6"
                                 Padding="{TemplateBinding Padding}">
-                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            <ContentPresenter HorizontalAlignment="Center"
+                                              VerticalAlignment="Center"/>
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="ButtonBorder" Property="Opacity" Value="0.85"/>
+                                <Setter TargetName="ButtonBorder"
+                                        Property="Opacity"
+                                        Value="0.85"/>
                             </Trigger>
                             <Trigger Property="IsEnabled" Value="False">
-                                <Setter TargetName="ButtonBorder" Property="Opacity" Value="0.45"/>
+                                <Setter TargetName="ButtonBorder"
+                                        Property="Opacity"
+                                        Value="0.45"/>
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -57,7 +62,8 @@
             <Setter Property="VerticalContentAlignment" Value="Center"/>
         </Style>
 
-        <Style x:Key="CoffeeColumnHeader" TargetType="{x:Type DataGridColumnHeader}">
+        <Style x:Key="CoffeeColumnHeader"
+               TargetType="{x:Type DataGridColumnHeader}">
             <Setter Property="Background" Value="#E9DFD9"/>
             <Setter Property="Foreground" Value="{StaticResource CoffeeBrown}"/>
             <Setter Property="FontWeight" Value="SemiBold"/>
@@ -68,7 +74,8 @@
             <Setter Property="HorizontalContentAlignment" Value="Left"/>
         </Style>
 
-        <Style x:Key="CoffeeDataGridRow" TargetType="{x:Type DataGridRow}">
+        <Style x:Key="CoffeeDataGridRow"
+               TargetType="{x:Type DataGridRow}">
             <Setter Property="MinHeight" Value="40"/>
             <Setter Property="Background" Value="White"/>
             <Setter Property="Foreground" Value="{StaticResource TextColor}"/>
@@ -77,16 +84,26 @@
         </Style>
     </Page.Resources>
 
-    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+    <ScrollViewer VerticalScrollBarVisibility="Auto"
+                  HorizontalScrollBarVisibility="Disabled">
+
         <StackPanel Margin="24">
 
-            <!-- Tiêu đề trang -->
             <StackPanel Margin="0,0,0,20">
-                <TextBlock Text="📋 Quản lý công thức sản phẩm (Recipe)" FontSize="26" FontWeight="Bold" Foreground="{StaticResource CoffeeDark}"/>
-                <TextBlock Text="Cài đặt thành phần nguyên liệu cho từng món để hệ thống tự động trừ kho và chặn bán khi hết hàng." FontSize="13" Foreground="{StaticResource MutedText}" Margin="2,4,0,0" TextWrapping="Wrap"/>
+                <TextBlock
+                    Text="📋 Quản lý công thức sản phẩm (Recipe)"
+                    FontSize="26"
+                    FontWeight="Bold"
+                    Foreground="{StaticResource CoffeeDark}"/>
+
+                <TextBlock
+                    Text="Cài đặt thành phần nguyên liệu cho từng món để hệ thống tự động trừ kho và chặn bán khi hết hàng."
+                    FontSize="13"
+                    Foreground="{StaticResource MutedText}"
+                    Margin="2,4,0,0"
+                    TextWrapping="Wrap"/>
             </StackPanel>
 
-            <!-- Bố cục lưới chia 2 cột chính -->
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="1.2*"/>
@@ -94,55 +111,150 @@
                     <ColumnDefinition Width="1.5*"/>
                 </Grid.ColumnDefinitions>
 
-                <!-- CỘT TRÁI: DANH SÁCH MÓN ĂN / THỨC UỐNG -->
-                <Border Grid.Column="0" Background="White" BorderBrush="{StaticResource BorderColor}" BorderThickness="1" CornerRadius="10" Padding="16">
-                    <StackPanel>
-                        <TextBlock Text="Chọn sản phẩm" FontSize="16" FontWeight="Bold" Foreground="{StaticResource CoffeeDark}" Margin="0,0,0,12"/>
+                <Border Grid.Column="0"
+                        Background="White"
+                        BorderBrush="{StaticResource BorderColor}"
+                        BorderThickness="1"
+                        CornerRadius="10"
+                        Padding="16">
 
-                        <DataGrid Height="400"
-                                  ItemsSource="{Binding ProductsView}"
-                                  SelectedItem="{Binding SelectedProduct, Mode=TwoWay}"
-                                  AutoGenerateColumns="False" CanUserAddRows="False" IsReadOnly="True"
-                                  SelectionMode="Single" SelectionUnit="FullRow" HeadersVisibility="Column"
-                                  GridLinesVisibility="Horizontal" ColumnHeaderHeight="38"
-                                  ColumnHeaderStyle="{StaticResource CoffeeColumnHeader}" RowStyle="{StaticResource CoffeeDataGridRow}">
+                    <StackPanel>
+                        <TextBlock
+                            Text="Chọn sản phẩm"
+                            FontSize="16"
+                            FontWeight="Bold"
+                            Foreground="{StaticResource CoffeeDark}"
+                            Margin="0,0,0,12"/>
+
+                        <DataGrid
+                            Height="400"
+                            ItemsSource="{Binding ProductsView}"
+                            SelectedItem="{Binding SelectedProduct, Mode=TwoWay}"
+                            AutoGenerateColumns="False"
+                            CanUserAddRows="False"
+                            IsReadOnly="True"
+                            SelectionMode="Single"
+                            SelectionUnit="FullRow"
+                            HeadersVisibility="Column"
+                            GridLinesVisibility="Horizontal"
+                            ColumnHeaderHeight="38"
+                            ColumnHeaderStyle="{StaticResource CoffeeColumnHeader}"
+                            RowStyle="{StaticResource CoffeeDataGridRow}">
+
                             <DataGrid.Columns>
-                                <DataGridTextColumn Header="Mã" Binding="{Binding ProductId}" Width="45"/>
-                                <DataGridTextColumn Header="Tên món" Binding="{Binding ProductName}" Width="*"/>
-                                <DataGridTextColumn Header="Danh mục" Binding="{Binding Category.CategoryName}" Width="100"/>
+                                <DataGridTextColumn
+                                    Header="Mã"
+                                    Binding="{Binding ProductId}"
+                                    Width="45"/>
+
+                                <DataGridTextColumn
+                                    Header="Tên món"
+                                    Binding="{Binding ProductName}"
+                                    Width="*"/>
+
+                                <DataGridTextColumn
+                                    Header="Danh mục"
+                                    Binding="{Binding Category.CategoryName}"
+                                    Width="100"/>
                             </DataGrid.Columns>
+
                         </DataGrid>
                     </StackPanel>
                 </Border>
 
-                <!-- CỘT PHẢI: CHI TIẾT CÔNG THỨC CỦA MÓN ĐƯỢC CHỌN -->
                 <StackPanel Grid.Column="2">
-                    <Border Background="White" BorderBrush="{StaticResource BorderColor}" BorderThickness="1" CornerRadius="10" Padding="16">
+
+                    <Border Background="White"
+                            BorderBrush="{StaticResource BorderColor}"
+                            BorderThickness="1"
+                            CornerRadius="10"
+                            Padding="16">
+
                         <StackPanel>
+
                             <DockPanel Margin="0,0,0,12">
-                                <TextBlock Text="{Binding SelectedProduct.ProductName, StringFormat='Định lượng cho: {0}'}" 
-                                           FontSize="16" FontWeight="Bold" Foreground="{StaticResource CoffeeDark}" VerticalAlignment="Center" TextWrapping="Wrap"/>
-                                <Button Content="↻ Tải lại" Command="{Binding LoadRecipeCommand}" Style="{StaticResource CoffeeButton}" Background="#E9DFD9" Foreground="{StaticResource CoffeeBrown}" Margin="0" DockPanel.Dock="Right"/>
+
+                                <Button
+                                    Content="↻ Tải lại"
+                                    Command="{Binding LoadRecipeCommand}"
+                                    Style="{StaticResource CoffeeButton}"
+                                    Background="#E9DFD9"
+                                    Foreground="{StaticResource CoffeeBrown}"
+                                    Margin="0"
+                                    DockPanel.Dock="Right"/>
+
+                                <TextBlock
+                                    Text="{Binding SelectedProduct.ProductName, StringFormat='Định lượng cho: {0}'}"
+                                    FontSize="16"
+                                    FontWeight="Bold"
+                                    Foreground="{StaticResource CoffeeDark}"
+                                    VerticalAlignment="Center"
+                                    TextWrapping="Wrap"/>
+
                             </DockPanel>
 
-                            <!-- Bảng các nguyên liệu có trong công thức món -->
-                            <DataGrid Height="210"
-                                      ItemsSource="{Binding RecipeItemsView}"
-                                      SelectedItem="{Binding SelectedRecipeItem, Mode=TwoWay}"
-                                      AutoGenerateColumns="False" CanUserAddRows="False" IsReadOnly="True"
-                                      SelectionMode="Single" HeadersVisibility="Column"
-                                      GridLinesVisibility="Horizontal" ColumnHeaderHeight="38"
-                                      ColumnHeaderStyle="{StaticResource CoffeeColumnHeader}" RowStyle="{StaticResource CoffeeDataGridRow}"
-                                      Margin="0,0,0,14">
+                            <!-- Chọn size của sản phẩm -->
+                            <StackPanel Orientation="Horizontal"
+                                        Margin="0,0,0,14">
+
+                                <TextBlock
+                                    Text="Chọn size:"
+                                    FontSize="13"
+                                    FontWeight="SemiBold"
+                                    Foreground="{StaticResource CoffeeDark}"
+                                    VerticalAlignment="Center"
+                                    Margin="0,0,12,0"/>
+
+                                <ComboBox
+                                    Width="180"
+                                    Height="36"
+                                    ItemsSource="{Binding ProductSizesView}"
+                                    SelectedItem="{Binding SelectedSize, Mode=TwoWay}"
+                                    DisplayMemberPath="SizeName"
+                                    VerticalContentAlignment="Center"/>
+
+                            </StackPanel>
+
+                            <DataGrid
+                                Height="210"
+                                ItemsSource="{Binding RecipeItemsView}"
+                                SelectedItem="{Binding SelectedRecipeItem, Mode=TwoWay}"
+                                AutoGenerateColumns="False"
+                                CanUserAddRows="False"
+                                IsReadOnly="True"
+                                SelectionMode="Single"
+                                HeadersVisibility="Column"
+                                GridLinesVisibility="Horizontal"
+                                ColumnHeaderHeight="38"
+                                ColumnHeaderStyle="{StaticResource CoffeeColumnHeader}"
+                                RowStyle="{StaticResource CoffeeDataGridRow}"
+                                Margin="0,0,0,14">
+
                                 <DataGrid.Columns>
-                                    <DataGridTextColumn Header="Tên nguyên liệu" Binding="{Binding IngredientName}" Width="*"/>
-                                    <DataGridTextColumn Header="Lượng dùng" Binding="{Binding QuantityUsed, StringFormat=N2}" Width="95"/>
-                                    <DataGridTextColumn Header="Đơn vị" Binding="{Binding Unit}" Width="70"/>
+                                    <DataGridTextColumn
+                                        Header="Tên nguyên liệu"
+                                        Binding="{Binding IngredientName}"
+                                        Width="*"/>
+
+                                    <DataGridTextColumn
+                                        Header="Lượng dùng"
+                                        Binding="{Binding QuantityUsed, StringFormat=N2}"
+                                        Width="95"/>
+
+                                    <DataGridTextColumn
+                                        Header="Đơn vị"
+                                        Binding="{Binding Unit}"
+                                        Width="70"/>
                                 </DataGrid.Columns>
+
                             </DataGrid>
 
-                            <!-- Form thêm / sửa định lượng nguyên liệu -->
-                            <TextBlock Text="Thêm hoặc cập nhật nguyên liệu" FontSize="13" FontWeight="Bold" Foreground="{StaticResource CoffeeDark}" Margin="0,0,0,8"/>
+                            <TextBlock
+                                Text="Thêm hoặc cập nhật nguyên liệu"
+                                FontSize="13"
+                                FontWeight="Bold"
+                                Foreground="{StaticResource CoffeeDark}"
+                                Margin="0,0,0,8"/>
 
                             <Grid Margin="0,0,0,12">
                                 <Grid.ColumnDefinitions>
@@ -151,27 +263,48 @@
                                     <ColumnDefinition Width="100"/>
                                 </Grid.ColumnDefinitions>
 
-                                <ComboBox Grid.Column="0"
-                                          ItemsSource="{Binding AllIngredientsList}"
-                                          DisplayMemberPath="IngredientName"
-                                          SelectedItem="{Binding SelectedIngredientInput}"
-                                          Height="38" VerticalContentAlignment="Center"/>
+                                <ComboBox
+                                    Grid.Column="0"
+                                    ItemsSource="{Binding AllIngredientsList}"
+                                    DisplayMemberPath="IngredientName"
+                                    SelectedItem="{Binding SelectedIngredientInput}"
+                                    Height="38"
+                                    VerticalContentAlignment="Center"/>
 
-                                <TextBox Grid.Column="2" Style="{StaticResource CoffeeTextBox}" Text="{Binding QuantityInput, UpdateSourceTrigger=PropertyChanged}" ToolTip="Số lượng"/>
+                                <TextBox
+                                    Grid.Column="2"
+                                    Style="{StaticResource CoffeeTextBox}"
+                                    Text="{Binding QuantityInput, UpdateSourceTrigger=PropertyChanged}"
+                                    ToolTip="Số lượng"/>
                             </Grid>
 
                             <WrapPanel>
-                                <Button Content="＋ Thêm / Cập nhật" Command="{Binding SaveRecipeCommand}" Style="{StaticResource CoffeeButton}"/>
-                                <Button Content="Xóa khỏi công thức" Command="{Binding DeleteRecipeCommand}" Style="{StaticResource CoffeeButton}" Background="#A64F46" Foreground="White" Margin="0"/>
+                                <Button
+                                    Content="＋ Thêm / Cập nhật"
+                                    Command="{Binding SaveRecipeCommand}"
+                                    Style="{StaticResource CoffeeButton}"/>
+
+                                <Button
+                                    Content="Xóa khỏi công thức"
+                                    Command="{Binding DeleteRecipeCommand}"
+                                    Style="{StaticResource CoffeeButton}"
+                                    Background="#A64F46"
+                                    Foreground="White"
+                                    Margin="0"/>
                             </WrapPanel>
 
-                            <!-- Thông báo trạng thái -->
-                            <TextBlock Text="{Binding StatusMessage}" Foreground="{StaticResource CoffeeBrown}" FontSize="12" Margin="0,12,0,0" TextWrapping="Wrap"/>
+                            <TextBlock
+                                Text="{Binding StatusMessage}"
+                                Foreground="{StaticResource CoffeeBrown}"
+                                FontSize="12"
+                                Margin="0,12,0,0"
+                                TextWrapping="Wrap"/>
+
                         </StackPanel>
                     </Border>
                 </StackPanel>
-            </Grid>
 
+            </Grid>
         </StackPanel>
     </ScrollViewer>
 </Page>
