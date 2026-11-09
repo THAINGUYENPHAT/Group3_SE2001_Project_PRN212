@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿
+using System.Windows;
 using CoffeeRuu.Repositories;
 using CoffeeRuu.Services;
 using CoffeeRuu.ViewModels;
@@ -51,40 +52,21 @@ namespace CoffeeRuu.Views
 
             _navigationService.Register(
                 "KDS",
-                () =>
+                () => new KdsView
                 {
-                    var vm = new KdsViewModel(_orderService);
-
-                    var page = new KdsOrderListView
-                    {
-                        DataContext = vm
-                    };
-
-                    page.Loaded += async (sender, e) =>
-                    {
-                        await vm.InitializeAsync();
-                        vm.StartAutoRefresh();
-                    };
-
-                    page.Unloaded += (sender, e) =>
-                    {
-                        vm.StopAutoRefresh();
-                    };
-
-                    return page;
+                    DataContext = new KdsViewModel(_orderService)
                 });
-
 
             _navigationService.Register(
                 "Inventory",
                 () => new InventoryView());
 
-            // Đăng ký màn hình Quản lý công thức kèm ViewModel
             _navigationService.Register(
                 "RecipeManagement",
                 () => new RecipeManagementView
                 {
-                    DataContext = new RecipeManagementViewModel(App.CreateDbContext)
+                    DataContext = new RecipeManagementViewModel(
+                        App.CreateDbContext)
                 });
 
             _navigationService.Register(
@@ -100,7 +82,6 @@ namespace CoffeeRuu.Views
                 () => new EmployeeManagementView());
         }
 
-        // Chuyển sang KDS sau khi in bill.
         public void OpenKds()
         {
             _navigationService.Navigate("KDS");
