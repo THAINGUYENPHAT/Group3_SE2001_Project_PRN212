@@ -19,7 +19,6 @@ namespace CoffeeRuu.Repositories
             _contextFactory = contextFactory;
         }
 
-        // 1. Lấy tất cả nhà cung cấp
         public async Task<List<Supplier>> GetAllAsync()
         {
             using var context = _contextFactory();
@@ -30,7 +29,6 @@ namespace CoffeeRuu.Repositories
                 .ToListAsync();
         }
 
-        // 2. Tìm nhà cung cấp theo ID
         public async Task<Supplier?> GetByIdAsync(int id)
         {
             using var context = _contextFactory();
@@ -40,7 +38,6 @@ namespace CoffeeRuu.Repositories
                 .FirstOrDefaultAsync(s => s.SupplierId == id);
         }
 
-        // 3. Lấy danh sách nhà cung cấp đang hoạt động
         public async Task<List<Supplier>> GetActiveAsync()
         {
             using var context = _contextFactory();
@@ -52,7 +49,6 @@ namespace CoffeeRuu.Repositories
                 .ToListAsync();
         }
 
-        // 4. Thêm nhà cung cấp
         public async Task AddAsync(Supplier supplier)
         {
             using var context = _contextFactory();
@@ -62,7 +58,6 @@ namespace CoffeeRuu.Repositories
             await context.SaveChangesAsync();
         }
 
-        // 5. Cập nhật thông tin nhà cung cấp
         public async Task<bool> UpdateInfoAsync(
             int id,
             string name,
@@ -88,7 +83,6 @@ namespace CoffeeRuu.Repositories
             return true;
         }
 
-        // 6. Thay đổi trạng thái nhà cung cấp
         public async Task<bool> SetActiveAsync(
             int id, bool isActive)
         {

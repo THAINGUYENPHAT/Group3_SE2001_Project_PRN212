@@ -19,7 +19,6 @@ namespace CoffeeRuu.Repositories
             _contextFactory = contextFactory;
         }
 
-        // 1. Lấy tất cả nguyên liệu
         public async Task<List<Ingredient>> GetAllAsync()
         {
             using var context = _contextFactory();
@@ -30,7 +29,6 @@ namespace CoffeeRuu.Repositories
                 .ToListAsync();
         }
 
-        // 2. Tìm nguyên liệu theo ID
         public async Task<Ingredient?> GetByIdAsync(int id)
         {
             using var context = _contextFactory();
@@ -40,7 +38,6 @@ namespace CoffeeRuu.Repositories
                 .FirstOrDefaultAsync(i => i.IngredientId == id);
         }
 
-        // 3. Kiểm tra tên nguyên liệu đã tồn tại
         public async Task<bool> NameExistsAsync(
             string name, int? excludeId = null)
         {
@@ -53,7 +50,6 @@ namespace CoffeeRuu.Repositories
                      i.IngredientId != excludeId.Value));
         }
 
-        // 4. Thêm nguyên liệu
         public async Task AddAsync(Ingredient ingredient)
         {
             using var context = _contextFactory();
@@ -63,7 +59,6 @@ namespace CoffeeRuu.Repositories
             await context.SaveChangesAsync();
         }
 
-        // 5. Cập nhật thông tin nguyên liệu
         public async Task<bool> UpdateInfoAsync(
             int id,
             string name,
@@ -87,7 +82,6 @@ namespace CoffeeRuu.Repositories
             return true;
         }
 
-        // 6. Thay đổi trạng thái hoạt động
         public async Task<bool> SetActiveAsync(
             int id, bool isActive)
         {
@@ -106,7 +100,6 @@ namespace CoffeeRuu.Repositories
             return true;
         }
 
-        // 7. Lấy danh sách nguyên liệu tồn kho thấp hoặc đã hết
         public async Task<List<LowStockAlertItem>> GetLowStockAsync()
         {
             using var context = _contextFactory();

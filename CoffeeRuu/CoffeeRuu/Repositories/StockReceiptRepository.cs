@@ -59,7 +59,6 @@ public class StockReceiptRepository
 
         try
         {
-            // 1. Kiểm tra nhà cung cấp
             bool supplierExists = await _context.Suppliers
                 .AnyAsync(s =>
                     s.SupplierId == request.SupplierId &&
@@ -69,7 +68,6 @@ public class StockReceiptRepository
                 throw new InvalidOperationException(
                     "Nhà cung cấp không tồn tại hoặc đã ngừng hoạt động.");
 
-            // 2. Kiểm tra nhân viên
             bool employeeExists = await _context.Employees
                 .AnyAsync(e =>
                     e.EmployeeId == request.ReceivedBy &&
@@ -79,7 +77,6 @@ public class StockReceiptRepository
                 throw new InvalidOperationException(
                     "Nhân viên nhập kho không hợp lệ.");
 
-            // 3. Tạo phiếu nhập
             var receipt = new StockReceipt
             {
                 SupplierId = request.SupplierId,
@@ -92,9 +89,7 @@ public class StockReceiptRepository
 
             await _context.SaveChangesAsync();
 
-            // Sau SaveChanges, đã có StockReceiptId.
 
-            // 4. Lưu chi tiết phiếu nhập
             foreach (var item in request.Items)
             {
                 _context.StockReceiptDetails.Add(
@@ -107,7 +102,6 @@ public class StockReceiptRepository
                     });
             }
 
-            // 5. Gộp số lượng theo nguyên liệu
             var groupedItems = request.Items
                 .GroupBy(x => x.IngredientId)
                 .Select(g => new
@@ -119,7 +113,6 @@ public class StockReceiptRepository
 
             foreach (var item in groupedItems)
             {
-                // 6. Cộng tồn kho trực tiếp trong SQL
                 int updatedRows = await _context.Ingredients
                     .Where(i =>
                         i.IngredientId == item.IngredientId &&
@@ -135,7 +128,6 @@ public class StockReceiptRepository
                         $"Nguyên liệu ID {item.IngredientId} không hợp lệ.");
                 }
 
-                // 7. Ghi lịch sử nhập kho
                 _context.InventoryTransactions.Add(
                     new InventoryTransaction
                     {
@@ -149,10 +141,8 @@ public class StockReceiptRepository
                     });
             }
 
-            // 8. Lưu tất cả thay đổi còn lại
             await _context.SaveChangesAsync();
 
-            // 9. Hoàn tất transaction
             await transaction.CommitAsync();
 
             return receipt.StockReceiptId;

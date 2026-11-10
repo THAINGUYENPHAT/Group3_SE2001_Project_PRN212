@@ -297,7 +297,6 @@ namespace CoffeeRuu.Services
             string? phone,
             string? email)
         {
-            // 1. Bat buoc nhap so dien thoai
             if (string.IsNullOrWhiteSpace(phone))
             {
                 throw new ArgumentException(
@@ -336,7 +335,6 @@ namespace CoffeeRuu.Services
                     "Số điện thoại không hợp lệ.");
             }
 
-            // 2. Bat buoc nhap email
             if (string.IsNullOrWhiteSpace(email))
             {
                 throw new ArgumentException(

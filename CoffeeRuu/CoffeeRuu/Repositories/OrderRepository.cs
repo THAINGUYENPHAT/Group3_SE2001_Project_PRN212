@@ -26,9 +26,7 @@ namespace CoffeeRuu.Repositories
             return _contextFactory();
         }
 
-        // ============================
-        // 1. DANH SÁCH SẢN PHẨM
-        // ============================
+      
 
         public async Task<List<MenuChoice>> GetMenuAsync()
         {
@@ -52,9 +50,6 @@ namespace CoffeeRuu.Repositories
                 .ToListAsync();
         }
 
-        // ============================
-        // 2. DANH SÁCH BÀN
-        // ============================
 
         public async Task<List<TableChoice>> GetTablesAsync()
         {
@@ -75,16 +70,12 @@ namespace CoffeeRuu.Repositories
                 .ToListAsync();
         }
 
-        // ============================
-        // 3. DANH SÁCH ĐƠN HÀNG
-        // ============================
+  
 
         public async Task<List<OrderListRow>> GetOrdersAsync()
         {
             await using var db = CreateContext();
 
-            // Vẫn lấy tất cả trạng thái để
-            // có thể xem lịch sử bằng bộ lọc.
             return await db.Orders
                 .AsNoTracking()
                 .OrderByDescending(o => o.CreatedAt)
@@ -107,9 +98,7 @@ namespace CoffeeRuu.Repositories
                 .ToListAsync();
         }
 
-        // ============================
-        // 4. DANH SÁCH KDS
-        // ============================
+        
 
         public async Task<List<KdsItemRow>> GetKdsAsync()
         {
@@ -150,9 +139,7 @@ namespace CoffeeRuu.Repositories
                 .ToListAsync();
         }
 
-        // ============================
-        // 5. DANH SÁCH NHÂN VIÊN
-        // ============================
+        
 
         public async Task<List<EmployeeChoice>> GetEmployeesAsync()
         {
