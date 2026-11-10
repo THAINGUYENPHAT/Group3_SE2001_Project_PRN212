@@ -3,6 +3,7 @@ using CoffeeRuu.Services;
 using CoffeeRuu.ViewModels;
 using System.Windows;
 using System.Windows.Controls;
+using System;
 
 
 namespace CoffeeRuu.Views
@@ -28,11 +29,17 @@ namespace CoffeeRuu.Views
             LowStockAlertFrame.Navigate(new LowStockAlertView());
         }
 
+
         private void InitializeStockReceipt()
         {
-            // TẠM THỜI: ID nhân viên dùng để kiểm thử
-            // Phải là EmployeeId có thật và đang hoạt động
-            int testEmployeeId = 1;
+            // Lấy nhân viên từ phiên đăng nhập
+            var currentUser = UserSession.Current;
+
+            if (currentUser == null)
+            {
+                throw new InvalidOperationException(
+                    "Vui lòng đăng nhập để sử dụng chức năng nhập kho.");
+            }
 
             var repository = new StockReceiptRepository(
                 App.CreateDbContext());
@@ -41,12 +48,11 @@ namespace CoffeeRuu.Views
 
             var viewModel = new StockReceiptViewModel(
                 service,
-                testEmployeeId);
+                currentUser.EmployeeId);
 
             StockReceiptFrame.Navigate(
                 new StockReceiptView(viewModel));
-
-
         }
+
     }
 }

@@ -7,33 +7,27 @@ namespace CoffeeRuu.Views
 {
     public partial class OrderView : Page
     {
-        private bool _loaded = false;
+        private OrderViewModel? _initializedVm;
 
         public OrderView()
         {
             InitializeComponent();
+
+            DataContextChanged += OrderView_DataContextChanged;
         }
 
-        private async void Page_Loaded(
+        private async void OrderView_DataContextChanged(
             object sender,
-            RoutedEventArgs e)
+            DependencyPropertyChangedEventArgs e)
         {
-            if (_loaded)
+            if (e.NewValue is not OrderViewModel vm)
                 return;
 
-            if (DataContext is not OrderViewModel vm)
+            if (ReferenceEquals(_initializedVm, vm))
                 return;
 
-            _loaded = true;
+            _initializedVm = vm;
 
-            // Chỉ hiển thị trang Danh sách đơn hàng
-            OrderListFrame.Navigate(
-                new OrderListView
-                {
-                    DataContext = vm
-                });
-
-            // Tải danh sách từ database
             await vm.InitializeAsync();
         }
     }
