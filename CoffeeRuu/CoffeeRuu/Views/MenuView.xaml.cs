@@ -46,9 +46,5 @@ namespace CoffeeRuu.Views
             await viewModel.LoadProductsAsync();
         }
 
-        private void ComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-
-        }
     }
 }

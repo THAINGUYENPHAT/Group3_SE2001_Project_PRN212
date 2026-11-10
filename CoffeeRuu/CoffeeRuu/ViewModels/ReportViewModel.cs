@@ -9,7 +9,7 @@ using CoffeeRuu.Services;
 
 namespace CoffeeRuu.ViewModels
 {
-    public class ReportViewModel : ViewModelBase
+    public class ReportViewModel : BaseViewModel
     {
         private static readonly CultureInfo ViCulture = CultureInfo.GetCultureInfo("vi-VN");
 

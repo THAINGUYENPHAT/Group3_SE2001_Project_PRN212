@@ -1,28 +1,32 @@
 ﻿
-using CoffeeRuu.Data;
-using CoffeeRuu.Models;
-using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Windows;
 using System.Windows.Input;
+using CoffeeRuu.Models;
+using CoffeeRuu.Services;
 
 namespace CoffeeRuu.ViewModels
 {
+    // Class dùng để hiển thị nguyên liệu trong công thức
     public class RecipeItemDisplayModel
     {
         public int ProductSizeId { get; set; }
+
         public int IngredientId { get; set; }
+
         public string IngredientName { get; set; } = string.Empty;
+
         public decimal QuantityUsed { get; set; }
+
         public string Unit { get; set; } = string.Empty;
     }
 
-    public class RecipeManagementViewModel : ViewModelBase
+    public class RecipeManagementViewModel : BaseViewModel
     {
-        private readonly Func<CoffeeRuuDbContext> _contextFactory;
+        private readonly RecipeService _recipeService;
+        private readonly IMessageDialogService _dialogService;
 
         private Product? _selectedProduct;
         private ProductSize? _selectedSize;
@@ -111,13 +115,17 @@ namespace CoffeeRuu.ViewModels
         }
 
         public ICommand LoadRecipeCommand { get; }
+
         public ICommand SaveRecipeCommand { get; }
+
         public ICommand DeleteRecipeCommand { get; }
 
         public RecipeManagementViewModel(
-            Func<CoffeeRuuDbContext> contextFactory)
+            RecipeService recipeService,
+            IMessageDialogService dialogService)
         {
-            _contextFactory = contextFactory;
+            _recipeService = recipeService;
+            _dialogService = dialogService;
 
             LoadRecipeCommand = new RelayCommand(
                 async () => await LoadRecipeForSelectedProductAsync());
@@ -132,6 +140,7 @@ namespace CoffeeRuu.ViewModels
             _ = InitializeDataAsync();
         }
 
+        // Tải danh sách sản phẩm và nguyên liệu
         private async Task InitializeDataAsync()
         {
             if (IsBusy)
@@ -141,31 +150,24 @@ namespace CoffeeRuu.ViewModels
 
             try
             {
-                using var db = _contextFactory();
-
-                var ingredients = await db.Ingredients
-                    .AsNoTracking()
-                    .OrderBy(i => i.IngredientName)
-                    .ToListAsync();
+                var ingredients =
+                    await _recipeService.GetIngredientsAsync();
 
                 AllIngredientsList.Clear();
 
-                foreach (var ing in ingredients)
+                foreach (var ingredient in ingredients)
                 {
-                    AllIngredientsList.Add(ing);
+                    AllIngredientsList.Add(ingredient);
                 }
 
-                var products = await db.Products
-                    .Include(p => p.Category)
-                    .AsNoTracking()
-                    .OrderBy(p => p.ProductName)
-                    .ToListAsync();
+                var products =
+                    await _recipeService.GetProductsAsync();
 
                 ProductsView.Clear();
 
-                foreach (var p in products)
+                foreach (var product in products)
                 {
-                    ProductsView.Add(p);
+                    ProductsView.Add(product);
                 }
 
                 if (ProductsView.Count > 0)
@@ -175,14 +177,11 @@ namespace CoffeeRuu.ViewModels
             }
             catch (Exception ex)
             {
-                StatusMessage =
-                    $"Lỗi tải dữ liệu: {ex.Message}";
+                StatusMessage = $"Lỗi tải dữ liệu: {ex.Message}";
 
-                MessageBox.Show(
-                    $"Lỗi chi tiết: {ex}",
-                    "Debug Error",
-                    MessageBoxButton.OK,
-                    MessageBoxImage.Error);
+                _dialogService.ShowError(
+                    "Lỗi tải dữ liệu",
+                    ex.Message);
             }
             finally
             {
@@ -190,6 +189,7 @@ namespace CoffeeRuu.ViewModels
             }
         }
 
+        // Tải danh sách size theo sản phẩm được chọn
         private async Task LoadSizesForSelectedProductAsync()
         {
             var product = SelectedProduct;
@@ -203,13 +203,8 @@ namespace CoffeeRuu.ViewModels
 
             try
             {
-                using var db = _contextFactory();
-
-                var sizes = await db.ProductSizes
-                    .Where(s => s.ProductId == product.ProductId)
-                    .AsNoTracking()
-                    .OrderBy(s => s.ProductSizeId)
-                    .ToListAsync();
+                var sizes = await _recipeService.GetSizesAsync(
+                    product.ProductId);
 
                 if (SelectedProduct?.ProductId != product.ProductId)
                     return;
@@ -223,11 +218,15 @@ namespace CoffeeRuu.ViewModels
             }
             catch (Exception ex)
             {
-                StatusMessage =
-                    $"Lỗi tải size: {ex.Message}";
+                StatusMessage = $"Lỗi tải size: {ex.Message}";
+
+                _dialogService.ShowError(
+                    "Lỗi tải size",
+                    ex.Message);
             }
         }
 
+        // Tải công thức theo size được chọn
         private async Task LoadRecipeForSelectedProductAsync()
         {
             RecipeItemsView.Clear();
@@ -239,162 +238,85 @@ namespace CoffeeRuu.ViewModels
 
             try
             {
-                using var db = _contextFactory();
-
-                var recipes = await db.ProductRecipes
-                    .Include(r => r.Ingredient)
-                    .Where(r =>
-                        r.ProductSizeId == sizeId.Value)
-                    .AsNoTracking()
-                    .ToListAsync();
+                var recipes =
+                    await _recipeService.GetRecipesAsync(sizeId.Value);
 
                 if (SelectedSize?.ProductSizeId != sizeId.Value)
                     return;
 
-                foreach (var rec in recipes)
+                foreach (var recipe in recipes)
                 {
                     RecipeItemsView.Add(
                         new RecipeItemDisplayModel
                         {
-                            ProductSizeId = rec.ProductSizeId,
-                            IngredientId = rec.IngredientId,
+                            ProductSizeId = recipe.ProductSizeId,
+                            IngredientId = recipe.IngredientId,
                             IngredientName =
-                                rec.Ingredient?.IngredientName ?? "N/A",
-                            QuantityUsed = rec.QuantityUsed,
-                            Unit = rec.Ingredient?.Unit ?? ""
+                                recipe.Ingredient?.IngredientName ?? "N/A",
+                            QuantityUsed = recipe.QuantityUsed,
+                            Unit = recipe.Ingredient?.Unit ?? ""
                         });
                 }
             }
             catch (Exception ex)
             {
-                StatusMessage =
-                    $"Lỗi tải công thức: {ex.Message}";
+                StatusMessage = $"Lỗi tải công thức: {ex.Message}";
+
+                _dialogService.ShowError(
+                    "Lỗi tải công thức",
+                    ex.Message);
             }
         }
 
+        // Thêm hoặc cập nhật nguyên liệu trong công thức
         private async Task SaveRecipeAsync()
         {
             if (SelectedProduct == null)
             {
-                MessageBox.Show(
-                    "Vui lòng chọn sản phẩm bên cột trái!",
+                _dialogService.ShowWarning(
                     "Thông báo",
-                    MessageBoxButton.OK,
-                    MessageBoxImage.Warning);
+                    "Vui lòng chọn sản phẩm bên cột trái!");
 
                 return;
             }
 
             if (SelectedIngredientInput == null)
             {
-                MessageBox.Show(
-                    "Vui lòng chọn nguyên liệu!",
+                _dialogService.ShowWarning(
                     "Thông báo",
-                    MessageBoxButton.OK,
-                    MessageBoxImage.Warning);
+                    "Vui lòng chọn nguyên liệu!");
 
                 return;
             }
 
-            if (!decimal.TryParse(
-                    QuantityInput,
-                    out decimal quantity)
+            if (!decimal.TryParse(QuantityInput, out decimal quantity)
                 || quantity <= 0)
             {
-                MessageBox.Show(
-                    "Vui lòng nhập số lượng định lượng lớn hơn 0!",
+                _dialogService.ShowWarning(
                     "Lỗi nhập liệu",
-                    MessageBoxButton.OK,
-                    MessageBoxImage.Warning);
+                    "Vui lòng nhập số lượng định lượng lớn hơn 0!");
 
                 return;
             }
 
             try
             {
-                using var db = _contextFactory();
+                string? message = await _recipeService.SaveRecipeAsync(
+                    SelectedProduct.ProductId,
+                    SelectedSize?.ProductSizeId,
+                    SelectedIngredientInput.IngredientId,
+                    quantity);
 
-                var selectedSizeId =
-                    SelectedSize?.ProductSizeId;
-
-                ProductSize? productSize =
-                    selectedSizeId.HasValue
-                        ? await db.ProductSizes
-                            .FirstOrDefaultAsync(s =>
-                                s.ProductSizeId ==
-                                    selectedSizeId.Value &&
-                                s.ProductId ==
-                                    SelectedProduct.ProductId)
-                        : null;
-
-                if (selectedSizeId.HasValue &&
-                    productSize == null)
+                if (message == null)
                 {
-                    throw new InvalidOperationException(
-                        "Size được chọn không thuộc sản phẩm.");
+                    _dialogService.ShowWarning(
+                        "Thông báo",
+                        "Vui lòng chọn size trước khi lưu công thức!");
+
+                    return;
                 }
 
-                if (productSize == null)
-                {
-                    bool hasSize = await db.ProductSizes
-                        .AnyAsync(s =>
-                            s.ProductId ==
-                                SelectedProduct.ProductId);
-
-                    if (hasSize)
-                    {
-                        MessageBox.Show(
-                            "Vui lòng chọn size trước khi lưu công thức!",
-                            "Thông báo",
-                            MessageBoxButton.OK,
-                            MessageBoxImage.Warning);
-
-                        return;
-                    }
-
-                    productSize = new ProductSize
-                    {
-                        ProductId = SelectedProduct.ProductId,
-                        SizeName = "Standard",
-                        Price = 0
-                    };
-
-                    db.ProductSizes.Add(productSize);
-                    await db.SaveChangesAsync();
-                }
-
-                var existingRecipe =
-                    await db.ProductRecipes
-                        .FirstOrDefaultAsync(r =>
-                            r.ProductSizeId ==
-                                productSize.ProductSizeId &&
-                            r.IngredientId ==
-                                SelectedIngredientInput.IngredientId);
-
-                if (existingRecipe != null)
-                {
-                    existingRecipe.QuantityUsed = quantity;
-
-                    StatusMessage =
-                        "Cập nhật định lượng thành công!";
-                }
-                else
-                {
-                    var newRecipe = new ProductRecipe
-                    {
-                        ProductSizeId = productSize.ProductSizeId,
-                        IngredientId =
-                            SelectedIngredientInput.IngredientId,
-                        QuantityUsed = quantity
-                    };
-
-                    db.ProductRecipes.Add(newRecipe);
-
-                    StatusMessage =
-                        "Thêm nguyên liệu vào công thức thành công!";
-                }
-
-                await db.SaveChangesAsync();
+                StatusMessage = message;
 
                 QuantityInput = string.Empty;
                 SelectedIngredientInput = null;
@@ -410,42 +332,33 @@ namespace CoffeeRuu.ViewModels
             }
             catch (Exception ex)
             {
-                MessageBox.Show(
-                    $"Lỗi lưu công thức: {ex.Message}",
-                    "Lỗi",
-                    MessageBoxButton.OK,
-                    MessageBoxImage.Error);
+                _dialogService.ShowError(
+                    "Lỗi lưu công thức",
+                    ex.Message);
             }
         }
 
+        // Xóa nguyên liệu khỏi công thức
         private async Task DeleteRecipeAsync()
         {
             if (SelectedRecipeItem == null)
                 return;
 
-            var confirm = MessageBox.Show(
-                "Bạn có chắc muốn xóa nguyên liệu này khỏi công thức?",
+            bool confirm = _dialogService.Confirm(
                 "Xác nhận",
-                MessageBoxButton.YesNo,
-                MessageBoxImage.Question);
+                "Bạn có chắc muốn xóa nguyên liệu này khỏi công thức?");
 
-            if (confirm != MessageBoxResult.Yes)
+            if (!confirm)
                 return;
 
             try
             {
-                using var db = _contextFactory();
-
-                var entity = await db.ProductRecipes.FindAsync(
+                bool deleted = await _recipeService.DeleteRecipeAsync(
                     SelectedRecipeItem.ProductSizeId,
                     SelectedRecipeItem.IngredientId);
 
-                if (entity != null)
+                if (deleted)
                 {
-                    db.ProductRecipes.Remove(entity);
-
-                    await db.SaveChangesAsync();
-
                     StatusMessage =
                         "Đã xóa nguyên liệu khỏi công thức.";
 
@@ -453,14 +366,18 @@ namespace CoffeeRuu.ViewModels
 
                     await LoadRecipeForSelectedProductAsync();
                 }
+                else
+                {
+                    _dialogService.ShowWarning(
+                        "Thông báo",
+                        "Không tìm thấy nguyên liệu trong công thức.");
+                }
             }
             catch (Exception ex)
             {
-                MessageBox.Show(
-                    $"Lỗi khi xóa: {ex.Message}",
-                    "Lỗi",
-                    MessageBoxButton.OK,
-                    MessageBoxImage.Error);
+                _dialogService.ShowError(
+                    "Lỗi khi xóa",
+                    ex.Message);
             }
         }
     }

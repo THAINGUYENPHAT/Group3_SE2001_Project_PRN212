@@ -10,7 +10,7 @@ using System.Windows; // Thêm để dùng MessageBox nếu cần
 
 namespace CoffeeRuu.ViewModels
 {
-    public class PosMenuViewModel : ViewModelBase
+    public class PosMenuViewModel : BaseViewModel
     {
         private readonly MenuService _menuService;
         private readonly OrderService _orderService;
@@ -544,7 +544,7 @@ namespace CoffeeRuu.ViewModels
         public decimal Price { get; set; }
     }
 
-    public class PosMenuCategory : ViewModelBase
+    public class PosMenuCategory : BaseViewModel
     {
         private bool _isSelected;
 
