@@ -1,6 +1,7 @@
 
 using System.Windows;
 using System.Windows.Controls;
+using CoffeeRuu.Services;
 using CoffeeRuu.ViewModels;
 
 namespace CoffeeRuu
@@ -11,7 +12,17 @@ namespace CoffeeRuu
         {
             InitializeComponent();
 
-            DataContext = new LoginViewModel();
+            var authenticationService =
+                new AuthenticationService(App.CreateDbContext);
+
+            var dialogService = new MessageDialogService();
+
+            var windowService = new WindowService(this);
+
+            DataContext = new LoginViewModel(
+                authenticationService,
+                dialogService,
+                windowService);
 
             PasswordInput.PasswordChanged += PasswordInput_PasswordChanged;
         }
@@ -25,13 +36,14 @@ namespace CoffeeRuu
                 viewModel.Password = PasswordInput.Password;
             }
         }
+
         private void Window_KeyDown(
             object sender,
             System.Windows.Input.KeyEventArgs e)
         {
             if (e.Key == System.Windows.Input.Key.Enter)
             {
-                if (DataContext is CoffeeRuu.ViewModels.LoginViewModel viewModel
+                if (DataContext is LoginViewModel viewModel
                     && viewModel.LoginCommand.CanExecute(null))
                 {
                     viewModel.LoginCommand.Execute(null);

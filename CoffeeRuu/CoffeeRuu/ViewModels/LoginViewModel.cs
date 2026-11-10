@@ -1,44 +1,42 @@
 ﻿
 using System;
-using System.ComponentModel;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Windows;
 using System.Windows.Input;
 using CoffeeRuu.Services;
-using CoffeeRuu.Views;
 
 namespace CoffeeRuu.ViewModels
 {
-    public class LoginViewModel : INotifyPropertyChanged
+    public class LoginViewModel : BaseViewModel
     {
+        private readonly AuthenticationService _authenticationService;
+        private readonly IMessageDialogService _dialogService;
+        private readonly WindowService _windowService;
+
         private string _username = string.Empty;
         private string _password = string.Empty;
 
         public string Username
         {
             get => _username;
-            set
-            {
-                _username = value;
-                OnPropertyChanged();
-            }
+            set => SetProperty(ref _username, value);
         }
 
         public string Password
         {
             get => _password;
-            set
-            {
-                _password = value;
-                OnPropertyChanged();
-            }
+            set => SetProperty(ref _password, value);
         }
 
         public ICommand LoginCommand { get; }
 
-        public LoginViewModel()
+        public LoginViewModel(
+            AuthenticationService authenticationService,
+            IMessageDialogService dialogService,
+            WindowService windowService)
         {
+            _authenticationService = authenticationService;
+            _dialogService = dialogService;
+            _windowService = windowService;
+
             LoginCommand = new RelayCommand(Login);
         }
 
@@ -46,110 +44,52 @@ namespace CoffeeRuu.ViewModels
         {
             if (string.IsNullOrWhiteSpace(Username))
             {
-                MessageBox.Show(
-                    "Vui lòng nhập tên đăng nhập!",
+                _dialogService.ShowWarning(
                     "Thông báo",
-                    MessageBoxButton.OK,
-                    MessageBoxImage.Warning);
+                    "Vui lòng nhập tên đăng nhập!");
+
                 return;
             }
 
             if (string.IsNullOrWhiteSpace(Password))
             {
-                MessageBox.Show(
-                    "Vui lòng nhập mật khẩu!",
+                _dialogService.ShowWarning(
                     "Thông báo",
-                    MessageBoxButton.OK,
-                    MessageBoxImage.Warning);
+                    "Vui lòng nhập mật khẩu!");
+
                 return;
             }
 
             try
             {
-                using var db = App.CreateDbContext();
+                var user = _authenticationService.Authenticate(
+                    Username.Trim(),
+                    Password);
 
-                var employee = db.Employees
-                    .FirstOrDefault(e => e.Username == Username);
-
-                if (employee == null ||
-                    !employee.IsActive ||
-                    !PasswordService.VerifyPassword(
-                        Password,
-                        employee.PasswordHash))
+                if (user == null)
                 {
-                    MessageBox.Show(
-                        "Tên đăng nhập hoặc mật khẩu không đúng.",
+                    _dialogService.ShowWarning(
                         "Đăng nhập thất bại",
-                        MessageBoxButton.OK,
-                        MessageBoxImage.Warning);
-                    return;
-                }
-
-
-                var role = db.Roles.FirstOrDefault(
-                    r => r.RoleId == employee.RoleId);
-
-                if (role == null)
-                {
-                    MessageBox.Show(
-                        "Không tìm thấy vai trò của tài khoản.",
-                        "Lỗi đăng nhập",
-                        MessageBoxButton.OK,
-                        MessageBoxImage.Error);
+                        "Tên đăng nhập hoặc mật khẩu không đúng.");
 
                     return;
                 }
 
                 UserSession.Start(
-                    employee.EmployeeId,
-                    employee.RoleId,
-                    employee.Username,
-                    employee.FullName,
-                    role.RoleName);
+                    user.EmployeeId,
+                    user.RoleId,
+                    user.Username,
+                    user.FullName,
+                    user.RoleName);
 
-                var home = new MainShellWindow();
-
-                Application.Current.MainWindow = home;
-                home.Show();
-
-                foreach (Window window in Application.Current.Windows)
-                {
-                    if (window is MainWindow)
-                    {
-                        window.Close();
-                        break;
-                    }
-                }
-
-
-                // Dong cua so dang nhap
-                foreach (Window window in Application.Current.Windows)
-                {
-                    if (window is MainWindow)
-                    {
-                        window.Close();
-                        break;
-                    }
-                }
+                _windowService.OpenMainWindowAfterLogin();
             }
             catch (Exception ex)
             {
-                MessageBox.Show(
-                    ex.Message,
+                _dialogService.ShowError(
                     "Lỗi đăng nhập",
-                    MessageBoxButton.OK,
-                    MessageBoxImage.Error);
+                    ex.Message);
             }
-        }
-
-        public event PropertyChangedEventHandler? PropertyChanged;
-
-        protected void OnPropertyChanged(
-            [CallerMemberName] string? propertyName = null)
-        {
-            PropertyChanged?.Invoke(
-                this,
-                new PropertyChangedEventArgs(propertyName));
         }
     }
 }

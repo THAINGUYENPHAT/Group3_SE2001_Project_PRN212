@@ -66,16 +66,32 @@ namespace CoffeeRuu.Views
                 () => new RecipeManagementView
                 {
                     DataContext = new RecipeManagementViewModel(
-                        App.CreateDbContext)
+                        new RecipeService(App.CreateDbContext),
+                        new MessageDialogService())
                 });
 
             _navigationService.Register(
                 "Report",
-                () => new ReportView());
+                () => new ReportView
+                {
+                    DataContext = new ReportViewModel(
+                        new ReportService(App.CreateDbContext),
+                        new ExcelExportService(),
+                        new ReportDialogService())
+                });
+
 
             _navigationService.Register(
                 "Table",
-                () => new TableView());
+                () =>
+                {
+                    var repository = new TableRepository(App.CreateDbContext);
+                    var service = new TableService(repository);
+                    var viewModel = new TableViewModel(service);
+
+                    return new TableView(viewModel);
+                });
+
 
             _navigationService.Register(
                 "Employee",

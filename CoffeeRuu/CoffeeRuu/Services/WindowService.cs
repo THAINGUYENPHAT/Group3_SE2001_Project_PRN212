@@ -13,6 +13,17 @@ namespace CoffeeRuu.Services
             _currentWindow = currentWindow;
         }
 
+        public void OpenMainWindowAfterLogin()
+        {
+            var home = new MainShellWindow();
+
+            Application.Current.MainWindow = home;
+
+            home.Show();
+
+            _currentWindow.Close();
+        }
+
         public void Logout()
         {
             MessageBoxResult result = MessageBox.Show(
@@ -26,14 +37,15 @@ namespace CoffeeRuu.Services
                 return;
             }
 
-            // Mo lai man hinh dang nhap
-            MainWindow loginWindow = new MainWindow();
+            // Xóa thông tin phiên đăng nhập cũ.
+            UserSession.End();
+
+            var loginWindow = new MainWindow();
 
             Application.Current.MainWindow = loginWindow;
 
             loginWindow.Show();
 
-            // Dong cua so chinh hien tai
             _currentWindow.Close();
         }
     }
