@@ -439,10 +439,10 @@ namespace CoffeeRuu.ViewModels
                 // =========================================================================
                 // Gọi phương thức từ OrderService (hoặc OrderService tự kiểm tra bên trong CreateOrderAsync / CheckStock)
                 // Ở đây giả định OrderService hỗ trợ phương thức kiểm tra & trừ tồn kho theo định lượng công thức.
-                bool hasEnoughStock = await _orderService.ValidateAndDeductStockAsync(cartLines);
+                bool hasEnoughStock = await _orderService.ValidateStockAsync(cartLines);
                 if (!hasEnoughStock)
                 {
-                    // Thông báo đã được handle hoặc hiển thị trong service, dừng quá trình thanh toán tại đây.
+                  
                     IsBusy = false;
                     return;
                 }
@@ -453,9 +453,7 @@ namespace CoffeeRuu.ViewModels
 
                 if (!isPaid)
                 {
-                    // Nếu khách hủy thanh toán, cần hoàn lại (rollback) số lượng tồn kho đã trừ tạm tính ở bước 2 nếu cần,
-                    // hoặc bạn có thể gọi kiểm tra kho NGAY SAU khi khách quét QR thanh toán thành công tùy theo luồng dự án.
-                    // (Khuyên cáo: Nên đặt logic check & trừ kho gói gọn trong transaction của OrderService khi CreateOrderAsync).
+      
                     IsBusy = false;
                     return;
                 }

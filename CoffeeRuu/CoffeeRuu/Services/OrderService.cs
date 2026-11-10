@@ -51,81 +51,91 @@ namespace CoffeeRuu.Services
         // KIỂM TRA VÀ TRỪ KHO THEO ĐỊNH LƯỢNG KHI THANH TOÁN
         // ==========================
 
-        public async Task<bool> ValidateAndDeductStockAsync(IReadOnlyCollection<CartLine> cart)
+        public async Task<bool> ValidateStockAsync(
+            IReadOnlyCollection<CartLine> cart)
         {
             if (cart == null || cart.Count == 0)
                 return false;
 
             await using var db = _repository.CreateContext();
-            await using var transaction = await db.Database.BeginTransactionAsync(IsolationLevel.Serializable);
 
-            try
+            var requiredIngredients = new Dictionary<int, decimal>();
+
+            foreach (var cartItem in cart)
             {
-                var requiredIngredients = new Dictionary<int, decimal>();
+                if (cartItem.Quantity <= 0)
+                    return false;
 
-                foreach (var cartItem in cart)
+                // Lấy công thức theo kích cỡ sản phẩm
+                var recipes = await db.ProductRecipes
+                    .Where(r => r.ProductSizeId == cartItem.ProductSizeId)
+                    .ToListAsync();
+
+                // Kiểm tra sản phẩm đã có công thức chưa
+                if (recipes.Count == 0)
                 {
-                    // Lấy danh sách định lượng nguyên liệu theo ProductSizeId từ bảng ProductRecipes
-                    var recipes = await db.ProductRecipes
-                        .Where(r => r.ProductSizeId == cartItem.ProductSizeId)
-                        .ToListAsync();
+                    MessageBox.Show(
+                        "Sản phẩm chưa có công thức pha chế!",
+                        "Lỗi công thức",
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Warning);
 
-                    foreach (var recipe in recipes)
-                    {
-                        decimal needed = recipe.QuantityUsed * cartItem.Quantity;
-
-                        if (requiredIngredients.ContainsKey(recipe.IngredientId))
-                            requiredIngredients[recipe.IngredientId] += needed;
-                        else
-                            requiredIngredients[recipe.IngredientId] = needed;
-                    }
+                    return false;
                 }
 
-                // 1. Kiểm tra tồn kho thực tế
-                foreach (var req in requiredIngredients)
+                // Tính tổng lượng nguyên liệu cần sử dụng
+                foreach (var recipe in recipes)
                 {
-                    var ingredient = await db.Ingredients.FindAsync(req.Key);
-                    if (ingredient == null || ingredient.CurrentStock < req.Value)
+                    decimal needed =
+                        recipe.QuantityUsed * cartItem.Quantity;
+
+                    if (requiredIngredients.ContainsKey(recipe.IngredientId))
                     {
-                        string name = ingredient?.IngredientName ?? "Nguyên liệu";
-                        string unit = ingredient?.Unit ?? "";
-                        decimal stock = ingredient?.CurrentStock ?? 0;
-
-                        MessageBox.Show(
-                            $"Hàng trong kho không đủ để bán!\n\n" +
-                            $"Nguyên liệu: {name}\n" +
-                            $"Cần dùng: {req.Value:N3} {unit}\n" +
-                            $"Tồn kho hiện tại: {stock:N3} {unit}",
-                            "Lỗi kho hàng - Không thể thanh toán",
-                            MessageBoxButton.OK,
-                            MessageBoxImage.Warning);
-
-                        await transaction.RollbackAsync();
-                        return false; // Chặn thanh toán ngay lập tức
+                        requiredIngredients[recipe.IngredientId] += needed;
+                    }
+                    else
+                    {
+                        requiredIngredients[recipe.IngredientId] = needed;
                     }
                 }
-
-                // 2. Trừ tồn kho khi tất cả nguyên liệu đều đủ
-                foreach (var req in requiredIngredients)
-                {
-                    var ingredient = await db.Ingredients.FindAsync(req.Key);
-                    if (ingredient != null)
-                    {
-                        ingredient.CurrentStock -= req.Value;
-                    }
-                }
-
-                await db.SaveChangesAsync();
-                await transaction.CommitAsync();
-                return true;
             }
-            catch (Exception ex)
+
+            // Kiểm tra tồn kho thực tế
+            foreach (var req in requiredIngredients)
             {
-                await transaction.RollbackAsync();
-                MessageBox.Show($"Lỗi kiểm tra kho: {ex.Message}", "Lỗi", MessageBoxButton.OK, MessageBoxImage.Error);
-                return false;
+                var ingredient =
+                    await db.Ingredients.FindAsync(req.Key);
+
+                if (ingredient == null || !ingredient.IsActive)
+                {
+                    MessageBox.Show(
+                        "Nguyên liệu không tồn tại hoặc đã ngừng sử dụng!",
+                        "Lỗi kho hàng",
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Warning);
+
+                    return false;
+                }
+
+                if (ingredient.CurrentStock < req.Value)
+                {
+                    MessageBox.Show(
+                        $"Hàng trong kho không đủ để bán!\n\n" +
+                        $"Nguyên liệu: {ingredient.IngredientName}\n" +
+                        $"Cần dùng: {req.Value:N3} {ingredient.Unit}\n" +
+                        $"Tồn kho hiện tại: {ingredient.CurrentStock:N3} " +
+                        $"{ingredient.Unit}",
+                        "Lỗi kho hàng - Không thể thanh toán",
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Warning);
+
+                    return false;
+                }
             }
+
+            return true;
         }
+
 
         // ==========================
         // 1. TẠO ĐƠN HÀNG
@@ -286,6 +296,11 @@ namespace CoffeeRuu.Services
 
             db.Orders.Add(order);
 
+            foreach (var item in order.OrderItems)
+            {
+                await DeductStockByRecipeAsync(db, item);
+            }
+
             await db.SaveChangesAsync();
             await transaction.CommitAsync();
 
@@ -433,13 +448,6 @@ namespace CoffeeRuu.Services
                     $"Không thể chuyển từ " +
                     $"{item.PreparationStatus} sang {nextStatus}.");
 
-            // Nếu món chuẩn bị hoàn thành thì trừ kho theo Recipe
-            if (nextStatus == "Ready")
-            {
-                await DeductStockByRecipeAsync(db, item);
-            }
-
-            // Chỉ cập nhật trạng thái khi trừ kho thành công
             item.PreparationStatus = nextStatus;
 
             // Tính lại trạng thái tổng của đơn
